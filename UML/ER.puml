@@ -1,0 +1,27 @@
+@startuml ER
+entity Reports{
+  * report
+  * settings
+}
+
+entity DailyReport{
+  * **day**
+  * reportTitle
+  * report
+}
+
+entity Settings{
+  * **storageKey**
+  * version
+  * playGamedataName
+  * dayInterval
+  * dayModifier
+}
+Reports ||--|{ DailyReport
+Reports ||--|| Settings
+entity ReportManager{
+  * reportsList
+}
+ReportManager ||--|{ Reports
+
+@enduml

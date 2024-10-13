@@ -1,0 +1,113 @@
+@startuml class
+package Report{
+  class Reports{
+    report: Map<day,DailyReport>
+    settings: Settings
+    currentDay: number
+    createNewReport(): number
+    getSettings(): Settings\n\t直接アクセスなのでこの戻り値を編集すると本体も編集される
+  }
+  class DailyReportBuilder{
+    constructor(source: DailyReport, settings: Settings)
+    constructor(\n\tday: number = 1,\n\treportTitle: string = "",\n\treport: string = "",\n\tprevious?: number,\n\tnext?: number\n)
+    constructor(a: any,b: any,c: string?,d: number?,e: number?)
+    built(): DailyReport
+  }
+  Reports -l- DailyReportBuilder
+  DailyReportBuilder -- DailyReport
+  class DailyReport{
+    day: number
+    reportTitle: string
+    report: string
+    constructor(day: number)
+    setReportTitle(string): void
+    setReport(string): void
+    getDay(): number
+    getReportTitle(): string
+    getReport(): string
+  }
+
+  class Settings{
+    storageKey: string
+    version: number
+    playGamedataName: string
+    dayInterval: number
+    dayModifier: DayModifier
+    constructor(storageKey,version,playGamedataName,dayInterval,dayModifier)
+    setPlayGameDateName(string): void
+    getPlayGameDateName(): string
+    setDayInterval(number): void
+    getDayInterval(): number
+    setDayModifier(unit: string): void
+    setDayModifier(cycleIndex: number,unit: string): void
+    setDayModifier(a: any, b: string): void
+    getDayModifier(index: number): string | null
+    setDayModifierCycle(cycleLength: number): void
+    getDayModifierCycle(): number
+
+    getNextDay(day: number): number
+    getModifierDay(day: number)string
+  }
+  Reports *-- DailyReport
+  Reports -- Settings
+  Settings -- DayModifier
+  class DayModifier{
+    constructor(cycleLength: number,...unit: string)
+    constructor(unit: string)
+    constructor(a: any,...b: string)
+    modifyDay(naturalDay: number): string
+    getDayModifier(): Array<string>
+    getDayModifierCycle(): number
+  }
+  class ReportManager{
+    reportsList: Array<Reports>
+    addReports(): void
+    selectReports(strageKey: string): void
+    deleteReports(strageKey: string): void
+  }
+  ReportManager *-- Reports
+}
+package ControlDailyReport{
+  class CreateDailyReport{
+    createDailyReport(source: DayReport, dailyReports: Reports)
+  }
+  class ChengeCurrentDailyReport{
+    dailyReports: Reports
+    toNextDay(): number
+    toEveDay(): number
+    toThisDay(day: number): number
+  }
+  ChengeCurrentDailyReport -- CreateDailyReport
+  ChengeCurrentDailyReport -- Reports
+}
+package View{
+  class ReportList{
+    addReport(day: number, title: string): void
+    turnOverThis(day: number): void
+    deleteReport(day: number): void
+  }
+  class ReportView{
+    editReport(string): void
+    clearReport(): void
+    turnOverNext(): void
+    turnOverBefore(): void
+  }
+  class SettingsView{
+    editGameDataName(string): void
+    editDayInterval(number): void
+    editDayModifier(string): void
+    editDayModifierCycle(number): void
+    addNewReports(string): void
+    selectReports(string): void
+    deleteReports(string): void
+  }
+  ReportList -- CreateDailyReport : CreateDailyReport側から\nReportList.addReportを呼ぶ。
+  ReportList -- ChengeCurrentDailyReport
+  ReportView -- DailyReport
+  ReportView -- Reports
+  SettingsView -- Settings
+  SettingsView -- ReportManager
+
+
+}
+@enduml

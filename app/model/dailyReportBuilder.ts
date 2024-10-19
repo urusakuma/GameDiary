@@ -9,16 +9,14 @@ export class DailyReportBuilder {
   private reportTitle: string;
   /** @param {string} report レポート。*/
   private report: string;
-  /** @param {string} defaultTitle タイトルのデフォルト値*/
-  private defaultTitle: string
   /** @param {?number} previous 前日のレポートの日付。*/
   private previous: number | undefined;
   /** @param {?number} previous 翌日のレポートの日付。*/
   private next: number | undefined;
 
   constructor(source: DailyReport, settings: Settings);
-  constructor(day: number, reportTitle: string, report: string, defaultTitle: string, previous?: number, next?: number);
-  constructor(a: DailyReport | number, b: Settings | string, c?: string, d?: string, e?: number, f?: number) {
+  constructor(day: number, reportTitle: string, report: string, previous?: number, next?: number);
+  constructor(a: DailyReport | number, b: Settings | string, c?: string, d?: number, e?: number) {
     if (a instanceof DailyReport && b instanceof Settings) {
       // constructor1による初期化
       this.day = b.getNextDay(a.day);
@@ -26,7 +24,6 @@ export class DailyReportBuilder {
       this.report = "";
       this.previous = a.day;
       this.next = undefined;
-      this.defaultTitle = this.reportTitle;
       return;
     }
     // constructor2による初期化
@@ -34,22 +31,19 @@ export class DailyReportBuilder {
       typeof (a) === "number" &&
       typeof (b) === "string" &&
       typeof (c) === "string" &&
-      typeof (d) === "string" &&
-      (typeof (e) === "number" || typeof (e) === undefined) &&
-      (typeof (f) === "number" || typeof (f) === undefined), TypeError("DailyReportBuilder can't init"))
+      (typeof (d) === "number" || typeof (d) === undefined) &&
+      (typeof (e) === "number" || typeof (e) === undefined), TypeError("DailyReportBuilder can't init"))
     this.day = a;
     this.reportTitle = b;
     this.report = c;
-    this.defaultTitle = d;
-    this.previous = e;
-    this.next = f;
+    this.previous = d;
+    this.next = e;
   }
   build = (): DailyReport => {
     return new DailyReport(
       this.day,
       this.reportTitle,
       this.report,
-      this.defaultTitle,
       this.previous,
       this.next,
     );

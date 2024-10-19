@@ -1,10 +1,10 @@
-import { Constant } from "game-report/src/app/constant"
+import { Constant } from "game-report/src/app/constant";
 
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
 export class DayModifier {
   private _unit: Array<string>;
   private _cycleLength: number;
-  private _modifier: string
+  private _modifier: string;
   /**
    * 日付を修飾する文字列。nサイクル、$N日目$Y年$C$D日(100日目4年春1日)など。
    * @param {string} modifier
@@ -12,20 +12,27 @@ export class DayModifier {
    * @param {Array<string>} unit 日付に対して周期的に付加される単位。
    */
   constructor(modifier: string);
-  constructor(
-    modifier: string,
-    cycleLength?: number,
-    ...unit: Array<string>
-  ) {
+  constructor(modifier: string, cycleLength: number, ...unit: Array<string>);
+  constructor(modifier: string, cycleLength?: number, ...unit: Array<string>) {
     this._unit = unit;
     this._modifier = modifier;
     this._cycleLength = cycleLength ?? 10;
   }
-  public get modifier() { return this._modifier }
-  public set modifier(val: string) { this._modifier = val }
-  public get cycleLength() { return this._cycleLength }
-  public set cycleLength(val: number) { this._cycleLength = val }
-  public getUnit = (index: number): string => { return this._unit[index]; }
+  public get modifier() {
+    return this._modifier;
+  }
+  public set modifier(val: string) {
+    this._modifier = val;
+  }
+  public get cycleLength() {
+    return this._cycleLength;
+  }
+  public set cycleLength(val: number) {
+    this._cycleLength = val;
+  }
+  public getUnit = (index: number): string => {
+    return this._unit[index];
+  };
   /**
    * 単位を設定する。また、unit.lengthが単位の個数であることを維持する。
    * 最悪のオーダーはO(n)、ただしそんなに量が多いわけじゃないから気にする必要はないはず。
@@ -35,17 +42,19 @@ export class DayModifier {
   updateUnit = (val: string, index: number) => {
     // indexがunit.lengthを超える場合RangeErrorを発生させるので""で埋める
     for (let i = index - this._unit.length; i > 0; i--) {
-      this._unit.push("")
+      this._unit.push("");
     }
     // ArrayのRangeが足りていることを保証されたのでそこに代入。
     this._unit[index] = val;
 
     // unitを後ろから探索し""なら取り除くことにより、unit.lengthは常に単位の個数となる。
     for (let i = this._unit.length - 1; i > 0; i--) {
-      if (this._unit[i] !== "") { break }
-      this._unit.pop()
+      if (this._unit[i] !== "") {
+        break;
+      }
+      this._unit.pop();
     }
-  }
+  };
   /**
    * 受け取った日付に単位を付加して返却する。
    * year = naturalDayをcycleLenで割った数、cycle = 周期的に付与される単位、
@@ -54,13 +63,16 @@ export class DayModifier {
    * @returns 日付の単位を付加した文字列
    */
   modifyDay = (naturalDay: number): string => {
-    const unitLen = this._unit.length
+    const unitLen = this._unit.length;
     // unitが存在しない場合、置換文字列が存在するなら置き換えて(フェーズ$Nなど)、
     // 存在しないなら終端に付与して(n日目など)返却する。
     if (unitLen === 0) {
       if (this.modifier.includes(Constant.TOTAL_DAYS_PLACEHOLDER))
-        return this.modifier.replace(Constant.TOTAL_DAYS_PLACEHOLDER, String(naturalDay))
-      return String(naturalDay) + this.modifier
+        return this.modifier.replace(
+          Constant.TOTAL_DAYS_PLACEHOLDER,
+          String(naturalDay)
+        );
+      return String(naturalDay) + this.modifier;
     }
 
     // 一周の最終日はcycleLen*unitLen日目。

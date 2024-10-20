@@ -1,4 +1,4 @@
-type CheckedType = "object" | "string" | "number" | "boolean" | "Array";
+type CheckedType = 'object' | 'string' | 'number' | 'boolean' | 'Array';
 type TypeMap = {
   object: object;
   string: string;

@@ -1,6 +1,6 @@
-import { DailyReport } from "./dailyReport";
-import { Settings } from "./settings";
-import assert from "assert";
+import { DailyReport } from './dailyReport';
+import { Settings } from './settings';
+import assert from 'assert';
 
 export class DailyReportBuilder {
   /** @param {number} day 日付。reportTitleに書かれるが、dayは編集されない。次のReportを作成するのに使用する。ユニーク。*/
@@ -33,18 +33,18 @@ export class DailyReportBuilder {
       // constructor1による初期化
       this.day = b.getNextDay(a.day);
       this.reportTitle = b.getModifierDay(a.day);
-      this.report = "";
+      this.report = '';
       this.previous = a.day;
       this.next = undefined;
       return;
     }
     // constructor2による初期化
     assert(
-      typeof a === "number" &&
-        typeof b === "string" &&
-        typeof c === "string" &&
-        (typeof d === "number" || typeof d === undefined) &&
-        (typeof e === "number" || typeof e === undefined),
+      typeof a === 'number' &&
+        typeof b === 'string' &&
+        typeof c === 'string' &&
+        (typeof d === 'number' || typeof d === undefined) &&
+        (typeof e === 'number' || typeof e === undefined),
       TypeError("DailyReportBuilder can't init")
     );
     this.day = a;

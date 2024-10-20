@@ -1,10 +1,10 @@
-import { Settings } from "./settings";
+import { Settings } from './settings';
 
 /** 日ごとのレポート*/
 export class DailyReport {
   private readonly _day: number;
-  private _reportTitle: string = "";
-  private _report: string = "";
+  private _reportTitle: string = '';
+  private _report: string = '';
   private _previous: number | undefined;
   private _next: number | undefined;
   /**
@@ -72,8 +72,8 @@ export class DailyReport {
    * @return {boolean} 編集されているならtrue、されていないならfalse。*/
   isEdited = (settings: Settings): boolean => {
     return !(
-      this.report === "" &&
-      (this.reportTitle === "" ||
+      this.report === '' &&
+      (this.reportTitle === '' ||
         this.reportTitle === settings.getModifierDay(this.day))
     );
   };

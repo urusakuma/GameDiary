@@ -1,8 +1,8 @@
-import { KeyAlreadyExistsError, KeyNotFoundError } from "../error";
-import { Settings } from "./settings";
-import { DailyReport } from "./dailyReport";
-import { DailyReportBuilder } from "./dailyReportBuilder";
-import assert from "assert";
+import { KeyAlreadyExistsError, KeyNotFoundError } from '../error';
+import { Settings } from './settings';
+import { DailyReport } from './dailyReport';
+import { DailyReportBuilder } from './dailyReportBuilder';
+import assert from 'assert';
 
 /**レポートの管理を行うクラス。*/
 export class Reports {
@@ -37,7 +37,10 @@ export class Reports {
   private set lastDay(val: number) {
     this._lastDay = val;
   }
-
+  /**
+   * 新しいDailyReoirtを作成する。
+   * @returns 新しいDailyReportのday
+   */
   createNewReport = (): number => {
     const lastReport = this.dailyReports.get(this.lastDay);
     assert(
@@ -48,6 +51,7 @@ export class Reports {
     this.dailyReports.set(newReport.day, newReport);
     return newReport.day;
   };
+
   /**
    * レポートを連想配列に追加する。
    * @param {DailyReport} report 追加するレポート

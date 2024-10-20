@@ -1,10 +1,10 @@
-import { Constant } from "game-report/src/app/constant";
+import { Constant } from "../constant";
 
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
 export class DayModifier {
-  private _unit: Array<string>;
-  private _cycleLength: number;
   private _modifier: string;
+  private _cycleLength: number;
+  private _unit: Array<string>;
   /**
    * 日付を修飾する文字列。nサイクル、$N日目$Y年$C$D日(100日目4年春1日)など。
    * @param {string} modifier
@@ -14,9 +14,14 @@ export class DayModifier {
   constructor(modifier: string);
   constructor(modifier: string, cycleLength: number, ...unit: Array<string>);
   constructor(modifier: string, cycleLength?: number, ...unit: Array<string>) {
-    this._unit = unit;
     this._modifier = modifier;
     this._cycleLength = cycleLength ?? 10;
+    for (let i = 0; i < unit.length; i++) {
+      if (unit[i] === "") {
+        continue;
+      }
+      this.updateUnit(unit[i], i);
+    }
   }
   public get modifier() {
     return this._modifier;
@@ -35,7 +40,7 @@ export class DayModifier {
   };
   /**
    * 単位を設定する。また、unit.lengthが単位の個数であることを維持する。
-   * 最悪のオーダーはO(n)、ただしそんなに量が多いわけじゃないから気にする必要はないはず。
+   * ""を設定された場合、それがunitの末尾であるなら配列から取り除く。
    * @param val 設定する単位の文字列。
    * @param index unitのどこにsetするか。
    */

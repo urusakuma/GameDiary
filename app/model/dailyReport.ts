@@ -19,7 +19,7 @@ export class DailyReport {
     reportTitle: string,
     report: string,
     previous?: number,
-    next?: number,
+    next?: number
   ) {
     this._day = day;
     this.reportTitle = reportTitle;
@@ -28,26 +28,43 @@ export class DailyReport {
     this.next = next;
   }
 
-  set reportTitle(val: string) { this._reportTitle = val }
-  set report(val: string) { this._report = val }
+  set reportTitle(val: string) {
+    this._reportTitle = val;
+  }
+  set report(val: string) {
+    this._report = val;
+  }
   set previous(val: number | undefined) {
-    if ((this.day === 1 && val === undefined) || // 初日だけundefinedを許す
-      (val !== undefined && this.day > val && val > 0)) { // 前日は今日より大きくないし1未満にならない
-      this._previous = val
+    if (
+      (this.day === 1 && val === undefined) || // 初日だけundefinedを許す
+      (val !== undefined && this.day > val && val > 0)
+    ) {
+      // 前日は今日より大きくないし1未満にならない
+      this._previous = val;
     }
   }
   set next(val: number | undefined) {
     // 翌日のレポートは未作成か今日より日付が大きい
     if (val === undefined || this.day < val) {
-      this._next = val
+      this._next = val;
     }
   }
 
-  get day() { return this._day }
-  get reportTitle() { return this._reportTitle }
-  get report() { return this._report }
-  get previous(): number | undefined { return this._previous }
-  get next(): number | undefined { return this._next }
+  get day() {
+    return this._day;
+  }
+  get reportTitle() {
+    return this._reportTitle;
+  }
+  get report() {
+    return this._report;
+  }
+  get previous(): number | undefined {
+    return this._previous;
+  }
+  get next(): number | undefined {
+    return this._next;
+  }
   /**
    * 初期状態から編集されているか判定する。
    * タイトルとレポートを全て消している場合も編集されていないものとする。
@@ -56,7 +73,8 @@ export class DailyReport {
   isEdited = (settings: Settings): boolean => {
     return !(
       this.report === "" &&
-      (this.reportTitle === "" || this.reportTitle === settings.getModifierDay(this.day))
+      (this.reportTitle === "" ||
+        this.reportTitle === settings.getModifierDay(this.day))
     );
   };
 

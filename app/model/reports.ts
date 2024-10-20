@@ -1,8 +1,8 @@
-import { KeyAlreadyExistsError, KeyNotFoundError } from "game-report/src/app/error";
+import { KeyAlreadyExistsError, KeyNotFoundError } from "../error";
 import { Settings } from "./settings";
 import { DailyReport } from "./dailyReport";
 import { DailyReportBuilder } from "./dailyReportBuilder";
-import assert from 'assert'
+import assert from "assert";
 
 /**レポートの管理を行うクラス。*/
 export class Reports {
@@ -17,20 +17,33 @@ export class Reports {
    * @param {Settings} settings 設定クラス
    * @param {number} lastDay レポートの最終日
    */
-  constructor(dailyReports: Map<number, DailyReport>, settings: Settings, lastDay: number) {
+  constructor(
+    dailyReports: Map<number, DailyReport>,
+    settings: Settings,
+    lastDay: number
+  ) {
     assert(dailyReports.size !== 0, `not exists any report`);
     assert(dailyReports.get(lastDay) !== undefined, `not exists ${lastDay}`);
     this.dailyReports = dailyReports;
     this._settings = settings;
     this._lastDay = lastDay;
   }
-  get settings() { return this._settings; }
-  public get lastDay(): number { return this._lastDay; }
-  private set lastDay(val: number) { this._lastDay = val; }
+  get settings() {
+    return this._settings;
+  }
+  public get lastDay(): number {
+    return this._lastDay;
+  }
+  private set lastDay(val: number) {
+    this._lastDay = val;
+  }
 
   createNewReport(): number {
     const lastReport = this.dailyReports.get(this.lastDay);
-    assert(lastReport !== undefined, new KeyNotFoundError(`not exists day=${this._lastDay}`));
+    assert(
+      lastReport !== undefined,
+      new KeyNotFoundError(`not exists day=${this._lastDay}`)
+    );
     const newReport = new DailyReportBuilder(lastReport, this.settings).build();
     this.dailyReports.set(newReport.day, newReport);
     return newReport.day;
@@ -40,7 +53,10 @@ export class Reports {
    * @param {DailyReport} report 追加するレポート
    * @throws {ArgumentError} すでに存在する日付を追加しようとした。*/
   add = (report: DailyReport): void => {
-    assert(!this.dailyReports.has(report.day), new KeyAlreadyExistsError(`already exists day=${report.day}`));
+    assert(
+      !this.dailyReports.has(report.day),
+      new KeyAlreadyExistsError(`already exists day=${report.day}`)
+    );
     this.dailyReports.set(report.day, report);
     // dayがlastDayより大きければlastDayを更新。
     this.lastDay = this.lastDay > report.day ? this.lastDay : report.day;
@@ -53,7 +69,10 @@ export class Reports {
    * @throws {KeyNotFoundError} その日付のレポートは存在しない*/
   get = (day: number): DailyReport => {
     const report = this.dailyReports.get(day);
-    assert(report !== undefined, new KeyNotFoundError(`not exists day=${day} report`))
+    assert(
+      report !== undefined,
+      new KeyNotFoundError(`not exists day=${day} report`)
+    );
     return report;
   };
 
@@ -64,7 +83,8 @@ export class Reports {
    * @returns {boolean} 削除したならtrue、しなかったならfalse。 */
   delete = (day: number): boolean => {
     const report = this.get(day);
-    const previous = report.previous !== undefined ? this.get(report.previous) : undefined;
+    const previous =
+      report.previous !== undefined ? this.get(report.previous) : undefined;
     const next = report.next !== undefined ? this.get(report.next) : undefined;
     if (this.lastDay === day && previous !== undefined) {
       // 削除する日が最新日と同じかつ前日が存在するなら、前日から削除日を消し、lastDayを前日に置き換える。

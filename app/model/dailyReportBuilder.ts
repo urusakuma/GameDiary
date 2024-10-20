@@ -1,6 +1,6 @@
 import { DailyReport } from "./dailyReport";
 import { Settings } from "./settings";
-import assert from 'assert'
+import assert from "assert";
 
 export class DailyReportBuilder {
   /** @param {number} day 日付。reportTitleに書かれるが、dayは編集されない。次のReportを作成するのに使用する。ユニーク。*/
@@ -15,8 +15,20 @@ export class DailyReportBuilder {
   private next: number | undefined;
 
   constructor(source: DailyReport, settings: Settings);
-  constructor(day: number, reportTitle: string, report: string, previous?: number, next?: number);
-  constructor(a: DailyReport | number, b: Settings | string, c?: string, d?: number, e?: number) {
+  constructor(
+    day: number,
+    reportTitle: string,
+    report: string,
+    previous?: number,
+    next?: number
+  );
+  constructor(
+    a: DailyReport | number,
+    b: Settings | string,
+    c?: string,
+    d?: number,
+    e?: number
+  ) {
     if (a instanceof DailyReport && b instanceof Settings) {
       // constructor1による初期化
       this.day = b.getNextDay(a.day);
@@ -28,11 +40,13 @@ export class DailyReportBuilder {
     }
     // constructor2による初期化
     assert(
-      typeof (a) === "number" &&
-      typeof (b) === "string" &&
-      typeof (c) === "string" &&
-      (typeof (d) === "number" || typeof (d) === undefined) &&
-      (typeof (e) === "number" || typeof (e) === undefined), TypeError("DailyReportBuilder can't init"))
+      typeof a === "number" &&
+        typeof b === "string" &&
+        typeof c === "string" &&
+        (typeof d === "number" || typeof d === undefined) &&
+        (typeof e === "number" || typeof e === undefined),
+      TypeError("DailyReportBuilder can't init")
+    );
     this.day = a;
     this.reportTitle = b;
     this.report = c;
@@ -45,7 +59,7 @@ export class DailyReportBuilder {
       this.reportTitle,
       this.report,
       this.previous,
-      this.next,
+      this.next
     );
-  }
+  };
 }

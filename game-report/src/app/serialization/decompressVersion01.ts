@@ -5,7 +5,7 @@ import { DailyReportBuilder } from '../model/dailyReportBuilder';
 import { DayModifier } from '../model/dayModifier';
 import { Reports } from '../model/reports';
 import { Settings } from '../model/settings';
-import { hasField, isArrayType, isTypeMatch } from './checkTypeMatch';
+import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 
 export function decompressVersion01(jsonObj: object): Reports {
   if (

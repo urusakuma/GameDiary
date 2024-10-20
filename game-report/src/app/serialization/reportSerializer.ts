@@ -8,7 +8,7 @@ import {
   compressToEncodedURIComponent,
   decompressFromEncodedURIComponent,
 } from 'lz-string';
-import { hasField, isTypeMatch } from './checkTypeMatch';
+import { hasField, isTypeMatch } from '../utils/checkTypeMatch';
 import { decompressVersion00 } from './decompressVersion00';
 import { decompressVersion01 } from './decompressVersion01';
 /**

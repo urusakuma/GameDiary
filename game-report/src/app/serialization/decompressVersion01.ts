@@ -34,12 +34,12 @@ export function decompressVersion01(jsonObj: object): Reports {
     jsonObj.settings._dayInterval,
     dayModifier
   );
-  if (!hasField(jsonObj, "dayReports", "Array")) {
+  if (!hasField(jsonObj, "dailyReports", "Array")) {
     throw new InvalidJsonError("Array<DayReport> class is broken");
   }
   const map = new Map<number, DailyReport>();
   const previousMap = new Map<number, number | undefined>();
-  for (let element of jsonObj.dayReports) {
+  for (let element of jsonObj.dailyReports) {
     if (
       !isTypeMatch(element, "object") ||
       !hasField(element, "day", "number") ||

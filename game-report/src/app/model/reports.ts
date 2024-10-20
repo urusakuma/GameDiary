@@ -10,7 +10,7 @@ export class Reports {
   private dailyReports: Map<number, DailyReport>;
   /** @param {Settings} _settings 設定。*/
   private _settings: Settings;
-  /** 最新のレポートの日付 */
+  /** @param {number} _lastDay 最新のレポートの日付 */
   private _lastDay: number;
   /**
    * @param {Map<number,DailyReport>} dailyReports レポートの連想配列
@@ -38,7 +38,7 @@ export class Reports {
     this._lastDay = val;
   }
 
-  createNewReport(): number {
+  createNewReport = (): number => {
     const lastReport = this.dailyReports.get(this.lastDay);
     assert(
       lastReport !== undefined,
@@ -47,11 +47,11 @@ export class Reports {
     const newReport = new DailyReportBuilder(lastReport, this.settings).build();
     this.dailyReports.set(newReport.day, newReport);
     return newReport.day;
-  }
+  };
   /**
    * レポートを連想配列に追加する。
    * @param {DailyReport} report 追加するレポート
-   * @throws {ArgumentError} すでに存在する日付を追加しようとした。*/
+   * @throws {KeyAlreadyExistsError} すでに存在する日付を追加しようとした。*/
   add = (report: DailyReport): void => {
     assert(
       !this.dailyReports.has(report.day),

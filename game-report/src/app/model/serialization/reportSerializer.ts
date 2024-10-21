@@ -2,8 +2,8 @@ import {
   DecompressionError,
   InvalidJsonError,
   NotSupportedError,
-} from '../error';
-import { Reports } from '../model/reports';
+} from '@/error';
+import { Reports } from '../reports';
 import {
   compressToEncodedURIComponent,
   decompressFromEncodedURIComponent,

@@ -1,10 +1,10 @@
-import { Constant } from '../constant';
-import { InvalidJsonError } from '../error';
-import { DailyReport } from '../model/dailyReport';
-import { DailyReportBuilder } from '../model/dailyReportBuilder';
-import { DayModifier } from '../model/dayModifier';
-import { Reports } from '../model/reports';
-import { Settings } from '../model/settings';
+import { Constant } from '@/constant';
+import { InvalidJsonError } from '@/error';
+import { DailyReport } from '../dailyReport';
+import { DailyReportBuilder } from '../dailyReportBuilder';
+import { DayModifier } from '../dayModifier';
+import { Reports } from '../reports';
+import { Settings } from '../settings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 
 export function decompressVersion01(jsonObj: object): Reports {

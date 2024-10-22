@@ -1,30 +1,30 @@
 @startuml class
-package Report{
-  class Reports{
-    report: Map<day,DailyReport>
+package Diary{
+  class Diary{
+    report: Map<day,DiaryEntry>
     settings: Settings
     currentDay: number
-    createNewReport(): number
+    createNewDiary(): number
     getSettings(): Settings\n\t直接アクセスなのでこの戻り値を編集すると本体も編集される
   }
-  class DailyReportBuilder{
-    constructor(source: DailyReport, settings: Settings)
+  class DiaryEntryBuilder{
+    constructor(source: DiaryEntryBuilderDiaryEntry, settings: Settings)
     constructor(\n\tday: number = 1,\n\treportTitle: string = "",\n\treport: string = "",\n\tprevious?: number,\n\tnext?: number\n)
     constructor(a: any,b: any,c: string?,d: number?,e: number?)
-    built(): DailyReport
+    built(): DiaryEntry
   }
-  Reports -l- DailyReportBuilder
-  DailyReportBuilder -- DailyReport
-  class DailyReport{
+  Diary -l- DiaryEntryBuilder
+  DiaryEntryBuilder -- DiaryEntry
+  class DiaryEntry{
     day: number
     reportTitle: string
     report: string
     constructor(day: number)
-    setReportTitle(string): void
-    setReport(string): void
+    setDiaryTitle(string): void
+    setDiary(string): void
     getDay(): number
-    getReportTitle(): string
-    getReport(): string
+    getDiaryTitle(): string
+    getDiary(): string
   }
 
   class Settings{
@@ -48,8 +48,8 @@ package Report{
     getNextDay(day: number): number
     getModifierDay(day: number)string
   }
-  Reports *-- DailyReport
-  Reports -- Settings
+  Diary *-- DiaryEntry
+  Diary -- Settings
   Settings -- DayModifier
   class DayModifier{
     constructor(cycleLength: number,...unit: string)
@@ -59,36 +59,36 @@ package Report{
     getDayModifier(): Array<string>
     getDayModifierCycle(): number
   }
-  class ReportManager{
-    reportsList: Array<Reports>
-    addReports(): void
-    selectReports(strageKey: string): void
-    deleteReports(strageKey: string): void
+  class DiaryManager{
+    reportsList: Array<Diary>
+    addDiary(): void
+    selectDiary(strageKey: string): void
+    deleteDiary(strageKey: string): void
   }
-  ReportManager *-- Reports
+  DiaryManager *-- Diary
 }
-package ControlDailyReport{
-  class CreateDailyReport{
-    createDailyReport(source: DayReport, dailyReports: Reports)
+package ControlDiaryEntry{
+  class CreateDiaryEntry{
+    createDiaryEntry(source: DayDiary, DiaryEntrys: Diary)
   }
-  class ChengeCurrentDailyReport{
-    dailyReports: Reports
+  class ChengeCurrentDiaryEntry{
+    DiaryEntrys: Diary
     toNextDay(): number
     toEveDay(): number
     toThisDay(day: number): number
   }
-  ChengeCurrentDailyReport -- CreateDailyReport
-  ChengeCurrentDailyReport -- Reports
+  ChengeCurrentDiaryEntry -- CreateDiaryEntry
+  ChengeCurrentDiaryEntry -- Diary.Diary
 }
 package View{
-  class ReportList{
-    addReport(day: number, title: string): void
+  class DiaryList{
+    addDiary(day: number, title: string): void
     turnOverThis(day: number): void
-    deleteReport(day: number): void
+    deleteDiary(day: number): void
   }
-  class ReportView{
-    editReport(string): void
-    clearReport(): void
+  class DiaryView{
+    editDiary(string): void
+    clearDiary(): void
     turnOverNext(): void
     turnOverBefore(): void
   }
@@ -97,16 +97,16 @@ package View{
     editDayInterval(number): void
     editDayModifier(string): void
     editDayModifierCycle(number): void
-    addNewReports(string): void
-    selectReports(string): void
-    deleteReports(string): void
+    addNewDiary(string): void
+    selectDiary(string): void
+    deleteDiary(string): void
   }
-  ReportList -- CreateDailyReport : CreateDailyReport側から\nReportList.addReportを呼ぶ。
-  ReportList -- ChengeCurrentDailyReport
-  ReportView -- DailyReport
-  ReportView -- Reports
+  DiaryList -- CreateDiaryEntry : CreateDiaryEntry側から\nDiaryList.addDiaryを呼ぶ。
+  DiaryList -- ChengeCurrentDiaryEntry
+  DiaryView -- DiaryEntry
+  DiaryView -- Diary
   SettingsView -- Settings
-  SettingsView -- ReportManager
+  SettingsView -- DiaryManager
 
 
 }

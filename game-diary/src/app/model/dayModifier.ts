@@ -1,7 +1,8 @@
 import { Constant } from '../constant';
+import { IDayModifier } from './diaryInterfaces';
 
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
-export class DayModifier {
+export class DayModifier implements IDayModifier {
   private _modifier: string;
   private _cycleLength: number;
   private _unit: Array<string>;
@@ -24,13 +25,13 @@ export class DayModifier {
       this.updateUnit(unit[i], i);
     }
   }
-  public get modifier() {
+  public get modifier(): string {
     return this._modifier;
   }
   public set modifier(val: string) {
     this._modifier = val;
   }
-  public get cycleLength() {
+  public get cycleLength(): number {
     return this._cycleLength;
   }
   public set cycleLength(val: number) {
@@ -41,15 +42,14 @@ export class DayModifier {
     this._cycleLength = cycLen;
   }
   public getUnit = (index: number): string => {
+    if (index >= this._unit.length) {
+      return '';
+    }
     return this._unit[index];
   };
-  /**
-   * 単位を設定する。また、unit.lengthが単位の個数であることを維持する。
-   * ""を設定された場合、それがunitの末尾であるなら配列から取り除く。
-   * @param val 設定する単位の文字列。
-   * @param index unitのどこにsetするか。
-   */
   updateUnit = (val: string, index: number) => {
+    /**unit.lengthが単位の個数であることを維持すること。*/
+
     // indexがunit.lengthを超える場合RangeErrorを発生させるので""で埋める
     for (let i = index - this._unit.length; i > 0; i--) {
       this._unit.push('');
@@ -57,7 +57,7 @@ export class DayModifier {
     // ArrayのRangeが足りていることを保証されたのでそこに代入。
     this._unit[index] = val;
 
-    // unitを後ろから探索し""なら取り除くことにより、unit.lengthは常に単位の個数となる。
+    // unitを後ろから探索し空文字なら取り除くことにより、unit.lengthは常に単位の個数となる。
     for (let i = this._unit.length - 1; i > 0; i--) {
       if (this._unit[i] !== '') {
         break;
@@ -65,13 +65,7 @@ export class DayModifier {
       this._unit.pop();
     }
   };
-  /**
-   * 受け取った日付に単位を付加して返却する。
-   * year = naturalDayをcycleLenで割った数、cycle = 周期的に付与される単位、
-   * day = naturalDayをcycleLenで割った余り、totalDay = 総経過日数。
-   * @param naturalDay 修飾したい日付。レポートから呼び出されたなら総経過日数でもある。
-   * @returns 日付の単位を付加した文字列
-   */
+
   modifyDay = (naturalDay: number): string => {
     const unitLen = this._unit.length;
     // unitが存在しない場合、置換文字列が存在するなら置き換えて(フェーズ$Nなど)、

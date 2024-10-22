@@ -3,7 +3,6 @@ import {
   InvalidJsonError,
   NotSupportedError,
 } from '@/error';
-import { Reports } from '../reports';
 import {
   compressToEncodedURIComponent,
   decompressFromEncodedURIComponent,
@@ -11,22 +10,23 @@ import {
 import { hasField, isTypeMatch } from '../utils/checkTypeMatch';
 import { decompressVersion00 } from './decompressVersion00';
 import { decompressVersion01 } from './decompressVersion01';
+import { IDiary } from '../diaryInterfaces';
 /**
- * ReportsオブジェクトをJSONにシリアライズし、圧縮する。
+ * IDiaryオブジェクトをJSONにシリアライズし、圧縮する。
  * @param reports シリアライズして圧縮するReport
  * @returns 圧縮されたReportの文字列
  */
-export function compressReports(reports: Reports): string {
+export function compressDiary(reports: IDiary): string {
   const json = JSON.stringify(reports);
   const compress = compressToEncodedURIComponent(json);
   return compress;
 }
 /**
- * 圧縮されたJSONをReportsに変換して返却する。
+ * 圧縮されたJSONをIDiaryに変換して返却する。
  * @param compressed 圧縮されたJSON文字列
- * @returns デシリアライズしたReports
+ * @returns デシリアライズしたIDiary
  */
-export function decompressReports(compressed: string): Reports {
+export function decompressDiary(compressed: string): IDiary {
   const decompress = decompressFromEncodedURIComponent(compressed);
   if (decompress === null) {
     throw new DecompressionError('Could not decompress');
@@ -46,7 +46,7 @@ export function decompressReports(compressed: string): Reports {
       return decompressVersion01(jsonObj);
     default:
       throw new NotSupportedError(
-        `version=${jsonObj.settings.version} is not supported`
+        `version=v${jsonObj.settings.version} is not supported`
       );
   }
 }

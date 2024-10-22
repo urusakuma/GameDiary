@@ -1,26 +1,33 @@
 import { Constant } from '@/constant';
 import { InvalidJsonError } from '@/error';
-import { DailyReport } from '../dailyReport';
-import { DailyReportBuilder } from '../dailyReportBuilder';
+import { DiaryEntryBuilder } from '../diaryEntryBuilder';
 import { DayModifier } from '../dayModifier';
-import { Reports } from '../reports';
+import { Diary } from '../diary';
 import { Settings } from '../settings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
+import { IDiary, IDiaryEntry } from '../diaryInterfaces';
 
-export function decompressVersion01(jsonObj: object): Reports {
+export function decompressVersion01(jsonObj: object): IDiary {
+  if (!hasField(jsonObj, 'lastDay', 'number')) {
+    throw new InvalidJsonError('Reports class is broken');
+  }
   if (
     !hasField(jsonObj, 'settings', 'object') ||
     !hasField(jsonObj.settings, '_storageKey', 'string') ||
     !hasField(jsonObj.settings, '_playGamedataName', 'string') ||
     !hasField(jsonObj.settings, '_dayInterval', 'number') ||
-    !hasField(jsonObj.settings, 'dayModifier', 'object') ||
+    !hasField(jsonObj.settings, 'dayModifier', 'object')
+  ) {
+    throw new InvalidJsonError('Settings class is broken');
+  }
+  if (
     !hasField(jsonObj.settings.dayModifier, '_modifier', 'string') ||
     !hasField(jsonObj.settings.dayModifier, '_cycleLength', 'number') ||
     !hasField(jsonObj.settings.dayModifier, '_unit', 'Array') ||
     !isArrayType(jsonObj.settings.dayModifier._unit, 'string') ||
     jsonObj.settings.dayModifier._unit.length <= 4
   ) {
-    throw new InvalidJsonError('Settings class is broken');
+    throw new InvalidJsonError('DayModifier class is broken');
   }
   const dayModifier = new DayModifier(
     jsonObj.settings.dayModifier._modifier,
@@ -34,35 +41,35 @@ export function decompressVersion01(jsonObj: object): Reports {
     jsonObj.settings._dayInterval,
     dayModifier
   );
-  if (!hasField(jsonObj, 'dailyReports', 'Array')) {
+  if (!hasField(jsonObj, 'diaryEntrys', 'Array')) {
     throw new InvalidJsonError('Array<DayReport> class is broken');
   }
-  const map = new Map<number, DailyReport>();
+  if (
+    !jsonObj.diaryEntrys.every(
+      (v) =>
+        isTypeMatch(v, 'object') &&
+        hasField(v, 'day', 'number') &&
+        hasField(v, 'title', 'string') &&
+        hasField(v, 'content', 'string')
+    )
+  ) {
+    throw new InvalidJsonError('DayReport class is broken');
+  }
+  const map = new Map<number, IDiaryEntry>();
   const previousMap = new Map<number, number | undefined>();
-  for (let element of jsonObj.dailyReports) {
-    if (
-      !isTypeMatch(element, 'object') ||
-      !hasField(element, 'day', 'number') ||
-      !hasField(element, 'reportTitle', 'string') ||
-      !hasField(element, 'report', 'string')
-    ) {
-      throw new InvalidJsonError('DayReport class is broken');
-    }
+  for (let element of jsonObj.diaryEntrys) {
     // 翌日が存在するなら翌日のdayから前日のdayを参照できるようにしておく。
     if (hasField(element, 'next', 'number')) {
       previousMap.set(element.next, element.day);
     }
-    const report = new DailyReportBuilder(
+    const diary: IDiaryEntry = new DiaryEntryBuilder(
       element.day,
-      element.reportTitle,
-      element.report,
+      element.title,
+      element.content,
       previousMap.get(element.day),
       hasField(element, 'next', 'number') ? element.next : undefined
     ).build();
-    map.set(report.day, report);
+    map.set(diary.day, diary);
   }
-  if (!hasField(jsonObj, 'lastDay', 'number')) {
-    throw new InvalidJsonError('Reports class is broken');
-  }
-  return new Reports(map, settings, jsonObj.lastDay);
+  return new Diary(map, settings, jsonObj.lastDay);
 }

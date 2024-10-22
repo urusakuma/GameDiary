@@ -1,13 +1,23 @@
 import { Constant } from '@/constant';
 import { InvalidJsonError } from '@/error';
-import { DailyReport } from '../dailyReport';
-import { DailyReportBuilder } from '../dailyReportBuilder';
+import { DiaryEntry } from '../diaryEntry';
+import { DiaryEntryBuilder } from '../diaryEntryBuilder';
 import { DayModifier } from '../dayModifier';
-import { Reports } from '../reports';
+import { IDiary, IDiaryEntry } from '../diaryInterfaces';
 import { Settings } from '../settings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
+import { Diary } from '../diary';
 
-export function decompressVersion00(jsonObj: object): Reports {
+/**
+ * 最初に作られたバージョンのデータをインポートするための関数。
+ * settings.versionはundefinde
+ * @param jsonObj
+ * @returns
+ */
+export function decompressVersion00(jsonObj: object): IDiary {
+  if (!hasField(jsonObj, 'lastDay', 'number')) {
+    throw new InvalidJsonError('Diary class is broken');
+  }
   if (
     !hasField(jsonObj, 'settings', 'object') ||
     !hasField(jsonObj.settings, 'storageKey', 'string') ||
@@ -36,11 +46,11 @@ export function decompressVersion00(jsonObj: object): Reports {
     jsonObj.settings.dayInterval,
     dayModifier
   );
-  if (!hasField(jsonObj, 'dayReports', 'Array')) {
+  if (!hasField(jsonObj, 'dayDiary', 'Array')) {
     throw new InvalidJsonError('Array<DayReport> class is broken');
   }
-  const map = new Map<number, DailyReport>();
-  for (let element of jsonObj.dayReports) {
+  const map = new Map<number, IDiaryEntry>();
+  for (let element of jsonObj.dayDiary) {
     if (
       !isTypeMatch(element, 'object') ||
       !hasField(element, 'day', 'number') ||
@@ -49,17 +59,14 @@ export function decompressVersion00(jsonObj: object): Reports {
     ) {
       throw new InvalidJsonError('DayReport class is broken');
     }
-    const report = new DailyReportBuilder(
+    const diary = new DiaryEntryBuilder(
       element.day,
       element.reportTitle,
       element.report,
       hasField(element, 'previous', 'number') ? element.previous : undefined,
       hasField(element, 'next', 'number') ? element.next : undefined
     ).build();
-    map.set(report.day, report);
+    map.set(diary.day, diary);
   }
-  if (!hasField(jsonObj, 'lastDay', 'number')) {
-    throw new InvalidJsonError('Reports class is broken');
-  }
-  return new Reports(map, settings, jsonObj.lastDay);
+  return new Diary(map, settings, jsonObj.lastDay);
 }

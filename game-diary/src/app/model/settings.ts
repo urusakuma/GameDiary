@@ -1,6 +1,7 @@
-import { DayModifier } from "./dayModifier";
+import { DayModifier } from './dayModifier';
+import { ISettings } from './diaryInterfaces';
 /** 設定を保存しておくクラス。 */
-export class Settings {
+export class Settings implements ISettings {
   /**storageKeyはシリアライズで変更される可能性があるが外部からは編集されたくないので隠ぺいしている。 */
   private readonly _storageKey: string;
   private readonly _version: number;
@@ -41,9 +42,9 @@ export class Settings {
   public get dayInterval() {
     return this._dayInterval;
   }
-  public set dayInterval(i: number) {
+  public set dayInterval(val: number) {
     //0以下や整数で表せない値が入力された場合は1が入る。
-    const interval = Math.trunc(i);
+    const interval = Math.trunc(val);
     if (interval <= 0 || !Number.isSafeInteger(interval)) {
       this._dayInterval = 1;
       return;
@@ -64,37 +65,26 @@ export class Settings {
     return this.dayModifier.modifier;
   }
   set cycleLength(val: number) {
-    this.dayModifier.cycleLength = val;
+    //
+    const len = Math.trunc(val);
+    if (len < 1) {
+      return;
+    }
+    this.dayModifier.cycleLength = len;
   }
   get cycleLength() {
     return this.dayModifier.cycleLength;
   }
-  /**
-   * 日付に対して周期的に付加する単位を設定する。
-   * @param unit 単位
-   * @param index 付加する場所
-   */
-  setModifierUnit = (unit: string, i: number): boolean => {
-    const index = Math.trunc(i);
-    if (index < 0 || 3 < index) {
-      return false;
+  setModifierUnit = (unit: string, index: number): void => {
+    const i = Math.trunc(index);
+    if (i < 0 || 3 < i) {
+      return;
     }
-    this.dayModifier.updateUnit(unit, index);
-    return true;
+    this.dayModifier.updateUnit(unit, i);
   };
-  /**
-   * 新しく作成するReportの日付を取得する。
-   * @param day 最新のday
-   * @returns 新しく作成するReportのday
-   */
   getNextDay = (day: number): number => {
     return day + this.dayInterval;
   };
-  /**
-   * 日付を修飾した文字列を取得する。
-   * @param day 修飾する日付
-   * @returns 修飾された日付
-   */
   getModifierDay = (day: number): string => {
     return this.dayModifier.modifyDay(day);
   };

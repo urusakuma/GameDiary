@@ -3,7 +3,7 @@ import { InvalidJsonError } from '@/error';
 import { DiaryEntryBuilder } from '../diaryEntryBuilder';
 import { DayModifier } from '../dayModifier';
 import { Diary } from '../diary';
-import { Settings } from '../settings';
+import { DiarySettings } from '../diarySettings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import { IDiary, IDiaryEntry } from '../diaryInterfaces';
 
@@ -34,7 +34,7 @@ export function decompressVersion01(jsonObj: object): IDiary {
     jsonObj.settings.dayModifier._cycleLength,
     ...jsonObj.settings.dayModifier._unit
   );
-  const settings = new Settings(
+  const settings = new DiarySettings(
     jsonObj.settings._storageKey,
     Constant.CURRENT_VERSION,
     jsonObj.settings._playGamedataName,

@@ -4,7 +4,7 @@ import { DiaryEntry } from '../diaryEntry';
 import { DiaryEntryBuilder } from '../diaryEntryBuilder';
 import { DayModifier } from '../dayModifier';
 import { IDiary, IDiaryEntry } from '../diaryInterfaces';
-import { Settings } from '../settings';
+import { DiarySettings } from '../diarySettings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import { Diary } from '../diary';
 
@@ -39,7 +39,7 @@ export function decompressVersion00(jsonObj: object): IDiary {
     jsonObj.settings.unitOfDay.unit[3],
     jsonObj.settings.unitOfDay.unit[4]
   );
-  const settings = new Settings(
+  const settings = new DiarySettings(
     jsonObj.settings.storageKey,
     Constant.CURRENT_VERSION,
     jsonObj.settings.playGamedataName,

@@ -1,6 +1,6 @@
 export interface IDiary {
   /** 設定クラスへの直接アクセス。インスタンスそのものを変更できないようにはしている */
-  get settings(): ISettings;
+  get settings(): IDiarySettings;
   /**  */
   get lastDay(): number;
   createNewEntry(): number;
@@ -28,13 +28,28 @@ export interface IDiaryEntry {
    * このレポートが編集されたならTrue、されていないならFalse
    * @param settings 初期のタイトルを取得するためのSettings
    */
-  isEdited(settings: ISettings): boolean;
+  isEdited(settings: IDiarySettings): boolean;
 
   /**JSONに変換する。JSON.stringifyで自動的に呼び出される。*/
   toJSON(): object;
 }
 
-export interface ISettings {
+/** 前日のエントリーと設定クラスから新しいエントリーを組み立てる */
+export type UsePreviousDayDiaryEntryBuilder = (
+  source: IDiaryEntry,
+  settings: IDiarySettings
+) => IDiaryEntry;
+
+/** 既存の情報から新しいエントリーを組み立てる */
+export type UseExistingDataDiaryEntryBuilder = (
+  day: number,
+  title: string,
+  content: string,
+  previous: number | undefined,
+  next: number | undefined
+) => IDiaryEntry;
+
+export interface IDiarySettings {
   /** ゲームデータを識別する一意の文字列 */
   get storageKey(): string;
   /** ゲームデータのバージョン */

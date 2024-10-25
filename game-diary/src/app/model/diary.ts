@@ -1,21 +1,27 @@
 import { KeyAlreadyExistsError, KeyNotFoundError } from '../error';
 import { DiaryEntry } from './diaryEntry';
-import { buildPreviousDayDiaryEntry } from './diaryEntryBuilder';
 import assert from 'assert';
-import type { IDiary, IDiaryEntry, ISettings } from './diaryInterfaces';
-import { injectable } from 'tsyringe';
+import type {
+  IDiary,
+  IDiaryEntry,
+  IDiarySettings,
+  UsePreviousDayDiaryEntryBuilder,
+} from './diaryInterfaces';
+import { inject, injectable } from 'tsyringe';
 
 /**日記の管理を行うクラス。*/
 @injectable()
 export class Diary implements IDiary {
   /**
    * @param {Map<number,IDiaryEntry>} diaryEntrys エントリーの連想配列
-   * @param {ISettings} _settings 設定クラス
+   * @param {IDiarySettings} _settings 設定クラス
    * @param {number} lastDay エントリーの最終日
    */
   constructor(
+    @inject('UsePreviousDayDiaryEntryBuilder')
+    private builder: UsePreviousDayDiaryEntryBuilder,
     private diaryEntrys: Map<number, IDiaryEntry>,
-    private _settings: ISettings,
+    private _settings: IDiarySettings,
     private _lastDay: number = 1
   ) {
     assert(diaryEntrys.size !== 0, `not exists any entry`);
@@ -41,7 +47,7 @@ export class Diary implements IDiary {
       lastDiary !== undefined,
       new KeyNotFoundError(`not exists day=${this._lastDay}`)
     );
-    const newDiary = buildPreviousDayDiaryEntry(lastDiary, this.settings);
+    const newDiary = this.builder(lastDiary, this.settings);
     this.diaryEntrys.set(newDiary.day, newDiary);
     return newDiary.day;
   };

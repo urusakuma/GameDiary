@@ -1,10 +1,10 @@
+import { injectable } from 'tsyringe';
 import { Constant } from '../constant';
 import { IDayModifier } from './diaryInterfaces';
 
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
+@injectable()
 export class DayModifier implements IDayModifier {
-  private _modifier: string;
-  private _cycleLength: number;
   private _unit: Array<string>;
   /**
    * 日付を修飾する文字列。nサイクル、$N日目$Y年$C$D日(100日目4年春1日)など。
@@ -12,11 +12,14 @@ export class DayModifier implements IDayModifier {
    * @param {number?} cycleLength 単位が変化する周期。
    * @param {Array<string>} unit 日付に対して周期的に付加される単位。
    */
+  constructor();
   constructor(modifier: string);
   constructor(modifier: string, cycleLength: number, ...unit: Array<string>);
-  constructor(modifier: string, cycleLength?: number, ...unit: Array<string>) {
-    this._modifier = modifier;
-    this._cycleLength = cycleLength ?? 10;
+  constructor(
+    private _modifier: string = Constant.DEFAULT_DAY_MODIFIER,
+    private _cycleLength: number = Constant.DEFAULT_CYCLE_LENGTH,
+    ...unit: Array<string>
+  ) {
     this._unit = [];
     for (let i = 0; i < unit.length; i++) {
       if (unit[i] === '') {

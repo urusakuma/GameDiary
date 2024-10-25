@@ -1,13 +1,9 @@
-import { DayModifier } from './dayModifier';
-import { ISettings } from './diaryInterfaces';
+import { Constant } from '@/constant';
+import type { IDayModifier, IDiarySettings } from './diaryInterfaces';
+import { inject, injectable } from 'tsyringe';
 /** 設定を保存しておくクラス。 */
-export class Settings implements ISettings {
-  /**storageKeyはシリアライズで変更される可能性があるが外部からは編集されたくないので隠ぺいしている。 */
-  private readonly _storageKey: string;
-  private readonly _version: number;
-  private _playGamedataName: string;
-  private _dayInterval: number;
-  private dayModifier: DayModifier;
+@injectable()
+export class DiarySettings implements IDiarySettings {
   /**
    * @param {string} storageKey ローカルストレージに保存したときのKey。
    * @param {number} version セーブデータを作成したシステムのバージョン。
@@ -16,21 +12,15 @@ export class Settings implements ISettings {
    * 新規レポートを作成した時に自動で入力されるdayの間隔。
    * 新しいレポートのDayは「参照したレポートのday+dayInterval」となる。
    * @param {number} dayInterval
-   * @param {DayModifier} dayModifier 日の単位。
+   * @param {IDayModifier} dayModifier 日の単位。
    */
   constructor(
-    storageKey: string,
-    version: number,
-    playGamedataName: string,
-    dayInterval: number,
-    dayModifier: DayModifier
-  ) {
-    this._storageKey = storageKey;
-    this._version = version;
-    this._playGamedataName = playGamedataName;
-    this._dayInterval = dayInterval;
-    this.dayModifier = dayModifier;
-  }
+    @inject('DayModifier') private dayModifier: IDayModifier,
+    private _storageKey: string = crypto.randomUUID(),
+    private _version: number = Constant.CURRENT_VERSION,
+    private _playGamedataName: string = Constant.DEFAULT_GAME_DATA_NAME,
+    private _dayInterval: number = Constant.DEFAULT_DAY_INTERVAL
+  ) {}
 
   public get storageKey() {
     return this._storageKey;

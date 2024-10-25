@@ -1,3 +1,14 @@
+export interface IDiary {
+  /** 設定クラスへの直接アクセス。インスタンスそのものを変更できないようにはしている */
+  get settings(): ISettings;
+  /**  */
+  get lastDay(): number;
+  createNewEntry(): number;
+  add(entry: IDiaryEntry): void;
+  get(day: number): IDiaryEntry;
+  delete(day: number): boolean;
+}
+
 export interface IDiaryEntry {
   /** レポートの日付 */
   get day(): number;
@@ -22,6 +33,7 @@ export interface IDiaryEntry {
   /**JSONに変換する。JSON.stringifyで自動的に呼び出される。*/
   toJSON(): object;
 }
+
 export interface ISettings {
   /** ゲームデータを識別する一意の文字列 */
   get storageKey(): string;
@@ -93,20 +105,4 @@ export interface IDayModifier {
    * @returns 日付の単位を付加した文字列
    */
   modifyDay(naturalDay: number): string;
-}
-
-export interface IDiary {
-  /** 設定クラスへの直接アクセス。インスタンスそのものを変更できないようにはしている */
-  get settings(): ISettings;
-  /**  */
-  get lastDay(): number;
-  createNewEntry(): number;
-  add(entry: IDiaryEntry): void;
-  get(day: number): IDiaryEntry;
-  delete(day: number): boolean;
-}
-
-export interface IDiaryEntryBuilder {
-  /** 受け取った値からIDiaryEntryのインスタンスをビルドするクラス */
-  build(): IDiaryEntry;
 }

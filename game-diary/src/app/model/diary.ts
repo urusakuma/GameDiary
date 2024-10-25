@@ -1,30 +1,25 @@
 import { KeyAlreadyExistsError, KeyNotFoundError } from '../error';
-import { Settings } from './settings';
 import { DiaryEntry } from './diaryEntry';
-import { DiaryEntryBuilder } from './diaryEntryBuilder';
+import { buildPreviousDayDiaryEntry } from './diaryEntryBuilder';
 import assert from 'assert';
-import { IDiary, IDiaryEntry, IDiaryEntryBuilder } from './diaryInterfaces';
+import type { IDiary, IDiaryEntry, ISettings } from './diaryInterfaces';
+import { injectable } from 'tsyringe';
 
 /**日記の管理を行うクラス。*/
+@injectable()
 export class Diary implements IDiary {
-  private diaryEntrys: Map<number, IDiaryEntry>;
-  private _settings: Settings;
-  private _lastDay: number;
   /**
-   * @param {Map<number,IDiaryEntry>} dailyDiarys エントリーの連想配列
-   * @param {Settings} settings 設定クラス
+   * @param {Map<number,IDiaryEntry>} diaryEntrys エントリーの連想配列
+   * @param {ISettings} _settings 設定クラス
    * @param {number} lastDay エントリーの最終日
    */
   constructor(
-    dailyDiarys: Map<number, IDiaryEntry>,
-    settings: Settings,
-    lastDay: number
+    private diaryEntrys: Map<number, IDiaryEntry>,
+    private _settings: ISettings,
+    private _lastDay: number = 1
   ) {
-    assert(dailyDiarys.size !== 0, `not exists any entry`);
-    assert(dailyDiarys.get(lastDay) !== undefined, `not exists ${lastDay}`);
-    this.diaryEntrys = dailyDiarys;
-    this._settings = settings;
-    this._lastDay = lastDay;
+    assert(diaryEntrys.size !== 0, `not exists any entry`);
+    assert(diaryEntrys.get(_lastDay) !== undefined, `not exists ${_lastDay}`);
   }
   get settings() {
     return this._settings;
@@ -46,7 +41,7 @@ export class Diary implements IDiary {
       lastDiary !== undefined,
       new KeyNotFoundError(`not exists day=${this._lastDay}`)
     );
-    const newDiary = new DiaryEntryBuilder(lastDiary, this.settings).build();
+    const newDiary = buildPreviousDayDiaryEntry(lastDiary, this.settings);
     this.diaryEntrys.set(newDiary.day, newDiary);
     return newDiary.day;
   };
@@ -93,20 +88,20 @@ export class Diary implements IDiary {
     if (this.lastDay === day && previous !== undefined) {
       // 削除する日が最新日と同じかつ前日が存在するなら、前日から削除日を消し、lastDayを前日に置き換える。
       previous.next = undefined;
-      this.lastDay = day;
+      this.lastDay = previous.day;
     } else if (previous != undefined && next != undefined) {
       // 前後にエントリーが存在するならそれらを繋げる。
       previous.next = next.day;
       next.previous = previous.day;
-    } else if (previous === undefined && next !== undefined) {
-      // 削除する日が最も古い日かつ翌日が存在するなら翌日から削除日を消す。
-      next.previous = undefined;
+    } else {
+      //最新日でなく前後にエントリーもないなら、それは初日なので削除しない。
+      return false;
     }
     return this.diaryEntrys.delete(day);
   };
   /**
    * JSONに変換する。JSON.stringifyで自動的に呼び出される。
-   * diaryEntrysはMapなのでArrayに変換しないとシリアライズされないので実装している。
+   * diaryEntrysはMapなのでArrayに変換しないとシリアライズされないため実装している。
    * @returns {object} シリアライズされるオブジェクト。
    */
   toJSON = (): object => {

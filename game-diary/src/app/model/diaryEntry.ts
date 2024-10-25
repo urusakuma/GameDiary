@@ -71,12 +71,12 @@ export class DiaryEntry implements IDiaryEntry {
    * タイトルと内容を全て消している場合も編集されていないものとする。
    * @param {Settings} settings タイトルの初期値を取得するための設定。
    * @return {boolean} 編集されているならtrue、されていないならfalse。*/
-  isEdited = (settings: Settings): boolean => {
+  isEdited(settings: Settings): boolean {
     return !(
       this.content === '' &&
       (this.title === '' || this.title === settings.getModifierDay(this.day))
     );
-  };
+  }
 
   /**
    * 本来は実装しなくても自動でJSONが出来上がる。
@@ -84,12 +84,12 @@ export class DiaryEntry implements IDiaryEntry {
    * 日記部分の分量が少なければ最大で12.5%。
    * @returns {object} JSONにシリアライズされるオブジェクト。
    */
-  toJSON = (): object => {
+  toJSON(): object {
     return {
       day: this.day,
       title: this.title,
       content: this.content,
       next: this.next,
     };
-  };
+  }
 }

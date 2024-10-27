@@ -1,12 +1,16 @@
 import { Constant } from '@/constant';
 import { InvalidJsonError } from '@/error';
-import { DiaryEntry } from '../diaryEntry';
-import { DiaryEntryBuilder } from '../diaryEntryBuilder';
 import { DayModifier } from '../dayModifier';
-import { IDiary, IDiaryEntry } from '../diaryInterfaces';
+import {
+  DayModifierFactory,
+  DiaryFactory,
+  DiarySettingsFactory,
+  IDiary,
+  IDiaryEntry,
+  UseExistingDataDiaryEntryFactory,
+} from '../diaryInterfaces';
 import { DiarySettings } from '../diarySettings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
-import { Diary } from '../diary';
 
 /**
  * 最初に作られたバージョンのデータをインポートするための関数。
@@ -14,7 +18,13 @@ import { Diary } from '../diary';
  * @param jsonObj
  * @returns
  */
-export function decompressVersion00(jsonObj: object): IDiary {
+export function decompressVersion00(
+  jsonObj: object,
+  dayModifierFactory: DayModifierFactory,
+  diarySettingsFactory: DiarySettingsFactory,
+  diaryEntryFactory: UseExistingDataDiaryEntryFactory,
+  diaryFactory: DiaryFactory
+): IDiary {
   if (!hasField(jsonObj, 'lastDay', 'number')) {
     throw new InvalidJsonError('Diary class is broken');
   }
@@ -31,7 +41,7 @@ export function decompressVersion00(jsonObj: object): IDiary {
   ) {
     throw new InvalidJsonError('Settings class is broken');
   }
-  const dayModifier = new DayModifier(
+  const dayModifier = dayModifierFactory(
     jsonObj.settings.unitOfDay.unit[0],
     jsonObj.settings.unitOfDay.CycleInUnitChanges,
     jsonObj.settings.unitOfDay.unit[1],
@@ -39,12 +49,12 @@ export function decompressVersion00(jsonObj: object): IDiary {
     jsonObj.settings.unitOfDay.unit[3],
     jsonObj.settings.unitOfDay.unit[4]
   );
-  const settings = new DiarySettings(
+  const settings = diarySettingsFactory(
+    dayModifier,
     jsonObj.settings.storageKey,
     Constant.CURRENT_VERSION,
     jsonObj.settings.playGamedataName,
-    jsonObj.settings.dayInterval,
-    dayModifier
+    jsonObj.settings.dayInterval
   );
   if (!hasField(jsonObj, 'dayDiary', 'Array')) {
     throw new InvalidJsonError('Array<DayReport> class is broken');
@@ -59,14 +69,14 @@ export function decompressVersion00(jsonObj: object): IDiary {
     ) {
       throw new InvalidJsonError('DayReport class is broken');
     }
-    const diary = new DiaryEntryBuilder(
+    const diary = diaryEntryFactory(
       element.day,
       element.reportTitle,
       element.report,
       hasField(element, 'previous', 'number') ? element.previous : undefined,
       hasField(element, 'next', 'number') ? element.next : undefined
-    ).build();
+    );
     map.set(diary.day, diary);
   }
-  return new Diary(map, settings, jsonObj.lastDay);
+  return diaryFactory(map, settings, jsonObj.lastDay);
 }

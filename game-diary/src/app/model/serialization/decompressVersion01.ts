@@ -1,13 +1,24 @@
 import { Constant } from '@/constant';
 import { InvalidJsonError } from '@/error';
-import { DiaryEntryBuilder } from '../diaryEntryBuilder';
 import { DayModifier } from '../dayModifier';
-import { Diary } from '../diary';
 import { DiarySettings } from '../diarySettings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
-import { IDiary, IDiaryEntry } from '../diaryInterfaces';
+import {
+  DayModifierFactory,
+  DiaryFactory,
+  DiarySettingsFactory,
+  IDiary,
+  IDiaryEntry,
+  UseExistingDataDiaryEntryFactory,
+} from '../diaryInterfaces';
 
-export function decompressVersion01(jsonObj: object): IDiary {
+export function decompressVersion01(
+  jsonObj: object,
+  dayModifierFactory: DayModifierFactory,
+  diarySettingsFactory: DiarySettingsFactory,
+  diaryEntryFactory: UseExistingDataDiaryEntryFactory,
+  diaryFactory: DiaryFactory
+): IDiary {
   if (!hasField(jsonObj, 'lastDay', 'number')) {
     throw new InvalidJsonError('Reports class is broken');
   }
@@ -29,17 +40,17 @@ export function decompressVersion01(jsonObj: object): IDiary {
   ) {
     throw new InvalidJsonError('DayModifier class is broken');
   }
-  const dayModifier = new DayModifier(
+  const dayModifier = dayModifierFactory(
     jsonObj.settings.dayModifier._modifier,
     jsonObj.settings.dayModifier._cycleLength,
     ...jsonObj.settings.dayModifier._unit
   );
-  const settings = new DiarySettings(
+  const settings = diarySettingsFactory(
+    dayModifier,
     jsonObj.settings._storageKey,
     Constant.CURRENT_VERSION,
     jsonObj.settings._playGamedataName,
-    jsonObj.settings._dayInterval,
-    dayModifier
+    jsonObj.settings._dayInterval
   );
   if (!hasField(jsonObj, 'diaryEntrys', 'Array')) {
     throw new InvalidJsonError('Array<DayReport> class is broken');
@@ -62,14 +73,14 @@ export function decompressVersion01(jsonObj: object): IDiary {
     if (hasField(element, 'next', 'number')) {
       previousMap.set(element.next, element.day);
     }
-    const diary: IDiaryEntry = new DiaryEntryBuilder(
+    const diary: IDiaryEntry = diaryEntryFactory(
       element.day,
       element.title,
       element.content,
       previousMap.get(element.day),
       hasField(element, 'next', 'number') ? element.next : undefined
-    ).build();
+    );
     map.set(diary.day, diary);
   }
-  return new Diary(map, settings, jsonObj.lastDay);
+  return diaryFactory(map, settings, jsonObj.lastDay);
 }

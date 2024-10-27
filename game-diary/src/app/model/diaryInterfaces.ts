@@ -9,6 +9,12 @@ export interface IDiary {
   delete(day: number): boolean;
 }
 
+export type DiaryFactory = (
+  diaryEntrys: Map<number, IDiaryEntry>,
+  settings: IDiarySettings,
+  lastDay: number
+) => IDiary;
+
 export interface IDiaryEntry {
   /** レポートの日付 */
   get day(): number;
@@ -35,13 +41,13 @@ export interface IDiaryEntry {
 }
 
 /** 前日のエントリーと設定クラスから新しいエントリーを組み立てる */
-export type UsePreviousDayDiaryEntryBuilder = (
+export type UsePreviousDayDiaryEntryFactory = (
   source: IDiaryEntry,
   settings: IDiarySettings
 ) => IDiaryEntry;
 
 /** 既存の情報から新しいエントリーを組み立てる */
-export type UseExistingDataDiaryEntryBuilder = (
+export type UseExistingDataDiaryEntryFactory = (
   day: number,
   title: string,
   content: string,
@@ -88,6 +94,13 @@ export interface IDiarySettings {
    */
   getModifierDay(day: number): string;
 }
+export type DiarySettingsFactory = (
+  dayModifier: IDayModifier,
+  storageKey: string,
+  version: number,
+  playGamedataName: string,
+  dayInterval: number
+) => IDiarySettings;
 
 export interface IDayModifier {
   /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など) */
@@ -121,3 +134,9 @@ export interface IDayModifier {
    */
   modifyDay(naturalDay: number): string;
 }
+
+export type DayModifierFactory = (
+  modifier: string,
+  cycleLength: number,
+  ...unit: Array<string>
+) => IDayModifier;

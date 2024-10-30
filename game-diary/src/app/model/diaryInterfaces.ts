@@ -1,13 +1,77 @@
+export interface IDiaryLoader {
+  /**
+   * 指定したGameDataNameのDiaryを取得する。特に指定がないならカレントを指定されたものとする。
+   * @param {string?} key 取得するDiaryのストレージキー、指定していないならカレントを指定されたものとする。
+   * @returns {IDiary} 取得するIDiary
+   */
+  loadDiaryAsCurrent(key?: string): IDiary;
+  /**
+   * 新しいDiaryを作成する関数。作成されたDiaryを現在のDiaryにする。
+   * @returns 新しく作成されたDiary
+   */
+  createNewDiary(): IDiary;
+}
+export interface IDiaryKeyMapper {
+  /** 保存されたゲームデータの数を返す */
+  get length(): number;
+  /**
+   * 保存されているゲーム名の配列を返す。
+   * @returns {Array<string>} ゲーム名の配列
+   */
+  collectGameDataNames(): Array<string>;
+  /**
+   * 新しいゲームデータ名を保存する。
+   * @param key ゲームデータ名を引き出すストレージキー
+   * @param name ゲームデータ名
+   */
+  setGameDataName(key: string, name: string): void;
+  /**
+   * ゲームデータ名からストレージキーを探す。
+   * @param name ストレージキーを調べるゲームデータ名
+   */
+  getGameDataKey(name: string): string | null;
+  /**
+   * 現在操作しているゲームデータのストレージキーを返す。
+   * 存在しない場合はnullを返す。
+   * @returns 現在操作しているゲームデータのストレージキー
+   */
+  getCurrentGameDataKey(): string | null;
+  /**
+   * 現在操作しているゲームデータのストレージキーを変更する。
+   * @param key 新しく操作するゲームデータのストレージキー
+   */
+  setCurrentGameDataKey(key: string): void;
+}
 export interface IDiary {
   /** 設定クラスへの直接アクセス。インスタンスそのものを変更できないようにはしている */
   get settings(): IDiarySettings;
-  /**  */
+  /** 日記の最新日 */
   get lastDay(): number;
+  /**
+   * 新しいエントリーを作成する。
+   * @returns {number} 新しく作成したエントリーのday
+   */
   createNewEntry(): number;
-  add(entry: IDiaryEntry): void;
+  /**
+   * 指定した日付のエントリーを取得する。
+   * @param day 要求するエントリーの日付
+   * @returns {IDiaryEntry} 指定されたエントリー
+   */
   get(day: number): IDiaryEntry;
+  /**
+   * 指定したエントリーを削除する。削除に成功した場合trueを返す。初日など削除できない日付も存在する。
+   * @param day 削除するエントリーの日付
+   * @returns {boolean} 削除に成功したらtrue、失敗したらfalse。
+   */
   delete(day: number): boolean;
 }
+
+export type DiaryFactory = (
+  diaryEntrys: Map<number, IDiaryEntry>,
+  settings: IDiarySettings,
+  lastDay: number
+) => IDiary;
+export type NewDiaryFactory = (settings?: IDiarySettings) => IDiary;
 
 export interface IDiaryEntry {
   /** レポートの日付 */
@@ -35,13 +99,13 @@ export interface IDiaryEntry {
 }
 
 /** 前日のエントリーと設定クラスから新しいエントリーを組み立てる */
-export type UsePreviousDayDiaryEntryBuilder = (
+export type UsePreviousDayDiaryEntryFactory = (
   source: IDiaryEntry,
   settings: IDiarySettings
 ) => IDiaryEntry;
 
 /** 既存の情報から新しいエントリーを組み立てる */
-export type UseExistingDataDiaryEntryBuilder = (
+export type UseExistingDataDiaryEntryFactory = (
   day: number,
   title: string,
   content: string,
@@ -88,6 +152,13 @@ export interface IDiarySettings {
    */
   getModifierDay(day: number): string;
 }
+export type DiarySettingsFactory = (
+  dayModifier: IDayModifier,
+  storageKey: string,
+  version: number,
+  playGamedataName: string,
+  dayInterval: number
+) => IDiarySettings;
 
 export interface IDayModifier {
   /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など) */
@@ -121,3 +192,9 @@ export interface IDayModifier {
    */
   modifyDay(naturalDay: number): string;
 }
+
+export type DayModifierFactory = (
+  modifier: string,
+  cycleLength: number,
+  ...unit: Array<string>
+) => IDayModifier;

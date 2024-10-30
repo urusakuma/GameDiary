@@ -5,7 +5,7 @@ import type {
   IDiary,
   IDiaryEntry,
   IDiarySettings,
-  UsePreviousDayDiaryEntryBuilder,
+  UsePreviousDayDiaryEntryFactory,
 } from './diaryInterfaces';
 import { inject, injectable } from 'tsyringe';
 
@@ -19,7 +19,7 @@ export class Diary implements IDiary {
    */
   constructor(
     @inject('UsePreviousDayDiaryEntryBuilder')
-    private builder: UsePreviousDayDiaryEntryBuilder,
+    private builder: UsePreviousDayDiaryEntryFactory,
     private diaryEntrys: Map<number, IDiaryEntry>,
     private _settings: IDiarySettings,
     private _lastDay: number = 1

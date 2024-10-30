@@ -16,6 +16,8 @@ export class DiarySettings implements IDiarySettings {
    */
   constructor(
     @inject('DayModifier') private dayModifier: IDayModifier,
+    // TODO :_storageKeyと_versionを後ろにずらす。これらは新しく生成される場合、初期値が使用される方が好都合。コンストラクタにあるのは既に作成済みのデータを読み込むときのため
+    // TODO :コンストラクタの宣言を新しく作成する。_storageKeyと_versionの2つは自動生成される方がいい。
     private _storageKey: string = crypto.randomUUID(),
     private _version: number = Constant.CURRENT_VERSION,
     private _playGamedataName: string = Constant.DEFAULT_GAME_DATA_NAME,

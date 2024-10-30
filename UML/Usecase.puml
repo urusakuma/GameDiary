@@ -1,0 +1,63 @@
+@startuml GamereportiteUsecase
+left to right direction
+'利用者
+:user:
+storage Save{
+    package Report{
+        (day)
+        (title)
+        (report)
+    }
+    '設定
+    package Settings{
+        (playGamedataName)
+        (elapseDays)
+        (dayUnit)
+    }
+}
+package Model{
+    'レポートを見る書く
+    package ViewAndWriteReport{
+        (viewAndWriteReportAndTitle)
+        (viewReportList)
+    }
+    'レポートを削除する
+    package DeleteReport{
+        (deleteReport)
+    }
+    '読み書きするレポートを移動する
+    package ReportControl{
+        (moveFromOneDayReport)
+        (moveFromReportList)
+    }
+    'セーブ＆ロード、設定の編集
+    package SaveAndLoadAndSettings{
+        (save)
+        (load)
+        (setting)
+    }
+}
+'ユーザーの行いうる行動
+'レポートの読み書き
+user -r-> viewAndWriteReportAndTitle : view and write
+'レポートのリストを読む
+user -r-> viewReportList : view
+
+'左右キーを押してレポートの移動
+user -r-> moveFromOneDayReport : "ctrl + ←" or "ctrl + →" from Report
+'レポートリストをクリックしてレポートの移動
+user -r-> moveFromReportList : click ReportList
+
+'セーブ＆ロード、設定の編集
+user -d-> save : click button or "ctrl + s"
+user -d-> load : click button
+user -d-> setting : click button
+
+'レポートの削除
+user --> deleteReport : click button or When "ctrl + ←" and report is in initial state
+
+'Saveを編集する
+viewAndWriteReportAndTitle --> Report
+deleteReport --> Report
+setting --> Settings
+@enduml

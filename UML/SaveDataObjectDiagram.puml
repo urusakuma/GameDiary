@@ -1,0 +1,36 @@
+@startuml SaveDataObjectDiagram
+
+'1つのゲームレポートに保存するデータ
+'dayReports  :すべてのレポートのリスト
+'setting    :設定
+object Reports{
+    dayReports:list<DayReport>
+    setting:Setting
+}
+
+'日ごとのレポート
+'day        :日付。reportTitleに書かれるが、dayは編集されない。次のReportを作成するのに使用する。
+'reportTitle:タイトル。レポート生成時に(前のday+elapseDays)+dayUnitで初期化する。
+'report     :レポート。
+object DayReport{
+    day:int
+    reportTitle:str
+    report:str
+}
+
+'設定
+'version         :GameReportを保存した時のバージョン。マークアップなどの実装をした場合に、
+'                 バージョン情報から更新を確認しレポートなどを適合するように変更していくための情報。
+'playGamedataName:遊んでいるゲームデータの名前。セーブファイルの名前にもなる。
+'elapseDays      :新規レポートに切り替えたときに自動で入力されるdayの値。最新のレポートのday+elapseDaysとなる。
+'dayUnit         :経過時間の単位。ゲームによって日だったりサイクルだったりする。
+object Setting{
+    version:int
+    playGamedataName:str
+    elapseDays:int
+    dayUnit:str
+}
+Reports "1" *-- "1.*" DayReport
+Reports "1" *-- "1"   Setting
+
+@enduml

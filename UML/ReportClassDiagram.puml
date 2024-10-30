@@ -1,0 +1,110 @@
+@startuml ReportClassDiagram
+package UI{
+    class Textarea{
+        id : string
+        value : string
+    }
+    class TextField{
+        id : string
+        value : string
+    }
+    class Button{
+        id : string
+        onclick()
+    }
+}
+package ControlReports{
+    'テキストエリアとDayReportを結びつけるクラス
+    'void attachReport(day:int) : テキストエリアとDayReportを結びつける。
+    'void attachReportsList() : リストとReportsListを結びつける。
+    class AttachDayReport{
+        reports : Reports
+        titleTextareaId : string
+        reportTextareaId : string
+        void attachReport(day:int)
+        void attachReportsList()
+    }
+    'レポートを切り替えるクラス
+    'turnOverToNextDayReport()      :次の日のレポートに切り替える。次の日が存在しない場合はレポートを作成する。
+    'turnOverToPreviousDayReport()  :前の日のレポートに切り替える。
+    '                                切り替える前にレポートに何も書かれていなかった場合レポートを削除する。
+    'turnOverToReportOf(thisDay:int):引数で渡された日付のレポートに切り替える。
+    '                                切り替える前が最新の日付でかつレポートに何も書かれていなかった場合レポートを削除する。
+    class TurnOverReport{
+        editDayReport : EditDayReport
+        settings : Settings
+        nowDay : int
+        turnOverToNextDayReport()
+        turnOverToPreviousDayReport()
+        turnOverToReportOf(thisDay:int)
+    }
+    'テキストボックスとSettingsを結びつけるクラス
+    class AttachSettings{
+        settings : Settings
+        playGamedataNameTextFieldId : string
+        elapseDaysTextFieldId : string
+        dayUnitTextFieldId : string
+        void attachPlayGamedataName()
+        void attachElapseDays()
+        void attachDayUnit()
+    }
+}
+package SaveAndLoad{
+    'レポートをローカルストレージに保存する。
+    class Save{
+        reports : Reports
+        void save()
+    }
+    'ローカルストレージからレポートを復元する。
+    class Load{
+        void load()
+    }
+    'ローカルストレージをファイルに出力する。
+    class ExportFile{
+        void exportFile()
+    }
+    'ファイルからローカルストレージに復元する。
+    class InportFile{
+        void inportFile()
+    }
+}
+package ReportData{
+    '1つのゲームレポートに保存するデータ
+    'dayReport  :すべてのレポートのリスト
+    'settings    :設定
+    'int createReport(beforeDay:int) : 新しいDayReportを作成する。
+    'void removeReport(day:int) : DayReportを削除する。
+    class Reports{
+        dayReports : list<DayReport>
+        settings : Settings
+        int createReport(beforeDay:int)
+        void removeReport(day:int)
+    }
+
+    '日ごとのレポート
+    'day        :日付。reportTitleに書かれるが、dayは編集されない。
+    '            次のReportを作成するのに使用する。ユニーク。
+    'reportTitle:タイトル。レポート生成時に(前のday+elapseDays)+dayUnitで初期化する。
+    'report     :レポート。
+    class DayReport{
+        day : int
+        reportTitle : string
+        report : string
+    }
+
+    '設定
+    'version         :GameReportを保存した時のバージョン。マークアップなどの実装をした場合に、
+    '                 バージョン情報から更新を確認しレポートなどを適合するように変更していくための情報。
+    'playGamedataName:遊んでいるゲームデータの名前。セーブファイルの名前にもなる。
+    'elapseDays      :新規レポートに切り替えたときに自動で入力されるdayの値。最新のレポートのday+elapseDaysとなる。
+    'dayUnit         :経過時間の単位。ゲームによって日だったりサイクルだったりする。
+    class Settings{
+        version : int
+        playGamedataName : string
+        elapseDays : int
+        dayUnit : string
+    }
+    Reports *-- DayReport
+    Reports *-- Settings
+}
+@enduml

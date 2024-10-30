@@ -1,0 +1,78 @@
+@startuml Report_SequenceDiagram
+actor user
+'画面を表示
+user <-- titleTextarea : view
+user <-- reportTextarea : view
+user <-- reportsList : view
+
+'イベントハンドラとUIを結びつける。
+AttachDayReport <-- titleTextarea : handler
+AttachDayReport --> DayReport : handler
+AttachDayReport <-- reportTextarea : handler
+AttachDayReport --> DayReport : handler
+AttachDayReport <-- reportsList : handler
+AttachDayReport --> Reports : handler
+
+create TurnOverReport
+TurnOverReport <-- reportTextarea : handler
+TurnOverReport <-- reportsList : handler
+
+
+newpage
+'タイトルを編集した。
+group write title
+    user --> titleTextarea : write
+    titleTextarea --> DayReport : update title
+    user <-- titleTextarea : view
+end
+
+'レポートを編集した。
+group write report
+    user --> reportTextarea : write
+    reportTextarea --> DayReport : update
+    user <-- reportTextarea : view
+end
+
+'レポートを新規に作成した。
+group create new report
+    user --> reportTextarea : "ctrl + →"
+    reportTextarea --> TurnOverReport : read report
+    alt reports list lenght is over
+        TurnOverReport --> Reports : create new report
+        TurnOverReport --> : reload report
+    else not reports list lenght is over 
+        TurnOverReport --> : change report to be display
+    end
+end
+
+'表示するレポートを変更する。
+group change report to be display
+    alt ctrl + ← or ctrl + →
+        user --> reportTextarea : ctrl + ← or ctrl + →
+        reportTextarea --> TurnOverReport : read
+        TurnOverReport --> : reload report
+    end
+    alt click reportsList
+        user --> reportsList : click
+        reportsList--> TurnOverReport : read
+        TurnOverReport --> : reload report
+    end
+end
+
+'レポートの再読み込み
+group reload report
+        'レポートリストの表示
+         --> Reports : reload reports list
+        reportsList <-- Reports : view
+        user <-- reportsList : view
+        'タイトルの表示
+         --> DayReport : reload title
+        titleTextarea <-- DayReport : view
+        user <-- titleTextarea : view
+        'レポートの表示
+         --> DayReport : reload report
+        reportTextarea <-- DayReport : view
+        user <-- reportTextarea : view
+end
+
+@enduml

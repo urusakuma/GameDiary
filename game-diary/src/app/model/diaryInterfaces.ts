@@ -20,22 +20,18 @@ export interface IDiaryKeyMapper {
    */
   collectGameDataNames(): Array<string>;
   /**
-   * 新しいゲームデータ名を保存する。
+   * 新しいゲームデータ名を保存する。既に存在するストレージキーを指定した場合、上書きする。
+   * 既に存在する名前は入れられない。
    * @param key ゲームデータ名を引き出すストレージキー
    * @param name ゲームデータ名
+   * @returns 保存に成功したならtrue、失敗したならfalse
    */
-  setGameDataName(key: string, name: string): void;
-  /**
-   * ゲームデータ名からストレージキーを探す。
-   * @param name ストレージキーを調べるゲームデータ名
-   */
-  getGameDataKey(name: string): string | null;
+  setGameDataName(key: string, name: string): boolean;
   /**
    * 現在操作しているゲームデータのストレージキーを返す。
-   * 存在しない場合はnullを返す。
    * @returns 現在操作しているゲームデータのストレージキー
    */
-  getCurrentGameDataKey(): string | null;
+  getCurrentGameDataKey(): string;
   /**
    * 現在操作しているゲームデータのストレージキーを変更する。
    * @param key 新しく操作するゲームデータのストレージキー

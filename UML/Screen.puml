@@ -1,0 +1,45 @@
+@startsalt screen
+{+
+    {+
+        
+    }
+    {
+        {+
+            playGamedataName
+            { [reportList] | [delete] }
+            --
+            { [reportList] | [delete] }
+            --
+            { [reportList] | [delete] }
+            --
+            { [reportList] | [delete] }
+            --
+            [setting]
+        }|
+        {+
+        {  "title" | [delete]}
+            
+            "report"
+        }
+    }
+    {+
+        { [save] | [exportFile] }
+        { [load] | [inportFile] }
+    }
+}
+@endsalt
+@startsalt load screen
+{+
+    { ^loadGameData^| [load] }
+    { [exit] }
+}
+@endsalt
+
+@startsalt setting screen
+{+
+    "playGamedataName"
+    "elpseDays"
+    "dayUnit"
+    [exit]
+}
+@endsalt

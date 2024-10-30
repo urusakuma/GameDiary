@@ -1,0 +1,32 @@
+@startuml SaveLoadAndSettings_SequenceDiagram
+actor user
+'画面を表示
+user --> saveButtun : view
+user --> loadButtun : view
+user --> settingButtun : view
+AttachSettings <-- playGamedataNameTextField
+AttachSettings <-- elapseDaysTextField
+AttachSettings <-- dayUnitTextField
+database localstorage
+newpage
+'セーブボタン
+alt click save button
+    user --> saveButtun : click
+    saveButtun --> localstorage : save
+end
+'ロードボタン
+alt click load button
+    user --> loadButtun : click
+    loadButtun <-- localstorage : load
+end
+'設定ボタン
+alt click setting button
+    user --> settingButtun : click
+    user --> playGamedataNameTextField : view
+    user --> elapseDaysTextField : view
+    user --> dayUnitTextField : view
+    alt exit
+        AttachSettings --> localstorage : save
+    end
+end
+@enduml

@@ -1,22 +1,34 @@
+import { NotSupportedError } from '@/error';
 import { IStorageService } from './storageServiceInterface';
 
 export class LocalStorageService implements IStorageService {
-  getItem = (key: string): string | null => {
-    return localStorage.getItem(key);
-  };
-  setItem = (key: string, value: string): void => {
-    localStorage.setItem(key, value);
-  };
-  removeItem = (key: string): void => {
-    localStorage.removeItem(key);
-  };
+  private storage = localStorage;
+  getItem(key: string): string | null {
+    return this.storage.getItem(key);
+  }
+  setItem(key: string, value: string): void {
+    this.storage.setItem(key, value);
+  }
+  removeItem(key: string): void {
+    this.storage.removeItem(key);
+  }
   get length() {
-    return localStorage.length;
+    return this.storage.length;
   }
 }
 /**
+ * ストレージが使用できないときに例外を投げるための関数。
+ * ストレージを使用する関数の置き換えに利用する。
+ * @param _ 使用しない引数
+ */
+export const notSupportFunc = (..._: any[]) => {
+  throw new NotSupportedError(
+    'プライベートモードではデータの保存ができません。\n古いブラウザはサポートしていません。'
+  );
+};
+/**
  * ストレージが使用可能か判別する。MDNからほぼ丸々コピってきたのでそのまま使えるはず。
- * @returns {boolean} ローカルストレージが使用可能ならtrue、使用できないならfalse。
+ * @returns {boolean} ストレージが使用可能ならtrue、使用できないならfalse。
  */
 export function isStorageAvailable(storage: IStorageService): boolean {
   try {

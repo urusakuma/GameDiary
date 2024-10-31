@@ -24,7 +24,7 @@ export class DiaryLoader implements IDiaryLoader {
     private storage: IStorageService
   ) {
     if (!isStorageAvailable(this.storage)) {
-      this.loadDiaryAsCurrent = (...v: any[]) => this.createNewDiary();
+      this.loadDiaryAsCurrent = (..._: any[]) => this.createNewDiary();
     }
     //ローカルストレージからゲームデータネームリストを取得する。
     const gameDataNames = this.diaryKeyMapper.collectGameDataNames();
@@ -35,13 +35,6 @@ export class DiaryLoader implements IDiaryLoader {
     }
     // カレントのゲームデータを保存する。
     this.currentGameDataKey = this.diaryKeyMapper.getCurrentGameDataKey();
-    if (this.currentGameDataKey === null) {
-      //currentGameDataKeyがnullならcurrentGameDataKeyが破損と判断してgameDataNamesから実在するKeyを探索する。
-      //findで探しているが、現実的には一回目の探索で見つかるはず。問題になるほど大量のデータが破損されている想定はしない。
-      this.currentGameDataKey =
-        gameDataNames.find((v) => this.diaryKeyMapper.getGameDataKey(v)) ??
-        null;
-    }
   }
   loadDiaryAsCurrent = (key?: string): IDiary => {
     // 指定したKeyか、現在のカレントのキーをカレントキーに入れる。

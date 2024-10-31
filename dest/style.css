@@ -1,0 +1,407 @@
+.textfield {
+  height: 2.25em;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.dropDownList {
+  height: 2.25em;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.btnSquare {
+  height: 2.25em;
+  width: 2.25em;
+}
+
+.textCenterBlock {
+  width: 100%;
+  text-align: center;
+}
+
+.hiddonBlock {
+  visibility: hidden;
+}
+
+.visibleBlock {
+  visibility: visible;
+}
+
+body {
+  width: 95vw;
+  height: 97vh;
+  margin: 0vh 2vw;
+  background-color: whitesmoke;
+}
+
+.top {
+  height: 5%;
+  min-height: 40px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  overflow: hidden;
+}
+
+.sub {
+  float: left;
+  height: calc(100% - 5%);
+  width: 20%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  overflow: hidden;
+}
+
+.main {
+  float: right;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: calc(100% - 5%);
+  width: calc(80% - 0.5em);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+#unitsOfDayList {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.overlays {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-transition: opacity 200ms;
+  transition: opacity 200ms;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.overlays .cancel {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: default;
+}
+
+.overlays:target {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modals {
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #666;
+  width: 400px;
+  -webkit-box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+  border-radius: 6px;
+}
+
+.modals > h2 {
+  margin: 0%;
+}
+
+.modals > h3 {
+  margin: 0%;
+}
+
+.popup {
+  position: absolute;
+  background: #fff;
+  bottom: 1em;
+  left: 40%;
+  margin-right: -60%;
+  min-width: 15em;
+  min-height: 5em;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.24), 0 1px 3px rgba(0, 0, 0, 0.24);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.24), 0 1px 3px rgba(0, 0, 0, 0.24);
+  border-radius: 6px;
+}
+
+.popup > div {
+  position: absolute;
+  left: 25%;
+  top: 15%;
+}
+
+#gameDataName {
+  height: 100%;
+  font-size: large;
+  text-align: center;
+  word-break: break-all;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  overflow: hidden;
+}
+
+.scroll {
+  margin: 0%;
+  height: 80%;
+  padding-left: 0%;
+  overflow: clip scroll;
+  resize: none;
+  position: relative;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+#reportsList {
+  padding-left: 1em;
+  height: 85%;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  top: 0;
+  position: absolute;
+}
+
+#reportsList > li {
+  height: 2.25em;
+  width: 100%;
+  font-weight: normal;
+  line-height: 2.25em;
+  word-break: keep-all;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+#reportsList > li:nth-child(odd) {
+  background-color: whitesmoke;
+}
+
+#reportsList > li:nth-child(even) {
+  background-color: #ebebeb;
+}
+
+#reportsList > li > span {
+  overflow: hidden;
+  cursor: pointer;
+  min-width: 90%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.stickybottom {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.stickybottom > a.button {
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  pointer-events: auto;
+}
+
+.saveControlButtons {
+  height: 20%;
+}
+
+#reportTitle {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  height: 2.25em;
+  width: calc(99% - 2.25em);
+  border-radius: 6px;
+}
+
+#report {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow: clip scroll;
+  resize: none;
+  width: 100%;
+  margin-top: 0.5em;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 6px;
+}
+
+#unit {
+  height: 2.25em;
+  width: 30%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+#amountInUnit {
+  height: 2.25em;
+  width: 60%;
+  vertical-align: middle;
+  margin-left: 8%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+#unitsOfDayList {
+  width: 80%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+#unitsOfDayList li {
+  width: 40%;
+  margin: 0%;
+  padding: 0%;
+}
+
+#importInputScreen textarea {
+  resize: none;
+  width: 100%;
+  height: 10em;
+}
+
+#exportOutputScreen textarea {
+  resize: none;
+  width: 100%;
+  height: 10em;
+}
+
+.sideBySide {
+  margin-top: 0.5em;
+  width: 100%;
+  height: calc(2.25em + 23px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+a.button {
+  background-color: #fff;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  cursor: pointer;
+  display: block;
+  font-weight: normal;
+  height: 2.25em;
+  max-height: 2.25em;
+  line-height: 2.25em;
+  width: auto;
+  min-width: 7em;
+  text-align: center;
+  border: 0;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 6px;
+  margin-right: 10px;
+  font-size: medium;
+  opacity: 1;
+  color: #333;
+  text-decoration: none;
+  -webkit-transition: 0.3s -webkit-box-shadow ease;
+  transition: 0.3s -webkit-box-shadow ease;
+  transition: 0.3s box-shadow ease;
+  transition: 0.3s box-shadow ease, 0.3s -webkit-box-shadow ease;
+  -webkit-transform: translateY(0px);
+          transform: translateY(0px);
+  text-shadow: 0 0 0;
+  margin-left: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+a.button:hover {
+  -webkit-box-shadow: 0 12px 23px rgba(0, 0, 0, 0.23), 0 10px 10px rgba(0, 0, 0, 0.19);
+          box-shadow: 0 12px 23px rgba(0, 0, 0, 0.23), 0 10px 10px rgba(0, 0, 0, 0.19);
+}
+
+button.button {
+  background-color: #fff;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  cursor: pointer;
+  display: block;
+  font-weight: normal;
+  height: 2.25em;
+  max-height: 2.25em;
+  line-height: 2.25em;
+  width: auto;
+  min-width: 7em;
+  text-align: center;
+  border: 0;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 6px;
+  margin-right: 10px;
+  font-size: medium;
+  opacity: 1;
+  color: #333;
+  text-decoration: none;
+  -webkit-transition: 0.3s -webkit-box-shadow ease;
+  transition: 0.3s -webkit-box-shadow ease;
+  transition: 0.3s box-shadow ease;
+  transition: 0.3s box-shadow ease, 0.3s -webkit-box-shadow ease;
+  -webkit-transform: translateY(0px);
+          transform: translateY(0px);
+  text-shadow: 0 0 0;
+  margin-left: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+button.button:hover {
+  -webkit-box-shadow: 0 12px 23px rgba(0, 0, 0, 0.23), 0 10px 10px rgba(0, 0, 0, 0.19);
+          box-shadow: 0 12px 23px rgba(0, 0, 0, 0.23), 0 10px 10px rgba(0, 0, 0, 0.19);
+}
+/*# sourceMappingURL=style.css.map */

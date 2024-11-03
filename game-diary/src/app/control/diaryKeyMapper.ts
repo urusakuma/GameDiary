@@ -82,6 +82,16 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
     );
     return true;
   }
+
+  removeGameDataName(key: string): void {
+    const removeName = this.itemMap.get(key);
+    if (removeName === undefined) {
+      return;
+    }
+    this.names.delete(removeName);
+    this.itemMap.delete(key);
+    this.storage.removeItem(key);
+  }
   getCurrentGameDataKey(): string {
     const currentKey = this.storage.getItem(Constant.CURRENT_GAME_DATA_NAME);
     if (currentKey === null) {

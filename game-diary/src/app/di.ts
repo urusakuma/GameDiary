@@ -5,9 +5,9 @@ import {
   IDiarySettings,
   UseExistingDataDiaryEntryFactory,
   UsePreviousDayDiaryEntryFactory,
-} from './model/diaryInterfaces';
-import { DiaryEntry } from './model/diaryEntry';
-import { Diary } from './model/diary';
+} from './model/diary/diaryModelInterfaces';
+import { DiaryEntry } from './model/diary/diaryEntry';
+import { Diary } from './model/diary/diary';
 
 container.register<UsePreviousDayDiaryEntryFactory>(
   'UsePreviousDayDiaryEntryFactory',

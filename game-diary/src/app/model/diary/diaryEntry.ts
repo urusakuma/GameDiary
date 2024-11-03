@@ -1,5 +1,5 @@
 import { Constant } from '@/constant';
-import { IDiaryEntry } from './diaryInterfaces';
+import { IDiaryEntry } from './diaryModelInterfaces';
 import { DiarySettings } from './diarySettings';
 
 /** 日ごとの日記*/

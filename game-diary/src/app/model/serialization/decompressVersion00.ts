@@ -1,6 +1,6 @@
 import { Constant } from '@/constant';
 import { InvalidJsonError } from '@/error';
-import { DayModifier } from '../dayModifier';
+import { DayModifier } from '../diary/dayModifier';
 import {
   DayModifierFactory,
   DiaryFactory,
@@ -8,8 +8,8 @@ import {
   IDiary,
   IDiaryEntry,
   UseExistingDataDiaryEntryFactory,
-} from '../diaryInterfaces';
-import { DiarySettings } from '../diarySettings';
+} from '../diary/diaryModelInterfaces';
+import { DiarySettings } from '../diary/diarySettings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 
 /**

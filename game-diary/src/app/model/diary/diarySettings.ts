@@ -1,5 +1,5 @@
 import { Constant } from '@/constant';
-import type { IDayModifier, IDiarySettings } from './diaryInterfaces';
+import type { IDayModifier, IDiarySettings } from './diaryModelInterfaces';
 import { inject, injectable } from 'tsyringe';
 /** 設定を保存しておくクラス。 */
 @injectable()

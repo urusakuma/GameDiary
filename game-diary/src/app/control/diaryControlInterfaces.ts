@@ -7,8 +7,8 @@ export interface IDiaryService {
    */
   getCurrentDiary(): IDiary;
   /**
-   * ゲームデータ名のリストを返却する。
-   * @returns {Array<string>} ゲームデータ名のリスト。
+   * 日記名のリストを返却する。
+   * @returns {Array<string>} 日記名のリスト。
    */
   collectGameDataNames(): Array<string>;
 
@@ -18,7 +18,7 @@ export interface IDiaryService {
   /**
    * ストレージのKeyを指定し、ストレージからDiaryを読み込む。
    * 読み込みに失敗した場合はストレージから削除しておく。
-   * @param {string} key  読み込むゲームデータのキー。
+   * @param {string} key  読み込む日記のキー。
    * @throws {KeyNotFoundError} 要素がローカルストレージに存在しない。
    */
   load(key: string): void;
@@ -37,13 +37,13 @@ export interface IDiaryService {
 
   /**
    * 新しいセーブデータを作り出す。
-   * @param gameName 画面上に表示するゲームデータの名前
+   * @param gameName 画面上に表示する日記の名前
    */
   create(gameName: string): void;
   /**
    * 指定したKeyのDiaryを削除する。
    * カレントのDiaryなら削除できない。
-   * @param {string} key 削除するゲームデータの名前。
+   * @param {string} key 削除する日記の名前。
    * @returns 削除に成功したならtrue、失敗したならfalse
    */
   remove(key: string): boolean;
@@ -62,30 +62,34 @@ export interface IDiaryLoader {
   createNewDiary(settings?: IDiarySettings): IDiary;
 }
 export interface IDiaryKeyMapper {
-  /** 保存されたゲームデータの数を返す */
+  /** 保存された日記の数を返す */
   get length(): number;
   /**
-   * 保存されているゲーム名の配列を返す。
-   * @returns {Array<string>} ゲーム名の配列
+   * 保存されている日記名の配列を返す。
+   * @returns {Array<string>} 日記名の配列
    */
   collectGameDataNames(): Array<string>;
   /**
-   * 新しいゲームデータ名を保存する。既に存在するストレージキーを指定した場合、上書きする。
+   * 新しい日記名を保存する。既に存在するストレージキーを指定した場合、上書きする。
    * 既に存在する名前は入れられない。
-   * @param key ゲームデータ名を引き出すストレージキー
-   * @param name ゲームデータ名
+   * @param key 日記名を引き出すストレージキー
+   * @param name 日記名
    * @returns 保存に成功したならtrue、失敗したならfalse
    */
   setGameDataName(key: string, name: string): boolean;
+  /**
+   * 指定したストレージキーを日記リストから取り除く。
+   * @param key 取り除く日記のストレージキー
+   */
   removeGameDataName(key: string): void;
   /**
-   * 現在操作しているゲームデータのストレージキーを返す。
-   * @returns 現在操作しているゲームデータのストレージキー
+   * 現在操作している日記のストレージキーを返す。
+   * @returns 現在操作している日記のストレージキー
    */
   getCurrentGameDataKey(): string;
   /**
-   * 現在操作しているゲームデータのストレージキーを変更する。
-   * @param key 新しく操作するゲームデータのストレージキー
+   * 現在操作している日記のストレージキーを変更する。
+   * @param key 新しく操作する日記のストレージキー
    */
   setCurrentGameDataKey(key: string): void;
 }

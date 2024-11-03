@@ -16,7 +16,7 @@ import type {
   DiarySettingsFactory,
   IDiary,
   UseExistingDataDiaryEntryFactory,
-} from '../diaryInterfaces';
+} from '../diary/diaryModelInterfaces';
 import { inject, injectable } from 'tsyringe';
 
 /**

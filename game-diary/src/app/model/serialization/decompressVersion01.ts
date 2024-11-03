@@ -1,7 +1,7 @@
 import { Constant } from '@/constant';
 import { InvalidJsonError } from '@/error';
-import { DayModifier } from '../dayModifier';
-import { DiarySettings } from '../diarySettings';
+import { DayModifier } from '../diary/dayModifier';
+import { DiarySettings } from '../diary/diarySettings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import {
   DayModifierFactory,
@@ -10,7 +10,7 @@ import {
   IDiary,
   IDiaryEntry,
   UseExistingDataDiaryEntryFactory,
-} from '../diaryInterfaces';
+} from '../diary/diaryModelInterfaces';
 
 export function decompressVersion01(
   jsonObj: object,

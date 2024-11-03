@@ -1,4 +1,4 @@
-import { KeyAlreadyExistsError, KeyNotFoundError } from '../error';
+import { KeyAlreadyExistsError, KeyNotFoundError } from '../../error';
 import { DiaryEntry } from './diaryEntry';
 import assert from 'assert';
 import type {
@@ -6,7 +6,7 @@ import type {
   IDiaryEntry,
   IDiarySettings,
   UsePreviousDayDiaryEntryFactory,
-} from './diaryInterfaces';
+} from './diaryModelInterfaces';
 import { inject, injectable } from 'tsyringe';
 
 /**日記の管理を行うクラス。*/

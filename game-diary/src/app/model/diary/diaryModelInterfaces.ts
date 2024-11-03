@@ -1,43 +1,4 @@
-export interface IDiaryLoader {
-  /**
-   * 指定したGameDataNameのDiaryを取得する。特に指定がないならカレントを指定されたものとする。
-   * @param {string?} key 取得するDiaryのストレージキー、指定していないならカレントを指定されたものとする。
-   * @returns {IDiary} 取得するIDiary
-   */
-  loadDiaryAsCurrent(key?: string): IDiary;
-  /**
-   * 新しいDiaryを作成する関数。作成されたDiaryを現在のDiaryにする。
-   * @returns 新しく作成されたDiary
-   */
-  createNewDiary(): IDiary;
-}
-export interface IDiaryKeyMapper {
-  /** 保存されたゲームデータの数を返す */
-  get length(): number;
-  /**
-   * 保存されているゲーム名の配列を返す。
-   * @returns {Array<string>} ゲーム名の配列
-   */
-  collectGameDataNames(): Array<string>;
-  /**
-   * 新しいゲームデータ名を保存する。既に存在するストレージキーを指定した場合、上書きする。
-   * 既に存在する名前は入れられない。
-   * @param key ゲームデータ名を引き出すストレージキー
-   * @param name ゲームデータ名
-   * @returns 保存に成功したならtrue、失敗したならfalse
-   */
-  setGameDataName(key: string, name: string): boolean;
-  /**
-   * 現在操作しているゲームデータのストレージキーを返す。
-   * @returns 現在操作しているゲームデータのストレージキー
-   */
-  getCurrentGameDataKey(): string;
-  /**
-   * 現在操作しているゲームデータのストレージキーを変更する。
-   * @param key 新しく操作するゲームデータのストレージキー
-   */
-  setCurrentGameDataKey(key: string): void;
-}
+/**ひとつの日記を管理するクラス*/
 export interface IDiary {
   /** 設定クラスへの直接アクセス。インスタンスそのものを変更できないようにはしている */
   get settings(): IDiarySettings;

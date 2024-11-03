@@ -4,11 +4,14 @@ import {
   isArrayType,
   isTypeMatch,
 } from '@/model/utils/checkTypeMatch';
-import type { IStorageService } from './utils/storageServiceInterface';
+import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import { inject } from 'tsyringe';
-import { IDiaryKeyMapper } from './diaryInterfaces';
+import { IDiaryKeyMapper } from './diaryControlInterfaces';
 import { InvalidJsonError, KeyNotFoundError } from '@/error';
-import { isStorageAvailable, notSupportFunc } from './utils/storageService';
+import {
+  isStorageAvailable,
+  notSupportFunc,
+} from '@/model/utils/storageService';
 
 export class DiaryKeyMapper implements IDiaryKeyMapper {
   /** ストレージキーと名前の連想配列。ストレージキーがkey、ゲームデータ名がval。 */

@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
-import { Constant } from '../constant';
-import { IDayModifier } from './diaryInterfaces';
+import { Constant } from '../../constant';
+import { IDayModifier } from './diaryModelInterfaces';
 
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
 @injectable()

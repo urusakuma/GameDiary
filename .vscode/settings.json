@@ -18,5 +18,8 @@
     }
   ],
   "liveServer.settings.multiRootWorkspaceName": "GameReportSite",
-  "prettier.configPath": "./game-diary/.prettierrc"
+  "prettier.configPath": "./game-diary/.prettierrc",
+  "cSpell.words": [
+    "tsyringe"
+  ]
 }

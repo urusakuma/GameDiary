@@ -24,7 +24,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "target":"ESNext",
+    "target": "ESNext",
     "plugins": [
       {
         "name": "next"
@@ -35,8 +35,14 @@
       "@/*": ["./src/app/*"]
     },
     "typeRoots": ["node_modules/@types"],
-    "types": ["node"]
+    "types": ["jest", "node"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules","src/ts/test/"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/__tests__/**/*.test.ts"
+  ],
+  "exclude": ["node_modules", "src/ts/test/"]
 }

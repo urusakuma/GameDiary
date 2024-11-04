@@ -10,14 +10,6 @@
   
   "plantuml.server": "http://plantuml-server:8080",
   "plantuml.render": "PlantUMLServer",
-  "liveSassCompile.settings.formats": [
-    {
-      "format": "expanded",
-      "extensionName": ".css",
-      "savePath": "/dest/css"
-    }
-  ],
-  "liveServer.settings.multiRootWorkspaceName": "GameReportSite",
   "prettier.configPath": "./game-diary/.prettierrc",
   "cSpell.words": [
     "tsyringe"

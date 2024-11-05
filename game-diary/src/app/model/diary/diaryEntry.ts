@@ -1,5 +1,5 @@
 import { Constant } from '@/constant';
-import { IDiaryEntry } from './diaryModelInterfaces';
+import { IDiaryEntry, IDiarySettings } from './diaryModelInterfaces';
 import { DiarySettings } from './diarySettings';
 
 /** 日ごとの日記*/
@@ -7,24 +7,40 @@ export class DiaryEntry implements IDiaryEntry {
   /**
    * @constructor
    * @param {number} _day 日付
-   * @param {string} _title タイトル
-   * @param {string} _content 内容
+   * @param {string} title タイトル
+   * @param {string} content 内容
    * @param {?number} _previous 前日のエントリーの日付
    * @param {?number} _next 翌日のエントリーの日付
    */
   constructor(
     private _day: number = 1,
-    private _title: string = '1' + Constant.DEFAULT_DAY_MODIFIER,
-    private _content: string = '',
+    private title: string = '1' + Constant.DEFAULT_DAY_MODIFIER,
+    private content: string = '',
     private _previous: number | undefined = undefined,
     private _next: number | undefined = undefined
   ) {}
 
-  set title(val: string) {
-    this._title = val;
+  get day() {
+    return this._day;
   }
-  set content(val: string) {
-    this._content = val;
+
+  setTitle(val: string) {
+    this.title = val;
+  }
+  getTitle() {
+    return this.title;
+  }
+  setContent(val: string) {
+    this.content = val;
+  }
+  getContent() {
+    return this.content;
+  }
+  get previous(): number | undefined {
+    return this._previous;
+  }
+  get next(): number | undefined {
+    return this._next;
   }
   set previous(val: number | undefined) {
     if (
@@ -41,27 +57,10 @@ export class DiaryEntry implements IDiaryEntry {
     }
   }
 
-  get day() {
-    return this._day;
-  }
-  get title() {
-    return this._title;
-  }
-  get content() {
-    return this._content;
-  }
-  get previous(): number | undefined {
-    return this._previous;
-  }
-  get next(): number | undefined {
-    return this._next;
-  }
-  /**
-   * 初期状態から編集されているか判定する。
-   * タイトルと内容を全て消している場合も編集されていないものとする。
-   * @param {DiarySettings} settings タイトルの初期値を取得するための設定。
-   * @return {boolean} 編集されているならtrue、されていないならfalse。*/
-  isEdited(settings: DiarySettings): boolean {
+  isEdited(settings: IDiarySettings): boolean {
+    //TODO: isUneditedに関数名を変更する。
+    // タイトルが初期状態で、内容が存在しないなら編集されていない
+    // タイトルと内容を全て消している場合も編集されていないものとする。
     return !(
       this.content === '' &&
       (this.title === '' || this.title === settings.getModifierDay(this.day))

@@ -40,7 +40,7 @@ export interface IDiaryEntry {
   setContent(val: string): void;
   getContent(): string;
   /** 前日のエントリーの日付 */
-  set previous(val: number | undefined); //TODO:前日がundefinedになるのは初日だけなのでundefinedを受け付けない。
+  set previous(val: number);
   get previous(): number | undefined;
   /** 翌日のエントリーの日付 */
   set next(val: number | undefined);

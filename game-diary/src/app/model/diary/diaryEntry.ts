@@ -42,7 +42,7 @@ export class DiaryEntry implements IDiaryEntry {
   get next(): number | undefined {
     return this._next;
   }
-  set previous(val: number | undefined) {
+  set previous(val: number) {
     if (
       (this.day === 1 && val === undefined) || // 初日だけundefinedを許す
       (val !== undefined && this.day > val && val > 0) // 前日は今日より大きくないし1未満にならない

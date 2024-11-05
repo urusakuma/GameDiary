@@ -58,7 +58,6 @@ export class DiaryEntry implements IDiaryEntry {
   }
 
   isEdited(settings: IDiarySettings): boolean {
-    //TODO: isUneditedに関数名を変更する。
     // タイトルが初期状態で、内容が存在しないなら編集されていない
     // タイトルと内容を全て消している場合も編集されていないものとする。
     return !(

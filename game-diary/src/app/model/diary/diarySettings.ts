@@ -8,7 +8,7 @@ export class DiarySettings implements IDiarySettings {
    * @param {string} storageKey ローカルストレージに保存したときのKey。
    * @param {number} version セーブデータを作成したシステムのバージョン。
    * 遊んでいるゲームデータの名前。セーブファイルの名前になる。
-   * @param {string} playGamedataName
+   * @param {string} playGameDataName
    * 新規レポートを作成した時に自動で入力されるdayの間隔。
    * 新しいレポートのDayは「参照したレポートのday+dayInterval」となる。
    * @param {number} dayInterval

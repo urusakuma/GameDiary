@@ -5,72 +5,73 @@ import { IDayModifier } from './diaryModelInterfaces';
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
 @injectable()
 export class DayModifier implements IDayModifier {
-  private _unit: Array<string>;
+  private unit: Array<string>;
   /**
    * 日付を修飾する文字列。nサイクル、$N日目$Y年$C$D日(100日目4年春1日)など。
    * @param {string} modifier
    * @param {number?} cycleLength 単位が変化する周期。
-   * @param {Array<string>} unit 日付に対して周期的に付加される単位。
+   * @param {Array<string>} unit 日付に対して周期的に付加される単位。unit.lengthが単位の個数でもある。
    */
   constructor();
   constructor(modifier: string);
   constructor(modifier: string, cycleLength: number, ...unit: Array<string>);
   constructor(
-    private _modifier: string = Constant.DEFAULT_DAY_MODIFIER,
-    private _cycleLength: number = Constant.DEFAULT_CYCLE_LENGTH,
+    private modifier: string = Constant.DEFAULT_DAY_MODIFIER,
+    private cycleLength: number = Constant.DEFAULT_CYCLE_LENGTH,
     ...unit: Array<string>
   ) {
-    this._unit = [];
-    for (let i = 0; i < unit.length; i++) {
-      if (unit[i] === '') {
-        continue;
-      }
-      this.updateUnit(unit[i], i);
-    }
+    this.unit = [...unit];
+    this.maintainValidUnitLength();
   }
-  public get modifier(): string {
-    return this._modifier;
+  setModifier(val: string): void {
+    this.modifier = val;
   }
-  public set modifier(val: string) {
-    this._modifier = val;
+  getModifier(): string {
+    return this.modifier;
   }
-  public get cycleLength(): number {
-    return this._cycleLength;
-  }
-  public set cycleLength(val: number) {
+  updateCycleLength(val: number): void {
     const cycLen = Math.trunc(val);
-    if (cycLen <= 0) {
+    if (cycLen < 1) {
       return;
     }
-    this._cycleLength = cycLen;
+    this.cycleLength = cycLen;
   }
-  public getUnit = (index: number): string => {
-    if (index >= this._unit.length) {
+  getCycleLength(): number {
+    return this.cycleLength;
+  }
+  getUnit(index: number): string {
+    if (index >= this.unit.length) {
       return '';
     }
-    return this._unit[index];
-  };
-  updateUnit = (val: string, index: number) => {
-    /**unit.lengthが単位の個数であることを維持すること。*/
+    return this.unit[index];
+  }
+  updateUnit(val: string, index: number): void {
+    const num = Math.trunc(index);
+    if (num < 0 || 3 < num) {
+      return;
+    }
 
     // indexがunit.lengthを超える場合RangeErrorを発生させるので""で埋める
-    for (let i = index - this._unit.length; i > 0; i--) {
-      this._unit.push('');
+    const missingElements = num - this.unit.length;
+    if (missingElements > 0) {
+      this.unit.push(...Array(missingElements).fill(''));
     }
     // ArrayのRangeが足りていることを保証されたのでそこに代入。
-    this._unit[index] = val;
+    this.unit[num] = val;
 
     // unitを後ろから探索し空文字なら取り除くことにより、unit.lengthは常に単位の個数となる。
-    for (let i = this._unit.length - 1; i > 0; i--) {
-      if (this._unit[i] !== '') {
-        break;
-      }
-      this._unit.pop();
+    this.maintainValidUnitLength();
+  }
+  /** unitの末尾が空文字でないことを維持することで、unit.lengthが単位の個数であることを維持する。*/
+  private maintainValidUnitLength(): void {
+    while (this.unit.length > 0 && this.unit[this.unit.length - 1] === '') {
+      this.unit.pop();
     }
-  };
+  }
 
-  modifyDay = (naturalDay: number): string => {
-    const unitLen = this._unit.length;
+  modifyDay(nDay: number): string {
+    const naturalDay = Math.trunc(nDay);
+    const unitLen = this.unit.length;
     // unitが存在しない場合、置換文字列が存在するなら置き換えて(フェーズ$Nなど)、
     // 存在しないなら終端に付与して(n日目など)返却する。
     if (unitLen === 0) {
@@ -83,22 +84,23 @@ export class DayModifier implements IDayModifier {
     }
 
     // 一周の最終日はcycleLen*unitLen日目。
-    // 総日数をcycleLen*unitLenで割ることで経過周期を求める。
+    const cyclePeriod = this.cycleLength * unitLen;
+
+    // 総日数をcyclePeriodで割ることで経過周期を求める。
     // 数えるのは0年目からではなく、1年目からなので最後に+1。
-    const year = String(
-      Math.trunc(naturalDay / (this._cycleLength * unitLen)) + 1
-    );
+    const year = String(Math.trunc(naturalDay / cyclePeriod) + 1);
 
     // その周期の日付を求めるために総日数をcycleLenで割った剰余を求める。
     // 剰余が0であればcycleLen日目なので代わりにcycleLenを代入。
-    const d = naturalDay % this._cycleLength;
-    const day = d !== 0 ? String(d) : String(this._cycleLength);
+    const dayWithinCycle = naturalDay % this.cycleLength;
+    const dayNumber = dayWithinCycle !== 0 ? dayWithinCycle : this.cycleLength;
+    const day = String(dayNumber);
 
     // その周期で付加する単位を求める。
     // 総日数が0からではなく1から始まるため周期が1日ズレる。ので総日数を-1。
     // その後cycleLenで割り、周期が変わった回数を求める
     // それをunitLenで割った剰余にして付加する単位を求める。
-    const c = Math.trunc((naturalDay - 1) / this._cycleLength);
+    const c = Math.trunc((naturalDay - 1) / this.cycleLength);
     const cycle = this.getUnit(c % unitLen);
 
     //全ての置換文字列を置き換えて返却。
@@ -107,5 +109,5 @@ export class DayModifier implements IDayModifier {
       .replace(Constant.CYCLE_PLACEHOLDER, cycle)
       .replace(Constant.DAY_PLACEHOLDER, day)
       .replace(Constant.TOTAL_DAYS_PLACEHOLDER, String(naturalDay));
-  };
+  }
 }

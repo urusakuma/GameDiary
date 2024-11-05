@@ -16,68 +16,59 @@ export class DiarySettings implements IDiarySettings {
    */
   constructor(
     @inject('DayModifier') private dayModifier: IDayModifier,
-    // TODO :_storageKeyと_versionを後ろにずらす。これらは新しく生成される場合、初期値が使用される方が好都合。コンストラクタにあるのは既に作成済みのデータを読み込むときのため
-    // TODO :コンストラクタの宣言を新しく作成する。_storageKeyと_versionの2つは自動生成される方がいい。
+    // TODO:_storageKeyと_versionを後ろにずらす。これらは新しく生成される場合、初期値が使用される方が好都合。コンストラクタにあるのは既に作成済みのデータを読み込むときのため
+    // TODO:コンストラクタの宣言を新しく作成する。_storageKeyと_versionの2つは自動生成される方がいい。
     private _storageKey: string = crypto.randomUUID(),
     private _version: number = Constant.CURRENT_VERSION,
-    private _playGamedataName: string = Constant.DEFAULT_GAME_DATA_NAME,
-    private _dayInterval: number = Constant.DEFAULT_DAY_INTERVAL
+    private _playGameDataName: string = Constant.DEFAULT_GAME_DATA_NAME,
+    private dayInterval: number = Constant.DEFAULT_DAY_INTERVAL
   ) {}
 
-  public get storageKey() {
+  get storageKey() {
     return this._storageKey;
   }
-  public get version() {
+  get version() {
     return this._version;
   }
 
-  public get dayInterval() {
-    return this._dayInterval;
+  getDayInterval() {
+    return this.dayInterval;
   }
-  public set dayInterval(val: number) {
+  updateDayInterval(val: number): void {
     //0以下や整数で表せない値が入力された場合は1が入る。
     const interval = Math.trunc(val);
     if (interval <= 0 || !Number.isSafeInteger(interval)) {
-      this._dayInterval = 1;
+      this.dayInterval = 1;
       return;
     }
-    this._dayInterval = interval;
+    this.dayInterval = interval;
   }
 
-  public get playGamedataName() {
-    return this._playGamedataName;
+  setPlayGameDataName(val: string): void {
+    this._playGameDataName = val;
   }
-  public set playGamedataName(val: string) {
-    this._playGamedataName = val;
+  getPlayGameDataName(): string {
+    return this._playGameDataName;
   }
-  set modifier(val: string) {
-    this.dayModifier.modifier = val;
+  setModifier(val: string): void {
+    this.dayModifier.setModifier(val);
   }
-  get modifier() {
-    return this.dayModifier.modifier;
+  getModifier(): string {
+    return this.dayModifier.getModifier();
   }
-  set cycleLength(val: number) {
-    //
-    const len = Math.trunc(val);
-    if (len < 1) {
-      return;
-    }
-    this.dayModifier.cycleLength = len;
+  updateCycleLength(val: number): void {
+    this.dayModifier.updateCycleLength(val);
   }
-  get cycleLength() {
-    return this.dayModifier.cycleLength;
+  getCycleLength(): number {
+    return this.dayModifier.getCycleLength();
   }
-  setModifierUnit = (unit: string, index: number): void => {
-    const i = Math.trunc(index);
-    if (i < 0 || 3 < i) {
-      return;
-    }
-    this.dayModifier.updateUnit(unit, i);
-  };
-  getNextDay = (day: number): number => {
+  updateModifierUnit(unit: string, index: number): void {
+    this.dayModifier.updateUnit(unit, index);
+  }
+  getNextDay(day: number): number {
     return day + this.dayInterval;
-  };
-  getModifierDay = (day: number): string => {
+  }
+  getModifierDay(day: number): string {
     return this.dayModifier.modifyDay(day);
-  };
+  }
 }

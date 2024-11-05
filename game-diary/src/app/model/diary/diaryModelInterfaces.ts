@@ -1,9 +1,9 @@
 /**ひとつの日記を管理するクラス*/
 export interface IDiary {
   /** 設定クラスへの直接アクセス。インスタンスそのものを変更できないようにはしている */
-  get settings(): IDiarySettings;
+  getSettings(): IDiarySettings;
   /** 日記の最新日 */
-  get lastDay(): number;
+  getLastDay(): number;
   /**
    * 新しいエントリーを作成する。
    * @returns {number} 新しく作成したエントリーのday
@@ -14,39 +14,39 @@ export interface IDiary {
    * @param day 要求するエントリーの日付
    * @returns {IDiaryEntry} 指定されたエントリー
    */
-  get(day: number): IDiaryEntry;
+  getEntry(day: number): IDiaryEntry;
   /**
    * 指定したエントリーを削除する。削除に成功した場合trueを返す。初日など削除できない日付も存在する。
    * @param day 削除するエントリーの日付
    * @returns {boolean} 削除に成功したらtrue、失敗したらfalse。
    */
-  delete(day: number): boolean;
+  deleteEntry(day: number): boolean;
 }
 
 export type DiaryFactory = (
-  diaryEntrys: Map<number, IDiaryEntry>,
+  diaryEntries: Map<number, IDiaryEntry>,
   settings: IDiarySettings,
   lastDay: number
 ) => IDiary;
 export type NewDiaryFactory = (settings?: IDiarySettings) => IDiary;
 
 export interface IDiaryEntry {
-  /** レポートの日付 */
+  /** エントリーの日付 */
   get day(): number;
-  /** レポートのタイトル */
-  set title(val: string);
-  get title(): string;
-  /** レポートの内容 */
-  set content(val: string);
-  get content(): string;
-  /** 前日のレポートの日付 */
-  set previous(val: number | undefined);
+  /** エントリーのタイトル */
+  setTitle(val: string): void;
+  getTitle(): string;
+  /** エントリーの内容 */
+  setContent(val: string): void;
+  getContent(): string;
+  /** 前日のエントリーの日付 */
+  set previous(val: number | undefined); //TODO:前日がundefinedになるのは初日だけなのでundefinedを受け付けない。
   get previous(): number | undefined;
-  /** 翌日のレポートの日付 */
+  /** 翌日のエントリーの日付 */
   set next(val: number | undefined);
   get next(): number | undefined;
   /**
-   * このレポートが編集されたならTrue、されていないならFalse
+   * このエントリーが編集されたならTrue、されていないならFalse
    * @param settings 初期のタイトルを取得するためのSettings
    */
   isEdited(settings: IDiarySettings): boolean;
@@ -76,24 +76,24 @@ export interface IDiarySettings {
   /** ゲームデータのバージョン */
   get version(): number;
   /** ゲームデータ名 */
-  get playGamedataName(): string;
-  set playGamedataName(val: string);
-  /** レポートを取る間隔 */
-  get dayInterval(): number;
-  set dayInterval(val: number);
+  setPlayGameDataName(val: string): void;
+  getPlayGameDataName(): string;
+  /** 日記を書く間隔 */
+  updateDayInterval(val: number): void;
+  getDayInterval(): number;
   /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など) */
-  get modifier(): string;
-  set modifier(val: string);
+  setModifier(val: string): void;
+  getModifier(): string;
   /** 周期的な単位が一度にどれだけ続くのか(15:春1-15,夏1-15など) */
-  get cycleLength(): number;
-  set cycleLength(val: number);
+  updateCycleLength(val: number): void;
+  getCycleLength(): number;
 
   /**
    * 日付を修飾する周期的な単位を設定する。空文字を設定された場合は取り除く。
    * @param val 設定する単位の文字列。
    * @param index unitのどこにsetするか。
    */
-  setModifierUnit(unit: string, i: number): void;
+  updateModifierUnit(unit: string, i: number): void;
 
   /**
    * 新しく作成される日付を返す。
@@ -113,17 +113,17 @@ export type DiarySettingsFactory = (
   dayModifier: IDayModifier,
   storageKey: string,
   version: number,
-  playGamedataName: string,
+  playGameDataName: string,
   dayInterval: number
 ) => IDiarySettings;
 
 export interface IDayModifier {
   /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など) */
-  get modifier(): string;
-  set modifier(val: string);
+  setModifier(val: string): void;
+  getModifier(): string;
   /** 周期的な単位が一度にどれだけ続くのか(15:春1-15,夏1-15など) */
-  get cycleLength(): number;
-  set cycleLength(val: number);
+  updateCycleLength(val: number): void;
+  getCycleLength(): number;
 
   /**
    * 指定した周期で付加する単位を返却する。存在しない場合は空文字を返却する。
@@ -144,7 +144,7 @@ export interface IDayModifier {
    * - cycle: 周期的に付与される単位、
    * - day: naturalDayをcycleLenで割った余り
    * - totalDay: 総経過日数。
-   * @param naturalDay 修飾したい日付。レポートから呼び出されたなら総経過日数でもある。
+   * @param naturalDay 修飾したい日付。エントリーから呼び出されたなら総経過日数でもある。
    * @returns 日付の単位を付加した文字列
    */
   modifyDay(naturalDay: number): string;

@@ -13,72 +13,54 @@ import { inject, injectable } from 'tsyringe';
 @injectable()
 export class Diary implements IDiary {
   /**
-   * @param {Map<number,IDiaryEntry>} diaryEntrys エントリーの連想配列
-   * @param {IDiarySettings} _settings 設定クラス
+   * @param {Map<number,IDiaryEntry>} diaryEntries エントリーの連想配列
+   * @param {IDiarySettings} settings 設定クラス
    * @param {number} lastDay エントリーの最終日
    */
   constructor(
     @inject('UsePreviousDayDiaryEntryBuilder')
     private builder: UsePreviousDayDiaryEntryFactory,
-    private diaryEntrys: Map<number, IDiaryEntry>,
-    private _settings: IDiarySettings,
-    private _lastDay: number = 1
+    private diaryEntries: Map<number, IDiaryEntry>,
+    private settings: IDiarySettings,
+    private lastDay: number = 1
   ) {
-    assert(diaryEntrys.size !== 0, `not exists any entry`);
-    assert(diaryEntrys.get(_lastDay) !== undefined, `not exists ${_lastDay}`);
+    assert(diaryEntries.size !== 0, `not exists any entry`);
+    assert(diaryEntries.get(lastDay) !== undefined, `not exists ${lastDay}`);
   }
-  get settings() {
-    return this._settings;
+  getSettings() {
+    return this.settings;
   }
-  public get lastDay(): number {
-    return this._lastDay;
-  }
-  /** このクラス内でlastDayとして呼び出すためのセッター */
-  private set lastDay(val: number) {
-    this._lastDay = val;
+  getLastDay(): number {
+    return this.lastDay;
   }
   /**
    * 新しいDailyEntryを作成する。
    * @returns 新しいIDiaryEntryのday
    */
-  createNewEntry = (): number => {
-    const lastDiary = this.diaryEntrys.get(this.lastDay);
+  createNewEntry(): number {
+    const lastDiary = this.diaryEntries.get(this.lastDay);
     assert(
       lastDiary !== undefined,
-      new KeyNotFoundError(`not exists day=${this._lastDay}`)
+      new KeyNotFoundError(`not exists day=${this.lastDay}`)
     );
     const newDiary = this.builder(lastDiary, this.settings);
-    this.diaryEntrys.set(newDiary.day, newDiary);
+    this.diaryEntries.set(newDiary.day, newDiary);
     return newDiary.day;
-  };
-
-  /**
-   * エントリーを連想配列に追加する。
-   * @param {DiaryEntry} entry 追加するエントリー
-   * @throws {KeyAlreadyExistsError} すでに存在する日付を追加しようとした。*/
-  add = (entry: DiaryEntry): void => {
-    assert(
-      !this.diaryEntrys.has(entry.day),
-      new KeyAlreadyExistsError(`already exists day=${entry.day}`)
-    );
-    this.diaryEntrys.set(entry.day, entry);
-    // dayがlastDayより大きければlastDayを更新。
-    this.lastDay = this.lastDay > entry.day ? this.lastDay : entry.day;
-  };
+  }
 
   /**
    * 指定した日付のエントリーを取得する。
    * @param {number} day 取得したい日付。
    * @return {IDiaryEntry} 取得するIDiaryEntry。存在しない場合はKeyNotFoundErrorを返す。
    * @throws {KeyNotFoundError} その日付のエントリーは存在しない*/
-  get = (day: number): IDiaryEntry => {
-    const entry = this.diaryEntrys.get(day);
+  getEntry(day: number): IDiaryEntry {
+    const entry = this.diaryEntries.get(day);
     assert(
       entry !== undefined,
       new KeyNotFoundError(`not exists day=${day} entry`)
     );
     return entry;
-  };
+  }
 
   /**
    * 指定したインデックスのエントリーを削除する。
@@ -86,11 +68,12 @@ export class Diary implements IDiary {
    * 前後のエントリーが自身を参照しているなら、その参照を削除する。
    * @param {number} day 削除するエントリーの日付
    * @returns {boolean} 削除したならtrue、しなかったならfalse。 */
-  delete = (day: number): boolean => {
-    const entry = this.get(day);
+  deleteEntry(day: number): boolean {
+    const entry = this.getEntry(day);
     const previous =
-      entry.previous !== undefined ? this.get(entry.previous) : undefined;
-    const next = entry.next !== undefined ? this.get(entry.next) : undefined;
+      entry.previous !== undefined ? this.getEntry(entry.previous) : undefined;
+    const next =
+      entry.next !== undefined ? this.getEntry(entry.next) : undefined;
     if (this.lastDay === day && previous !== undefined) {
       // 削除する日が最新日と同じかつ前日が存在するなら、前日から削除日を消し、lastDayを前日に置き換える。
       previous.next = undefined;
@@ -103,18 +86,18 @@ export class Diary implements IDiary {
       //最新日でなく前後にエントリーもないなら、それは初日なので削除しない。
       return false;
     }
-    return this.diaryEntrys.delete(day);
-  };
+    return this.diaryEntries.delete(day);
+  }
   /**
    * JSONに変換する。JSON.stringifyで自動的に呼び出される。
-   * diaryEntrysはMapなのでArrayに変換しないとシリアライズされないため実装している。
+   * diaryEntriesはMapなのでArrayに変換しないとシリアライズされないため実装している。
    * @returns {object} シリアライズされるオブジェクト。
    */
-  toJSON = (): object => {
+  toJSON(): object {
     return {
-      settings: this._settings,
-      diaryEntrys: [...this.diaryEntrys],
-      lastDay: this._lastDay,
+      settings: this.settings,
+      diaryEntries: [...this.diaryEntries],
+      lastDay: this.lastDay,
     };
-  };
+  }
 }

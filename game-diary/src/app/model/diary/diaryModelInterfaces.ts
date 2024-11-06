@@ -111,10 +111,10 @@ export interface IDiarySettings {
 }
 export type DiarySettingsFactory = (
   dayModifier: IDayModifier,
-  storageKey: string,
-  version: number,
   playGameDataName: string,
-  dayInterval: number
+  dayInterval: number,
+  storageKey: string,
+  version: number
 ) => IDiarySettings;
 
 export interface IDayModifier {

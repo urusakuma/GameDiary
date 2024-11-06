@@ -4,7 +4,7 @@ import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import {
   DayModifierFactory,
   DiaryFactory,
-  DiarySettingsFactory,
+  UseExistingDataDiarySettingsFactory,
   IDiary,
   IDiaryEntry,
   UseExistingDataDiaryEntryFactory,
@@ -13,7 +13,7 @@ import {
 export function decompressVersion01(
   jsonObj: object,
   dayModifierFactory: DayModifierFactory,
-  diarySettingsFactory: DiarySettingsFactory,
+  diarySettingsFactory: UseExistingDataDiarySettingsFactory,
   diaryEntryFactory: UseExistingDataDiaryEntryFactory,
   diaryFactory: DiaryFactory
 ): IDiary {

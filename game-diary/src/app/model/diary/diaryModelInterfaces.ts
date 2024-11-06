@@ -109,12 +109,18 @@ export interface IDiarySettings {
    */
   getModifierDay(day: number): string;
 }
-export type DiarySettingsFactory = (
+export type UseExistingDataDiarySettingsFactory = (
   dayModifier: IDayModifier,
   playGameDataName: string,
   dayInterval: number,
   storageKey: string,
   version: number
+) => IDiarySettings;
+
+export type NewDiarySettingsFactory = (
+  dayModifier: IDayModifier,
+  playGameDataName: string,
+  dayInterval: number
 ) => IDiarySettings;
 
 export interface IDayModifier {

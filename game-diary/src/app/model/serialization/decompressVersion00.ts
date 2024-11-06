@@ -3,7 +3,7 @@ import { InvalidJsonError } from '@/error';
 import {
   DayModifierFactory,
   DiaryFactory,
-  DiarySettingsFactory,
+  UseExistingDataDiarySettingsFactory,
   IDiary,
   IDiaryEntry,
   UseExistingDataDiaryEntryFactory,
@@ -19,7 +19,7 @@ import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 export function decompressVersion00(
   jsonObj: object,
   dayModifierFactory: DayModifierFactory,
-  diarySettingsFactory: DiarySettingsFactory,
+  diarySettingsFactory: UseExistingDataDiarySettingsFactory,
   diaryEntryFactory: UseExistingDataDiaryEntryFactory,
   diaryFactory: DiaryFactory
 ): IDiary {

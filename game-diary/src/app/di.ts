@@ -42,13 +42,13 @@ container.register<DiaryFactory>('DiaryEntryFactory', {
   useFactory:
     () =>
     (
-      diaryEntrys: Map<number, IDiaryEntry>,
+      diaryEntries: Map<number, IDiaryEntry>,
       settings: IDiarySettings,
       lastDay: number
     ) =>
       new Diary(
         container.resolve('UseExistingDataDiaryEntryFactory'),
-        diaryEntrys,
+        diaryEntries,
         settings,
         lastDay
       ),

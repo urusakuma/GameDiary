@@ -4,6 +4,18 @@ import { inject, injectable } from 'tsyringe';
 /** 設定を保存しておくクラス。 */
 @injectable()
 export class DiarySettings implements IDiarySettings {
+  constructor(
+    dayModifier: IDayModifier,
+    playGameDataName: string,
+    dayInterval: number
+  );
+  constructor(
+    dayModifier: IDayModifier,
+    playGameDataName: string,
+    dayInterval: number,
+    _storageKey: string,
+    _version: number
+  );
   /**
    * @param {string} storageKey ローカルストレージに保存したときのKey。
    * @param {number} version セーブデータを作成したシステムのバージョン。
@@ -16,7 +28,6 @@ export class DiarySettings implements IDiarySettings {
    */
   constructor(
     @inject('DayModifier') private dayModifier: IDayModifier,
-    // TODO:コンストラクタの宣言を新しく作成する。_storageKeyと_versionの2つは自動生成される方がいい。
     private playGameDataName: string = Constant.DEFAULT_GAME_DATA_NAME,
     private dayInterval: number = Constant.DEFAULT_DAY_INTERVAL,
     private _storageKey: string = crypto.randomUUID(),

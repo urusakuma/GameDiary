@@ -1,6 +1,5 @@
 import { Constant } from '@/constant';
 import { InvalidJsonError } from '@/error';
-import { DayModifier } from '../diary/dayModifier';
 import {
   DayModifierFactory,
   DiaryFactory,
@@ -9,12 +8,11 @@ import {
   IDiaryEntry,
   UseExistingDataDiaryEntryFactory,
 } from '../diary/diaryModelInterfaces';
-import { DiarySettings } from '../diary/diarySettings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 
 /**
  * 最初に作られたバージョンのデータをインポートするための関数。
- * settings.versionはundefinde
+ * settings.versionはundefined
  * @param jsonObj
  * @returns
  */
@@ -51,10 +49,10 @@ export function decompressVersion00(
   );
   const settings = diarySettingsFactory(
     dayModifier,
-    jsonObj.settings.storageKey,
-    Constant.CURRENT_VERSION,
     jsonObj.settings.playGamedataName,
-    jsonObj.settings.dayInterval
+    jsonObj.settings.dayInterval,
+    jsonObj.settings.storageKey,
+    Constant.CURRENT_VERSION
   );
   if (!hasField(jsonObj, 'dayDiary', 'Array')) {
     throw new InvalidJsonError('Array<DayReport> class is broken');

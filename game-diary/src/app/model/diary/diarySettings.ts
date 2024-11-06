@@ -16,12 +16,11 @@ export class DiarySettings implements IDiarySettings {
    */
   constructor(
     @inject('DayModifier') private dayModifier: IDayModifier,
-    // TODO:_storageKeyと_versionを後ろにずらす。これらは新しく生成される場合、初期値が使用される方が好都合。コンストラクタにあるのは既に作成済みのデータを読み込むときのため
     // TODO:コンストラクタの宣言を新しく作成する。_storageKeyと_versionの2つは自動生成される方がいい。
+    private playGameDataName: string = Constant.DEFAULT_GAME_DATA_NAME,
+    private dayInterval: number = Constant.DEFAULT_DAY_INTERVAL,
     private _storageKey: string = crypto.randomUUID(),
-    private _version: number = Constant.CURRENT_VERSION,
-    private _playGameDataName: string = Constant.DEFAULT_GAME_DATA_NAME,
-    private dayInterval: number = Constant.DEFAULT_DAY_INTERVAL
+    private _version: number = Constant.CURRENT_VERSION
   ) {}
 
   get storageKey() {
@@ -45,10 +44,10 @@ export class DiarySettings implements IDiarySettings {
   }
 
   setPlayGameDataName(val: string): void {
-    this._playGameDataName = val;
+    this.playGameDataName = val;
   }
   getPlayGameDataName(): string {
-    return this._playGameDataName;
+    return this.playGameDataName;
   }
   setModifier(val: string): void {
     this.dayModifier.setModifier(val);

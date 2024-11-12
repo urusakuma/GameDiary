@@ -4,6 +4,7 @@ module.exports = {
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
+  testMatch: ['**/!(__mocks__)/**/?(*.)+(test).ts'],
   testPathIgnorePatterns: ['/node_modules/', '/old_data/'],
   roots: ['<rootDir>/game-diary/src/app'],
   moduleNameMapper: {

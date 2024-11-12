@@ -15,7 +15,7 @@ container.register<UsePreviousDayDiaryEntryFactory>(
     useFactory: () => (source: IDiaryEntry, settings: IDiarySettings) =>
       new DiaryEntry(
         settings.getNextDay(source.day),
-        settings.getModifierDay(source.day),
+        settings.getModifierDay(settings.getNextDay(source.day)),
         '',
         source.day,
         undefined

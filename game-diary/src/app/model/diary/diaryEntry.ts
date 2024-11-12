@@ -43,17 +43,25 @@ export class DiaryEntry implements IDiaryEntry {
     return this._next;
   }
   set previous(val: number) {
+    const day = Math.trunc(val);
     if (
-      (this.day === 1 && val === undefined) || // 初日だけundefinedを許す
-      (val !== undefined && this.day > val && val > 0) // 前日は今日より大きくないし1未満にならない
+      day !== undefined &&
+      this.day > day &&
+      day > 0 // 前日は今日より大きくないし1未満にならない
     ) {
-      this._previous = val;
+      this._previous = day;
     }
   }
   set next(val: number | undefined) {
-    // 翌日のエントリーは未作成、もしくは今日より日付が大きい
-    if (val === undefined || this.day < val) {
+    if (val === undefined) {
+      //翌日のエントリーは未作成、
       this._next = val;
+      return;
+    }
+    const day = Math.trunc(val);
+    // 今日より日付が大きい
+    if (this.day < day) {
+      this._next = day;
     }
   }
 

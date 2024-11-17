@@ -3,9 +3,10 @@ import { Constant } from '../../constant';
 import { IDayModifier } from './diaryModelInterfaces';
 
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
-@injectable()
 export class DayModifier implements IDayModifier {
   private unit: Array<string>;
+  private modifier;
+  private cycleLength;
   /**
    * 日付を修飾する文字列。nサイクル、$N日目$Y年$C$D日(100日目4年春1日)など。
    * @param {string} modifier
@@ -16,10 +17,12 @@ export class DayModifier implements IDayModifier {
   constructor(modifier: string);
   constructor(modifier: string, cycleLength: number, ...unit: Array<string>);
   constructor(
-    private modifier: string = Constant.DEFAULT_DAY_MODIFIER,
-    private cycleLength: number = Constant.DEFAULT_CYCLE_LENGTH,
+    modifier: string = Constant.DEFAULT_DAY_MODIFIER,
+    cycleLength: number = Constant.DEFAULT_CYCLE_LENGTH,
     ...unit: Array<string>
   ) {
+    this.modifier = modifier;
+    this.cycleLength = cycleLength;
     this.unit = [...unit];
     this.maintainValidUnitLength();
   }
@@ -82,13 +85,25 @@ export class DayModifier implements IDayModifier {
         );
       return String(naturalDay) + this.modifier;
     }
+    // unitが存在するが置換文字列が存在しない場合は終端に付与して返却する。
+    if (
+      !(
+        this.modifier.includes(Constant.TOTAL_DAYS_PLACEHOLDER) ||
+        this.modifier.includes(Constant.YEAR_PLACEHOLDER) ||
+        this.modifier.includes(Constant.CYCLE_PLACEHOLDER) ||
+        this.modifier.includes(Constant.DAY_PLACEHOLDER)
+      )
+    ) {
+      return String(naturalDay) + this.modifier;
+    }
 
     // 一周の最終日はcycleLen*unitLen日目。
     const cyclePeriod = this.cycleLength * unitLen;
 
     // 総日数をcyclePeriodで割ることで経過周期を求める。
+    // naturalDayが1から始まってしまうと切り替わりで数字が合わなくなるので0から始めるために-1。
     // 数えるのは0年目からではなく、1年目からなので最後に+1。
-    const year = String(Math.trunc(naturalDay / cyclePeriod) + 1);
+    const year = String(Math.trunc((naturalDay - 1) / cyclePeriod) + 1);
 
     // その周期の日付を求めるために総日数をcycleLenで割った剰余を求める。
     // 剰余が0であればcycleLen日目なので代わりにcycleLenを代入。

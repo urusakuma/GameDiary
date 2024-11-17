@@ -49,7 +49,7 @@ describe('DiaryEntry class tests', () => {
     const entry = container.resolve<IDiaryEntry>('InitDiaryEntry');
     // デフォルトの確認
     expect(entry.day).toBe(1);
-    expect(entry.getTitle()).toBe('1日目');
+    expect(entry.getTitle()).toBe('1日目'); // TODO: Constantを使用する
     expect(entry.getContent()).toBe('');
     expect(entry.previous).toBe(undefined);
     expect(entry.next).toBe(undefined);
@@ -112,7 +112,7 @@ describe('DiaryEntry class tests', () => {
     entries.push(
       existingDataDiaryEntryFactory(
         1,
-        '1日目',
+        '1日目', // TODO: Constantを使用する
         'テストです',
         undefined,
         undefined

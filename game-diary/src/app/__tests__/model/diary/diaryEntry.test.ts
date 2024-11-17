@@ -1,4 +1,4 @@
-import { MockDiarySettings } from '@/__tests__/__mocks__/mockIDiarySettings';
+import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
 import { DiaryEntry } from '@/model/diary/diaryEntry';
 import {
   IDiaryEntry,

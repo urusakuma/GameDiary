@@ -147,9 +147,9 @@ export interface IDayModifier {
   /**
    * 受け取った日付に単位を付加して返却する。Constantに強く依存している。
    * - year: naturalDayをcycleLenで割った数
-   * - cycle: 周期的に付与される単位、
+   * - cycle: 周期的に付与される単位
    * - day: naturalDayをcycleLenで割った余り
-   * - totalDay: 総経過日数。
+   * - totalDay: 総経過日数
    * @param naturalDay 修飾したい日付。エントリーから呼び出されたなら総経過日数でもある。
    * @returns 日付の単位を付加した文字列
    */

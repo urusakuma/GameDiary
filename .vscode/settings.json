@@ -7,11 +7,9 @@
   },
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
-  
+
   "plantuml.server": "http://plantuml-server:8080",
   "plantuml.render": "PlantUMLServer",
   "prettier.configPath": "./game-diary/.prettierrc",
-  "cSpell.words": [
-    "tsyringe"
-  ]
+  "cSpell.words": ["Hoge", "tsyringe"]
 }

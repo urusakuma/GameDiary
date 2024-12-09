@@ -5,6 +5,13 @@ import { container } from 'tsyringe';
 
 describe('DayModifier class tests', () => {
   beforeAll(() => {
+    container.register<number>('CYCLE_LENGTH', {
+      useValue: Constant.DEFAULT_CYCLE_LENGTH,
+    });
+    container.register<string>('DAY_MODIFIER', {
+      useValue: Constant.DEFAULT_DAY_MODIFIER,
+    });
+    container.register<string>('EMPTY_STRING', { useValue: '' });
     container.register<IDayModifier>('DayModifier', {
       useClass: DayModifier,
     });

@@ -75,21 +75,37 @@ export interface IDiarySettings {
   get storageKey(): string;
   /** ゲームデータのバージョン */
   get version(): number;
-  /** ゲームデータ名 */
+  /** ゲームデータ名を保存する */
   setPlayGameDataName(val: string): void;
+  /** ゲームデータ名を取得する */
   getPlayGameDataName(): string;
   /** 日記を書く間隔 */
   updateDayInterval(val: number): void;
+  /** 日記を書く間隔を取得する */
   getDayInterval(): number;
-  /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など) */
+  /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など)を保存 */
   setModifier(val: string): void;
+  /** 日付を修飾する文字列を取得する */
   getModifier(): string;
-  /** 周期的な単位が一度にどれだけ続くのか(15:春1-15,夏1-15など) */
+  /**
+   * 日付に対して周期的に付加する単位の設定
+   * @param val 付加する単位
+   * @param index valを付加する周期の番号。0~3
+   */
+  updateModifierUnit(val: string, index: number): void;
+  /**
+   * 日付に対して周期的に付加する単位を取得する。存在しなければ空文字を返す
+   * @param index 取得する周期の番号
+   */
+  getModifierUnit(index: number): string;
+
+  /** 周期的な単位が一度にどれだけ続くのか(15:春1-15,夏1-15など)を保存 */
   updateCycleLength(val: number): void;
+  /** 周期的な単位が一度にどれだけ続くのか取得する */
   getCycleLength(): number;
 
   /**
-   * 日付を修飾する周期的な単位を設定する。空文字を設定された場合は取り除く。
+   * 日付を修飾する周期的な単位を設定する。空文字を設定された場合は取り除く
    * @param val 設定する単位の文字列。
    * @param index unitのどこにsetするか。
    */
@@ -97,13 +113,15 @@ export interface IDiarySettings {
 
   /**
    * 新しく作成される日付を返す。
-   * @param day最新のday
+   * 0以下を渡されたら1の翌日を返す。小数は切り捨てる。
+   * @param day 最新のday
    * @returns 新しく作成するEntryのday
    */
   getNextDay(day: number): number;
 
   /**
    * 日付を修飾した文字列を取得する。
+   * 0以下を渡されたら1の翌日を返す。小数は切り捨てる。
    * @param day 修飾する日付
    * @returns 修飾された日付
    */

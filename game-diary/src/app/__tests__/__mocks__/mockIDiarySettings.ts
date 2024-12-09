@@ -24,6 +24,10 @@ export class MockDiarySettings implements IDiarySettings {
     return Constant.DEFAULT_CYCLE_LENGTH;
   }
   updateModifierUnit(unit: string, i: number): void {}
+
+  getModifierUnit(index: number): string {
+    return '';
+  }
   getNextDay(day: number): number {
     return day + 1;
   }

@@ -1,29 +1,26 @@
-import { injectable } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import { Constant } from '../../constant';
 import { IDayModifier } from './diaryModelInterfaces';
 
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
+@injectable()
 export class DayModifier implements IDayModifier {
   private unit: Array<string>;
-  private modifier;
-  private cycleLength;
   /**
    * 日付を修飾する文字列。nサイクル、$N日目$Y年$C$D日(100日目4年春1日)など。
    * @param {string} modifier
    * @param {number?} cycleLength 単位が変化する周期。
    * @param {Array<string>} unit 日付に対して周期的に付加される単位。unit.lengthが単位の個数でもある。
    */
-  constructor();
-  constructor(modifier: string);
-  constructor(modifier: string, cycleLength: number, ...unit: Array<string>);
   constructor(
-    modifier: string = Constant.DEFAULT_DAY_MODIFIER,
-    cycleLength: number = Constant.DEFAULT_CYCLE_LENGTH,
-    ...unit: Array<string>
+    @inject('DAY_MODIFIER')
+    private modifier: string,
+    @inject('CYCLE_LENGTH')
+    private cycleLength: number,
+    @inject('EMPTY_STRING') ...unit: Array<string>
   ) {
-    this.modifier = modifier;
-    this.cycleLength = cycleLength;
     this.unit = [...unit];
+    // TODO: unitが<5である保証がないので修正が必要。このケースはセーブデータをいじられたときだけだけど。
     this.maintainValidUnitLength();
   }
   setModifier(val: string): void {
@@ -44,6 +41,7 @@ export class DayModifier implements IDayModifier {
   }
   getUnit(index: number): string {
     if (index >= this.unit.length) {
+      //TODO: 負の値を入れられたときに空文字を返すようにする。
       return '';
     }
     return this.unit[index];

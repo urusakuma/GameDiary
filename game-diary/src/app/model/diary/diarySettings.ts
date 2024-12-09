@@ -4,18 +4,6 @@ import { inject, injectable } from 'tsyringe';
 /** 設定を保存しておくクラス。 */
 @injectable()
 export class DiarySettings implements IDiarySettings {
-  constructor(
-    dayModifier: IDayModifier,
-    playGameDataName: string,
-    dayInterval: number
-  );
-  constructor(
-    dayModifier: IDayModifier,
-    playGameDataName: string,
-    dayInterval: number,
-    _storageKey: string,
-    _version: number
-  );
   /**
    * @param {string} storageKey ローカルストレージに保存したときのKey。
    * @param {number} version セーブデータを作成したシステムのバージョン。
@@ -27,11 +15,13 @@ export class DiarySettings implements IDiarySettings {
    * @param {IDayModifier} dayModifier 日の単位。
    */
   constructor(
-    @inject('DayModifier') private dayModifier: IDayModifier,
-    private playGameDataName: string = Constant.DEFAULT_GAME_DATA_NAME,
-    private dayInterval: number = Constant.DEFAULT_DAY_INTERVAL,
-    private _storageKey: string = crypto.randomUUID(),
-    private _version: number = Constant.CURRENT_VERSION
+    @inject('IDayModifier') private dayModifier: IDayModifier,
+    @inject('GAME_DATA_NAME')
+    private playGameDataName: string,
+    @inject('DAY_INTERVAL')
+    private dayInterval: number,
+    @inject('STORAGE_KEY') private _storageKey: string,
+    @inject('VERSION') private _version: number
   ) {}
 
   get storageKey() {
@@ -75,10 +65,18 @@ export class DiarySettings implements IDiarySettings {
   updateModifierUnit(unit: string, index: number): void {
     this.dayModifier.updateUnit(unit, index);
   }
+  getModifierUnit(index: number): string {
+    return this.dayModifier.getUnit(index);
+  }
   getNextDay(day: number): number {
-    return day + this.dayInterval;
+    const d = Math.trunc(day);
+    if (d < 1) {
+      return this.dayInterval + 1;
+    }
+    return d + this.dayInterval;
   }
   getModifierDay(day: number): string {
-    return this.dayModifier.modifyDay(day);
+    const d = Math.trunc(day);
+    return this.dayModifier.modifyDay(d > 1 ? d : 1);
   }
 }

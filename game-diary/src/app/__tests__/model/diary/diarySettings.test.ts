@@ -69,6 +69,7 @@ describe('DairySettings class tests', () => {
   });
   test('init test', () => {
     const settings = container.resolve<IDiarySettings>('InitDiarySettings');
+    // TODO: バージョンの確認をしていないので確認を追加
     // デフォルトの確認
     expect(settings.getPlayGameDataName()).toBe(
       Constant.DEFAULT_GAME_DATA_NAME
@@ -136,4 +137,5 @@ describe('DairySettings class tests', () => {
     expect(settings.getModifierDay(2.999)).toBe('2サイクル');
     expect(settings.getModifierDay(0.999)).toBe('1サイクル');
   });
+  // TODO: container.resolveでインスタンスを取得したときに異なるストレージキーが発行されているか確認する。
 });

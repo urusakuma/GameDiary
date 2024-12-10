@@ -21,7 +21,7 @@ describe('DairySettings class tests', () => {
       useValue: Constant.DEFAULT_DAY_INTERVAL,
     });
     container.register<string>('STORAGE_KEY', {
-      useValue: crypto.randomUUID(),
+      useFactory: () => crypto.randomUUID(),
     });
     container.register<number>('VERSION', {
       useValue: Constant.CURRENT_VERSION,
@@ -137,5 +137,13 @@ describe('DairySettings class tests', () => {
     expect(settings.getModifierDay(2.999)).toBe('2サイクル');
     expect(settings.getModifierDay(0.999)).toBe('1サイクル');
   });
-  // TODO: container.resolveでインスタンスを取得したときに異なるストレージキーが発行されているか確認する。
+  test('two DiarySettings have different storage key', () => {
+    const settingsArr = [
+      container.resolve<IDiarySettings>('InitDiarySettings'),
+      container.resolve<IDiarySettings>('InitDiarySettings'),
+    ];
+    expect(
+      settingsArr[0].storageKey !== settingsArr[1].storageKey
+    ).toBeTruthy();
+  });
 });

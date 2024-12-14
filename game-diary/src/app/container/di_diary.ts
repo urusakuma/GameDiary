@@ -17,7 +17,12 @@ container.register<number>('DAY_INTERVAL', {
   useValue: Constant.DEFAULT_DAY_INTERVAL,
 });
 container.register<string>('STORAGE_KEY', {
-  useFactory: () => crypto.randomUUID(),
+<<<<<<< HEAD
+useValue: crypto.randomUUID(), //TODO:useFactoryに変更する。そうしないと値をキャッシュしてしまう。
+
+=======
+  useValue: crypto.randomUUID(), //TODO:useFactoryに変更する。そうしないと値をキャッシュしてしまう。
+>>>>>>> origin/create_report
 });
 container.register<number>('VERSION', {
   useValue: Constant.CURRENT_VERSION,

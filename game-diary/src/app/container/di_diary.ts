@@ -17,7 +17,7 @@ container.register<number>('DAY_INTERVAL', {
   useValue: Constant.DEFAULT_DAY_INTERVAL,
 });
 container.register<string>('STORAGE_KEY', {
-  useValue: crypto.randomUUID(),
+  useFactory: () => crypto.randomUUID(),
 });
 container.register<number>('VERSION', {
   useValue: Constant.CURRENT_VERSION,
@@ -29,6 +29,13 @@ container.register<string>('DAY_MODIFIER', {
   useValue: Constant.DEFAULT_DAY_MODIFIER,
 });
 container.register<string>('EMPTY_STRING', { useValue: '' });
+
+container.register<Map<number, IDiaryEntry>>('DiaryEntriesContainingFirstDay', {
+  useValue: new Map<number, IDiaryEntry>(),
+});
+container.register<number>('FirstDay', {
+  useValue: 1,
+});
 container.register<UsePreviousDayDiaryEntryFactory>(
   'UsePreviousDayDiaryEntryFactory',
   {

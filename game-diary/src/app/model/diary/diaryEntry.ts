@@ -1,6 +1,5 @@
 import { Constant } from '@/constant';
 import { IDiaryEntry, IDiarySettings } from './diaryModelInterfaces';
-import { DiarySettings } from './diarySettings';
 
 /** 日ごとの日記*/
 export class DiaryEntry implements IDiaryEntry {

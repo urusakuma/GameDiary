@@ -1,5 +1,4 @@
-import { KeyAlreadyExistsError, KeyNotFoundError } from '../../error';
-import { DiaryEntry } from './diaryEntry';
+import { KeyNotFoundError } from '../../error';
 import assert from 'assert';
 import type {
   IDiary,
@@ -18,10 +17,13 @@ export class Diary implements IDiary {
    * @param {number} lastDay エントリーの最終日
    */
   constructor(
-    @inject('UsePreviousDayDiaryEntryBuilder')
+    @inject('UsePreviousDayDiaryEntryFactory')
     private builder: UsePreviousDayDiaryEntryFactory,
+    @inject('DiaryEntriesContainingFirstDay')
     private diaryEntries: Map<number, IDiaryEntry>,
+    @inject('IDiarySettings')
     private settings: IDiarySettings,
+    @inject('FirstDay')
     private lastDay: number = 1
   ) {
     assert(diaryEntries.size !== 0, `not exists any entry`);
@@ -45,6 +47,8 @@ export class Diary implements IDiary {
     );
     const newDiary = this.builder(lastDiary, this.settings);
     this.diaryEntries.set(newDiary.day, newDiary);
+    this.getEntry(this.lastDay).next = newDiary.day;
+    this.lastDay = newDiary.day;
     return newDiary.day;
   }
 

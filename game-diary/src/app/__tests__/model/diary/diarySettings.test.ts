@@ -146,4 +146,5 @@ describe('DairySettings class tests', () => {
       settingsArr[0].storageKey !== settingsArr[1].storageKey
     ).toBeTruthy();
   });
+  // TODO:コンテナに登録したファクトリのテストをする。
 });

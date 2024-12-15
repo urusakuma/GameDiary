@@ -1,4 +1,6 @@
 {
+  "typescript.tsdk": "/app/tsconfig",
+
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

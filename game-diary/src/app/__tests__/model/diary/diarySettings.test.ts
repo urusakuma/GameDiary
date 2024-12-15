@@ -1,5 +1,5 @@
 import { MockDayModifier } from '@/__tests__/__mocks__/mockDayModifier';
-import { Constant } from '@/constant';
+import { DairySettingsConstant } from '@/constant';
 import {
   IDayModifier,
   IDiarySettings,
@@ -15,16 +15,16 @@ describe('DairySettings class tests', () => {
       useClass: MockDayModifier,
     });
     container.register<string>('GAME_DATA_NAME', {
-      useValue: Constant.DEFAULT_GAME_DATA_NAME,
+      useValue: DairySettingsConstant.DEFAULT_GAME_DATA_NAME,
     });
     container.register<number>('DAY_INTERVAL', {
-      useValue: Constant.DEFAULT_DAY_INTERVAL,
+      useValue: DairySettingsConstant.DEFAULT_DAY_INTERVAL,
     });
     container.register<string>('STORAGE_KEY', {
       useFactory: () => crypto.randomUUID(),
     });
     container.register<number>('VERSION', {
-      useValue: Constant.CURRENT_VERSION,
+      useValue: DairySettingsConstant.CURRENT_VERSION,
     });
     container.register<IDiarySettings>('InitDiarySettings', {
       useClass: DiarySettings,
@@ -72,14 +72,22 @@ describe('DairySettings class tests', () => {
     // TODO: バージョンの確認をしていないので確認を追加
     // デフォルトの確認
     expect(settings.getPlayGameDataName()).toBe(
-      Constant.DEFAULT_GAME_DATA_NAME
+      DairySettingsConstant.DEFAULT_GAME_DATA_NAME
     );
-    expect(settings.getCycleLength()).toBe(Constant.DEFAULT_CYCLE_LENGTH);
-    expect(settings.getDayInterval()).toBe(Constant.DEFAULT_DAY_INTERVAL);
-    expect(settings.getModifier()).toBe(Constant.DEFAULT_DAY_MODIFIER);
-    expect(settings.getNextDay(1)).toBe(1 + Constant.DEFAULT_DAY_INTERVAL);
+    expect(settings.getCycleLength()).toBe(
+      DairySettingsConstant.DEFAULT_CYCLE_LENGTH
+    );
+    expect(settings.getDayInterval()).toBe(
+      DairySettingsConstant.DEFAULT_DAY_INTERVAL
+    );
+    expect(settings.getModifier()).toBe(
+      DairySettingsConstant.DEFAULT_DAY_MODIFIER
+    );
+    expect(settings.getNextDay(1)).toBe(
+      1 + DairySettingsConstant.DEFAULT_DAY_INTERVAL
+    );
     expect(settings.getModifierDay(1)).toBe(
-      String(1) + Constant.DEFAULT_DAY_MODIFIER
+      String(1) + DairySettingsConstant.DEFAULT_DAY_MODIFIER
     );
     for (let i = 0; i < 3; i++) {
       expect(settings.getModifierUnit(i)).toBe('');

@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import { Constant } from '../../constant';
+import { DairySettingsConstant } from '../../constant';
 import { IDayModifier } from './diaryModelInterfaces';
 
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
@@ -76,9 +76,9 @@ export class DayModifier implements IDayModifier {
     // unitが存在しない場合、置換文字列が存在するなら置き換えて(フェーズ$Nなど)、
     // 存在しないなら終端に付与して(n日目など)返却する。
     if (unitLen === 0) {
-      if (this.modifier.includes(Constant.TOTAL_DAYS_PLACEHOLDER))
+      if (this.modifier.includes(DairySettingsConstant.TOTAL_DAYS_PLACEHOLDER))
         return this.modifier.replace(
-          Constant.TOTAL_DAYS_PLACEHOLDER,
+          DairySettingsConstant.TOTAL_DAYS_PLACEHOLDER,
           String(naturalDay)
         );
       return String(naturalDay) + this.modifier;
@@ -86,10 +86,10 @@ export class DayModifier implements IDayModifier {
     // unitが存在するが置換文字列が存在しない場合は終端に付与して返却する。
     if (
       !(
-        this.modifier.includes(Constant.TOTAL_DAYS_PLACEHOLDER) ||
-        this.modifier.includes(Constant.YEAR_PLACEHOLDER) ||
-        this.modifier.includes(Constant.CYCLE_PLACEHOLDER) ||
-        this.modifier.includes(Constant.DAY_PLACEHOLDER)
+        this.modifier.includes(DairySettingsConstant.TOTAL_DAYS_PLACEHOLDER) ||
+        this.modifier.includes(DairySettingsConstant.YEAR_PLACEHOLDER) ||
+        this.modifier.includes(DairySettingsConstant.CYCLE_PLACEHOLDER) ||
+        this.modifier.includes(DairySettingsConstant.DAY_PLACEHOLDER)
       )
     ) {
       return String(naturalDay) + this.modifier;
@@ -118,9 +118,12 @@ export class DayModifier implements IDayModifier {
 
     //全ての置換文字列を置き換えて返却。
     return this.modifier
-      .replace(Constant.YEAR_PLACEHOLDER, year)
-      .replace(Constant.CYCLE_PLACEHOLDER, cycle)
-      .replace(Constant.DAY_PLACEHOLDER, day)
-      .replace(Constant.TOTAL_DAYS_PLACEHOLDER, String(naturalDay));
+      .replace(DairySettingsConstant.YEAR_PLACEHOLDER, year)
+      .replace(DairySettingsConstant.CYCLE_PLACEHOLDER, cycle)
+      .replace(DairySettingsConstant.DAY_PLACEHOLDER, day)
+      .replace(
+        DairySettingsConstant.TOTAL_DAYS_PLACEHOLDER,
+        String(naturalDay)
+      );
   }
 }

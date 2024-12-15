@@ -1,4 +1,4 @@
-import { Constant } from '@/constant';
+import { DairySettingsConstant } from '@/constant';
 import {
   hasField,
   isArrayType,
@@ -28,7 +28,7 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
       this.setCurrentGameDataKey = notSupportFunc;
     }
     // まず、itemListを初期化し、ストレージからゲームデータ名のリストを取得する。
-    const list = storage.getItem(Constant.GAME_DATA_NAME_LIST);
+    const list = storage.getItem(DairySettingsConstant.GAME_DATA_NAME_LIST);
     if (list === null) {
       return;
     }
@@ -77,7 +77,7 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
     const itemList: Array<Item> = [];
     this.itemMap.entries().map((v) => itemList.push(new Item(v[0], v[1])));
     this.storage.setItem(
-      Constant.GAME_DATA_NAME_LIST,
+      DairySettingsConstant.GAME_DATA_NAME_LIST,
       JSON.stringify(itemList)
     );
     return true;
@@ -93,14 +93,16 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
     this.storage.removeItem(key);
   }
   getCurrentGameDataKey(): string {
-    const currentKey = this.storage.getItem(Constant.CURRENT_GAME_DATA_NAME);
+    const currentKey = this.storage.getItem(
+      DairySettingsConstant.CURRENT_GAME_DATA_NAME
+    );
     if (currentKey === null) {
       throw new KeyNotFoundError('not exist CURRENT_GAME_DATA_NAME');
     }
     return currentKey;
   }
   setCurrentGameDataKey(key: string): void {
-    this.storage.setItem(Constant.CURRENT_GAME_DATA_NAME, key);
+    this.storage.setItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME, key);
   }
 }
 

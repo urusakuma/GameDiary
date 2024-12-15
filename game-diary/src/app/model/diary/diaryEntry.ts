@@ -1,4 +1,4 @@
-import { Constant } from '@/constant';
+import { DairySettingsConstant } from '@/constant';
 import { IDiaryEntry, IDiarySettings } from './diaryModelInterfaces';
 
 /** 日ごとの日記*/
@@ -13,7 +13,7 @@ export class DiaryEntry implements IDiaryEntry {
    */
   constructor(
     private _day: number = 1,
-    private title: string = '1' + Constant.DEFAULT_DAY_MODIFIER,
+    private title: string = '1' + DairySettingsConstant.DEFAULT_DAY_MODIFIER,
     private content: string = '',
     private _previous: number | undefined = undefined,
     private _next: number | undefined = undefined

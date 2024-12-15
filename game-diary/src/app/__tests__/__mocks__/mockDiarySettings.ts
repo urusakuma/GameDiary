@@ -1,4 +1,4 @@
-import { Constant } from '@/constant';
+import { DairySettingsConstant } from '@/constant';
 import { IDiarySettings } from '@/model/diary/diaryModelInterfaces';
 export class MockDiarySettings implements IDiarySettings {
   get storageKey(): string {
@@ -9,7 +9,7 @@ export class MockDiarySettings implements IDiarySettings {
   }
   setPlayGameDataName(val: string): void {}
   getPlayGameDataName(): string {
-    return Constant.DEFAULT_GAME_DATA_NAME;
+    return DairySettingsConstant.DEFAULT_GAME_DATA_NAME;
   }
   updateDayInterval(val: number): void {}
   getDayInterval(): number {
@@ -17,11 +17,11 @@ export class MockDiarySettings implements IDiarySettings {
   }
   setModifier(val: string): void {}
   getModifier(): string {
-    return Constant.DEFAULT_DAY_MODIFIER;
+    return DairySettingsConstant.DEFAULT_DAY_MODIFIER;
   }
   updateCycleLength(val: number): void {}
   getCycleLength(): number {
-    return Constant.DEFAULT_CYCLE_LENGTH;
+    return DairySettingsConstant.DEFAULT_CYCLE_LENGTH;
   }
   updateModifierUnit(unit: string, i: number): void {}
 
@@ -32,6 +32,6 @@ export class MockDiarySettings implements IDiarySettings {
     return day + 1;
   }
   getModifierDay(day: number): string {
-    return String(day) + Constant.DEFAULT_DAY_MODIFIER;
+    return String(day) + DairySettingsConstant.DEFAULT_DAY_MODIFIER;
   }
 }

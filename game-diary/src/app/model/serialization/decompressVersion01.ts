@@ -1,4 +1,4 @@
-import { Constant } from '@/constant';
+import { DairySettingsConstant } from '@/constant';
 import { InvalidJsonError } from '@/error';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import {
@@ -48,7 +48,7 @@ export function decompressVersion01(
     jsonObj.settings.playGameDataName,
     jsonObj.settings.dayInterval,
     jsonObj.settings._storageKey,
-    Constant.CURRENT_VERSION
+    DairySettingsConstant.CURRENT_VERSION
   );
   if (!hasField(jsonObj, 'diaryEntries', 'Array')) {
     throw new InvalidJsonError('Array<DayReport> class is broken');

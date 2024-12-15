@@ -1,4 +1,4 @@
-import { Constant } from '@/constant';
+import { DairySettingsConstant } from '@/constant';
 import { DayModifier } from '@/model/diary/dayModifier';
 import { IDayModifier } from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';
@@ -6,10 +6,10 @@ import { container } from 'tsyringe';
 describe('DayModifier class tests', () => {
   beforeAll(() => {
     container.register<number>('CYCLE_LENGTH', {
-      useValue: Constant.DEFAULT_CYCLE_LENGTH,
+      useValue: DairySettingsConstant.DEFAULT_CYCLE_LENGTH,
     });
     container.register<string>('DAY_MODIFIER', {
-      useValue: Constant.DEFAULT_DAY_MODIFIER,
+      useValue: DairySettingsConstant.DEFAULT_DAY_MODIFIER,
     });
     container.register<string>('EMPTY_STRING', { useValue: '' });
     container.register<IDayModifier>('DayModifier', {
@@ -18,12 +18,18 @@ describe('DayModifier class tests', () => {
   });
   test('init test', () => {
     const modifier = container.resolve<IDayModifier>('DayModifier');
-    expect(modifier.getModifier()).toBe(Constant.DEFAULT_DAY_MODIFIER);
-    expect(modifier.getCycleLength()).toBe(Constant.DEFAULT_CYCLE_LENGTH);
+    expect(modifier.getModifier()).toBe(
+      DairySettingsConstant.DEFAULT_DAY_MODIFIER
+    );
+    expect(modifier.getCycleLength()).toBe(
+      DairySettingsConstant.DEFAULT_CYCLE_LENGTH
+    );
     for (let i = 0; i < 4; i++) {
       expect(modifier.getUnit(i)).toBe('');
     }
-    expect(modifier.modifyDay(1)).toBe('1' + Constant.DEFAULT_DAY_MODIFIER);
+    expect(modifier.modifyDay(1)).toBe(
+      '1' + DairySettingsConstant.DEFAULT_DAY_MODIFIER
+    );
   });
   test('set and update function test', () => {
     const modifier = container.resolve<IDayModifier>('DayModifier');
@@ -36,7 +42,9 @@ describe('DayModifier class tests', () => {
 
     // サイクルの長さは1未満にならないか
     modifier.updateCycleLength(0.999);
-    expect(modifier.getCycleLength()).toBe(Constant.DEFAULT_CYCLE_LENGTH);
+    expect(modifier.getCycleLength()).toBe(
+      DairySettingsConstant.DEFAULT_CYCLE_LENGTH
+    );
     modifier.updateCycleLength(1);
     expect(modifier.getCycleLength()).toBe(1);
     // サイクルの長さは整数か
@@ -45,13 +53,15 @@ describe('DayModifier class tests', () => {
   });
   test('modifyDay test', () => {
     const modifier = container.resolve<IDayModifier>('DayModifier');
-    modifier.setModifier('フェーズ' + Constant.TOTAL_DAYS_PLACEHOLDER);
+    modifier.setModifier(
+      'フェーズ' + DairySettingsConstant.TOTAL_DAYS_PLACEHOLDER
+    );
     expect(modifier.modifyDay(1)).toBe('フェーズ1');
     modifier.setModifier(
-      Constant.YEAR_PLACEHOLDER +
+      DairySettingsConstant.YEAR_PLACEHOLDER +
         '年目' +
-        Constant.CYCLE_PLACEHOLDER +
-        Constant.DAY_PLACEHOLDER +
+        DairySettingsConstant.CYCLE_PLACEHOLDER +
+        DairySettingsConstant.DAY_PLACEHOLDER +
         '日目'
     );
     // 2つの周期単位が適切に付与されるか

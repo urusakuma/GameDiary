@@ -8,30 +8,25 @@ import {
 } from '@/model/diary/diaryModelInterfaces';
 import { DiaryEntry } from '@/model/diary/diaryEntry';
 import { Diary } from '@/model/diary/diary';
-import { Constant } from '@/constant';
+import { DairySettingsConstant } from '@/constant';
 
 container.register<string>('GAME_DATA_NAME', {
-  useValue: Constant.DEFAULT_GAME_DATA_NAME,
+  useValue: DairySettingsConstant.DEFAULT_GAME_DATA_NAME,
 });
 container.register<number>('DAY_INTERVAL', {
-  useValue: Constant.DEFAULT_DAY_INTERVAL,
+  useValue: DairySettingsConstant.DEFAULT_DAY_INTERVAL,
 });
 container.register<string>('STORAGE_KEY', {
-<<<<<<< HEAD
-useValue: crypto.randomUUID(), //TODO:useFactoryに変更する。そうしないと値をキャッシュしてしまう。
-
-=======
-  useValue: crypto.randomUUID(), //TODO:useFactoryに変更する。そうしないと値をキャッシュしてしまう。
->>>>>>> origin/create_report
+  useFactory: () => crypto.randomUUID(),
 });
 container.register<number>('VERSION', {
-  useValue: Constant.CURRENT_VERSION,
+  useValue: DairySettingsConstant.CURRENT_VERSION,
 });
 container.register<number>('CYCLE_LENGTH', {
-  useValue: Constant.DEFAULT_CYCLE_LENGTH,
+  useValue: DairySettingsConstant.DEFAULT_CYCLE_LENGTH,
 });
 container.register<string>('DAY_MODIFIER', {
-  useValue: Constant.DEFAULT_DAY_MODIFIER,
+  useValue: DairySettingsConstant.DEFAULT_DAY_MODIFIER,
 });
 container.register<string>('EMPTY_STRING', { useValue: '' });
 

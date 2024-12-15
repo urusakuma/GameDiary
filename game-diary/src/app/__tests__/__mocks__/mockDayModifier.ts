@@ -1,4 +1,4 @@
-import { DairySettingsConstant } from '@/constant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { IDayModifier } from '@/model/diary/diaryModelInterfaces';
 export class MockDayModifier implements IDayModifier {
   unit = Array<string>(4).fill('');

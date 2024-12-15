@@ -2,7 +2,6 @@
  * 定数を管理するためのクラス。
  */
 export class DairySettingsConstant {
-  //TODO:DairySettingsConstantにリネーム
   static readonly CURRENT_VERSION: number = 1;
   static readonly DEFAULT_GAME_DATA_NAME: string = 'new game data';
   static readonly DEFAULT_DAY_INTERVAL: number = 1;

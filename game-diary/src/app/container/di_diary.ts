@@ -8,7 +8,7 @@ import {
 } from '@/model/diary/diaryModelInterfaces';
 import { DiaryEntry } from '@/model/diary/diaryEntry';
 import { Diary } from '@/model/diary/diary';
-import { DairySettingsConstant } from '@/constant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 
 container.register<string>('GAME_DATA_NAME', {
   useValue: DairySettingsConstant.DEFAULT_GAME_DATA_NAME,

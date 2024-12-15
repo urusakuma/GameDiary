@@ -1,5 +1,5 @@
 import { MockDayModifier } from '@/__tests__/__mocks__/mockDayModifier';
-import { DairySettingsConstant } from '@/constant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 import {
   IDayModifier,
   IDiarySettings,

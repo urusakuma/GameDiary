@@ -1,4 +1,4 @@
-import { DairySettingsConstant } from '@/constant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { InvalidJsonError } from '@/error';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import {

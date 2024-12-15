@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import { DairySettingsConstant } from '../../constant';
+import { DairySettingsConstant } from '../../dairySettingsConstant';
 import { IDayModifier } from './diaryModelInterfaces';
 
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */

@@ -1,4 +1,4 @@
-import { KeyNotFoundError } from '../../error';
+import { KeyNotFoundError } from '@/error';
 import assert from 'assert';
 import type {
   IDiary,

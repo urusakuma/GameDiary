@@ -39,14 +39,15 @@ container.register<number>('FirstDay', {
 container.register<UsePreviousDayDiaryEntryFactory>(
   'UsePreviousDayDiaryEntryFactory',
   {
-    useFactory: () => (source: IDiaryEntry, settings: IDiarySettings) =>
-      new DiaryEntry(
-        settings.getNextDay(source.day), // TODO: getNextDay(source.day)を変数にする
-        settings.getModifierDay(settings.getNextDay(source.day)),
+    useFactory: () => (source: IDiaryEntry, settings: IDiarySettings) =>{
+      const newDay = settings.getNextDay(source.day);
+      return new DiaryEntry(
+        newDay, 
+        settings.getModifierDay(newDay),
         '',
         source.day,
         undefined
-      ),
+      );}
   }
 );
 

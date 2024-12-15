@@ -1,4 +1,4 @@
-import { DairySettingsConstant } from '@/constant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { DayModifier } from '@/model/diary/dayModifier';
 import { IDayModifier } from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';

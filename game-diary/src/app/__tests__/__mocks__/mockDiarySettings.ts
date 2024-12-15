@@ -1,4 +1,4 @@
-import { DairySettingsConstant } from '@/constant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { IDiarySettings } from '@/model/diary/diaryModelInterfaces';
 export class MockDiarySettings implements IDiarySettings {
   get storageKey(): string {

@@ -1,4 +1,4 @@
-import { DairySettingsConstant } from '@/constant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { IDiaryEntry, IDiarySettings } from './diaryModelInterfaces';
 
 /** 日ごとの日記*/

@@ -1,4 +1,5 @@
 import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { DiaryEntry } from '@/model/diary/diaryEntry';
 import {
   IDiaryEntry,
@@ -49,7 +50,9 @@ describe('DiaryEntry class tests', () => {
     const entry = container.resolve<IDiaryEntry>('InitDiaryEntry');
     // デフォルトの確認
     expect(entry.day).toBe(1);
-    expect(entry.getTitle()).toBe('1日目'); // TODO: Constantを使用する
+    expect(entry.getTitle()).toBe(
+      '1' + DairySettingsConstant.DEFAULT_DAY_MODIFIER
+    );
     expect(entry.getContent()).toBe('');
     expect(entry.previous).toBe(undefined);
     expect(entry.next).toBe(undefined);

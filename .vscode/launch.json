@@ -6,12 +6,18 @@
       "request": "launch",
       "name": "Debug Jest Tests",
       "program": "${workspaceFolder}/game-diary/node_modules/.bin/jest",
-      "args": ["--runInBand", "--watchAll"],
+      "args": [
+        "--runInBand",
+        "--watchAll",
+        "--config",
+        "${workspaceFolder}/game-diary/jest.config.js"
+      ],
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}/game-diary",
       "runtimeArgs": [
         "--require",
-        "/app/game-diary/node_modules/ts-node/register"
+        "${workspaceFolder}/game-diary/node_modules/ts-node/register"
       ],
       "console": "integratedTerminal",
       "outputCapture": "std"

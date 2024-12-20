@@ -7,6 +7,7 @@ import {
   UseExistingDataDiarySettingsFactory,
 } from '@/model/diary/diaryModelInterfaces';
 import { DiarySettings } from '@/model/diary/diarySettings';
+import { stringify } from 'querystring';
 import { container } from 'tsyringe';
 
 describe('DairySettings class tests', () => {
@@ -155,4 +156,47 @@ describe('DairySettings class tests', () => {
     ).toBeTruthy();
   });
   // TODO:コンテナに登録したファクトリのテストをする。
+  test('make to use container', () => {
+    const newSettingsFactory = container.resolve<NewDiarySettingsFactory>(
+      'NewDiarySettingsFactory'
+    );
+    const dayModifier = container.resolve<IDayModifier>('IDayModifier');
+    const settingsArr = [
+      newSettingsFactory(dayModifier, 'test data 0', 1),
+      newSettingsFactory(dayModifier, 'test data 1', 1),
+    ];
+    expect(
+      settingsArr[0].storageKey !== settingsArr[1].storageKey
+    ).toBeTruthy();
+    for (let i = 0; i < 2; i++) {
+      expect(settingsArr[i].version).toBe(1);
+      expect(settingsArr[i].getPlayGameDataName()).toBe(
+        'test data ' + String(i)
+      );
+      expect(settingsArr[i].getDayInterval()).toBe(1);
+      expect(settingsArr[i].getModifier()).toBe(
+        DairySettingsConstant.DEFAULT_DAY_MODIFIER
+      );
+    }
+    const useExistingDataFactory =
+      container.resolve<UseExistingDataDiarySettingsFactory>(
+        'UseExistingDataDiarySettingsFactory'
+      );
+    const useExistingDataSettings = useExistingDataFactory(
+      dayModifier,
+      'test data',
+      1,
+      'bec0da1f-0053-4c59-acfb-f4a574bd8c98',
+      1
+    );
+    expect(useExistingDataSettings.version).toBe(1);
+    expect(useExistingDataSettings.storageKey).toBe(
+      'bec0da1f-0053-4c59-acfb-f4a574bd8c98'
+    );
+    expect(useExistingDataSettings.getPlayGameDataName()).toBe('test data');
+    expect(useExistingDataSettings.getDayInterval()).toBe(1);
+    expect(useExistingDataSettings.getModifier()).toBe(
+      DairySettingsConstant.DEFAULT_DAY_MODIFIER
+    );
+  });
 });

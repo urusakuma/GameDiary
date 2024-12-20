@@ -6,14 +6,14 @@ module.exports = {
   },
   testMatch: ['**/!(__mocks__)/**/?(*.)+(test).ts'],
   testPathIgnorePatterns: ['/node_modules/', '/old_data/'],
-  roots: ['<rootDir>/game-diary/src/app'],
+  roots: ['<rootDir>/src/app'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/game-diary/src/app/$1',
+    '^@/(.*)$': '<rootDir>/src/app/$1',
   },
-  setupFiles: ['<rootDir>/game-diary/node_modules/reflect-metadata'],
+  setupFiles: ['<rootDir>/node_modules/reflect-metadata'],
   globals: {
     'ts-jest': {
-      tsconfig: '<rootDir>/game-diary/tsconfig.json',
+      tsconfig: '<rootDir>/tsconfig.json',
     },
   },
 };

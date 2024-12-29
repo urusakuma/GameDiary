@@ -20,7 +20,7 @@ export class DayModifier implements IDayModifier {
     @inject('EMPTY_STRING') ...unit: Array<string>
   ) {
     this.unit = [...unit];
-    // TODO: unitが<5である保証がないので修正が必要。このケースはセーブデータをいじられたときだけだけど。
+    this.unit = this.unit.slice(0, 4);
     this.maintainValidUnitLength();
   }
   setModifier(val: string): void {
@@ -40,11 +40,11 @@ export class DayModifier implements IDayModifier {
     return this.cycleLength;
   }
   getUnit(index: number): string {
-    if (index >= this.unit.length) {
-      //TODO: 負の値を入れられたときに空文字を返すようにする。
+    const i = Math.trunc(index);
+    if (i >= this.unit.length || i < 0) {
       return '';
     }
-    return this.unit[index];
+    return this.unit[i];
   }
   updateUnit(val: string, index: number): void {
     const num = Math.trunc(index);

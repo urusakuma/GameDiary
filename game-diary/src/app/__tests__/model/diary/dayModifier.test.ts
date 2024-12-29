@@ -1,6 +1,9 @@
 import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { DayModifier } from '@/model/diary/dayModifier';
-import { IDayModifier } from '@/model/diary/diaryModelInterfaces';
+import {
+  DayModifierFactory,
+  IDayModifier,
+} from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';
 
 describe('DayModifier class tests', () => {
@@ -14,6 +17,12 @@ describe('DayModifier class tests', () => {
     container.register<string>('EMPTY_STRING', { useValue: '' });
     container.register<IDayModifier>('DayModifier', {
       useClass: DayModifier,
+    });
+    container.register<DayModifierFactory>('DayModifierFactory', {
+      useFactory:
+        () =>
+        (modifier: string, cycleLength: number, ...unit: Array<string>) =>
+          new DayModifier(modifier, cycleLength, ...unit),
     });
   });
   test('init test', () => {
@@ -30,6 +39,33 @@ describe('DayModifier class tests', () => {
     expect(modifier.modifyDay(1)).toBe(
       '1' + DairySettingsConstant.DEFAULT_DAY_MODIFIER
     );
+  });
+  test('make DayModifier', () => {
+    const factory = container.resolve<DayModifierFactory>('DayModifierFactory');
+    const modifier = factory('DAY$N', 11, '0', '1', '2', '3');
+    expect(modifier.getModifier()).toBe('DAY$N');
+    expect(modifier.getCycleLength()).toBe(11);
+    for (let i = 0; i < 4; i++) {
+      expect(modifier.getUnit(i)).toBe(String(i));
+    }
+    const missModifier = factory('DAY$N', 11, '0', '1', '2', '3', '4', '5');
+    for (let i = 0; i < 6; i++) {
+      if (i >= 4) {
+        expect(modifier.getUnit(i)).toBe('');
+        continue;
+      }
+      expect(modifier.getUnit(i)).toBe(String(i));
+    }
+  });
+  test('getUnit test', () => {
+    const modifier = container.resolve<IDayModifier>('DayModifier');
+    for (let i = 0; i < 4; i++) {
+      modifier.updateUnit('test', i);
+    }
+    expect(modifier.getUnit(3.999)).toBe('test');
+    expect(modifier.getUnit(4)).toBe('');
+    expect(modifier.getUnit(-1)).toBe('');
+    expect(modifier.getUnit(-0.999)).toBe('test');
   });
   test('set and update function test', () => {
     const modifier = container.resolve<IDayModifier>('DayModifier');

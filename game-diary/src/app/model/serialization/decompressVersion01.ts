@@ -1,21 +1,19 @@
-import { Constant } from '@/constant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { InvalidJsonError } from '@/error';
-import { DayModifier } from '../dayModifier';
-import { DiarySettings } from '../diarySettings';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import {
   DayModifierFactory,
   DiaryFactory,
-  DiarySettingsFactory,
+  UseExistingDataDiarySettingsFactory,
   IDiary,
   IDiaryEntry,
   UseExistingDataDiaryEntryFactory,
-} from '../diaryInterfaces';
+} from '../diary/diaryModelInterfaces';
 
 export function decompressVersion01(
   jsonObj: object,
   dayModifierFactory: DayModifierFactory,
-  diarySettingsFactory: DiarySettingsFactory,
+  diarySettingsFactory: UseExistingDataDiarySettingsFactory,
   diaryEntryFactory: UseExistingDataDiaryEntryFactory,
   diaryFactory: DiaryFactory
 ): IDiary {
@@ -25,38 +23,38 @@ export function decompressVersion01(
   if (
     !hasField(jsonObj, 'settings', 'object') ||
     !hasField(jsonObj.settings, '_storageKey', 'string') ||
-    !hasField(jsonObj.settings, '_playGamedataName', 'string') ||
-    !hasField(jsonObj.settings, '_dayInterval', 'number') ||
+    !hasField(jsonObj.settings, 'playGameDataName', 'string') ||
+    !hasField(jsonObj.settings, 'dayInterval', 'number') ||
     !hasField(jsonObj.settings, 'dayModifier', 'object')
   ) {
     throw new InvalidJsonError('Settings class is broken');
   }
   if (
-    !hasField(jsonObj.settings.dayModifier, '_modifier', 'string') ||
-    !hasField(jsonObj.settings.dayModifier, '_cycleLength', 'number') ||
-    !hasField(jsonObj.settings.dayModifier, '_unit', 'Array') ||
-    !isArrayType(jsonObj.settings.dayModifier._unit, 'string') ||
-    jsonObj.settings.dayModifier._unit.length <= 4
+    !hasField(jsonObj.settings.dayModifier, 'modifier', 'string') ||
+    !hasField(jsonObj.settings.dayModifier, 'cycleLength', 'number') ||
+    !hasField(jsonObj.settings.dayModifier, 'unit', 'Array') ||
+    !isArrayType(jsonObj.settings.dayModifier.unit, 'string') ||
+    jsonObj.settings.dayModifier.unit.length <= 4
   ) {
     throw new InvalidJsonError('DayModifier class is broken');
   }
   const dayModifier = dayModifierFactory(
-    jsonObj.settings.dayModifier._modifier,
-    jsonObj.settings.dayModifier._cycleLength,
-    ...jsonObj.settings.dayModifier._unit
+    jsonObj.settings.dayModifier.modifier,
+    jsonObj.settings.dayModifier.cycleLength,
+    ...jsonObj.settings.dayModifier.unit
   );
   const settings = diarySettingsFactory(
     dayModifier,
+    jsonObj.settings.playGameDataName,
+    jsonObj.settings.dayInterval,
     jsonObj.settings._storageKey,
-    Constant.CURRENT_VERSION,
-    jsonObj.settings._playGamedataName,
-    jsonObj.settings._dayInterval
+    DairySettingsConstant.CURRENT_VERSION
   );
-  if (!hasField(jsonObj, 'diaryEntrys', 'Array')) {
+  if (!hasField(jsonObj, 'diaryEntries', 'Array')) {
     throw new InvalidJsonError('Array<DayReport> class is broken');
   }
   if (
-    !jsonObj.diaryEntrys.every(
+    !jsonObj.diaryEntries.every(
       (v) =>
         isTypeMatch(v, 'object') &&
         hasField(v, 'day', 'number') &&
@@ -68,7 +66,7 @@ export function decompressVersion01(
   }
   const map = new Map<number, IDiaryEntry>();
   const previousMap = new Map<number, number | undefined>();
-  for (let element of jsonObj.diaryEntrys) {
+  for (let element of jsonObj.diaryEntries) {
     // 翌日が存在するなら翌日のdayから前日のdayを参照できるようにしておく。
     if (hasField(element, 'next', 'number')) {
       previousMap.set(element.next, element.day);

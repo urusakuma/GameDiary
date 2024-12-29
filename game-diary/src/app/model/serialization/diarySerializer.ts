@@ -13,10 +13,10 @@ import { decompressVersion01 } from './decompressVersion01';
 import type {
   DayModifierFactory,
   DiaryFactory,
-  DiarySettingsFactory,
+  UseExistingDataDiarySettingsFactory,
   IDiary,
   UseExistingDataDiaryEntryFactory,
-} from '../diaryInterfaces';
+} from '../diary/diaryModelInterfaces';
 import { inject, injectable } from 'tsyringe';
 
 /**
@@ -35,7 +35,7 @@ export class DiaryDecompressor {
     @inject('DayModifierFactory')
     private dayModifierFactory: DayModifierFactory,
     @inject('DiarySettingsFactory')
-    private diarySettingsFactory: DiarySettingsFactory,
+    private diarySettingsFactory: UseExistingDataDiarySettingsFactory,
     @inject('UseExistingDataDiaryEntryFactory')
     private diaryEntryFactory: UseExistingDataDiaryEntryFactory,
     @inject('DiaryFactory') private diaryFactory: DiaryFactory

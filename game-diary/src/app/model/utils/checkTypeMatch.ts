@@ -22,8 +22,7 @@ export function hasField<K extends string, T extends CheckedType>(
 } {
   return (
     field in obj && // obj has field
-    typeof (obj as any)[field] === type && // obj.field is type of "type"
-    (obj as any)[field] !== null // obj.field is not null
+    isTypeMatch((obj as any)[field], type) // obj.field is type of "type"
   );
 }
 /**
@@ -36,7 +35,10 @@ export function isTypeMatch<T extends CheckedType>(
   val: unknown,
   type: T
 ): val is TypeMap[T] {
-  return typeof val !== type || val === null;
+  return (
+    (typeof val === type && val !== null) ||
+    (type === 'Array' && val instanceof Array)
+  );
 }
 
 /**

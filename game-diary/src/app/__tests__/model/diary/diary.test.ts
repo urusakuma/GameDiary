@@ -103,7 +103,7 @@ describe('DairySettings class tests', () => {
   });
   test('JSON test', () => {
     const diaryJson =
-      '{"settings":{},"diaryEntries":[[1,{"day":1,"title":"","content":"","next":2}],[2,{"day":2,"title":"","content":"","next":3}],[3,{"day":3,"title":"","content":"","next":4}],[4,{"day":4,"title":"","content":"","next":5}],[5,{"day":5,"title":"","content":""}]],"lastDay":5}';
+      '{"settings":{},"diaryEntries":[{"day":1,"title":"","content":"","next":2},{"day":2,"title":"","content":"","next":3},{"day":3,"title":"","content":"","next":4},{"day":4,"title":"","content":"","next":5},{"day":5,"title":"","content":""}],"lastDay":5}';
     const diary = container.resolve<IDiary>('InitDiary');
     for (let i = 2; i < 6; i++) {
       diary.createNewEntry();

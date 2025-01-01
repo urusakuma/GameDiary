@@ -1,4 +1,4 @@
-import { IDiary } from '../diary/diaryModelInterfaces';
+import { IDiary } from '@/model/diary/diaryModelInterfaces';
 
 export interface IDiaryDecompressor {
   /**

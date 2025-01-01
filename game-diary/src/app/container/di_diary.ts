@@ -1,14 +1,20 @@
 import { container } from 'tsyringe';
 import {
+  DayModifierFactory,
   DiaryFactory,
+  IDayModifier,
+  IDiary,
   IDiaryEntry,
   IDiarySettings,
   UseExistingDataDiaryEntryFactory,
+  UseExistingDataDiarySettingsFactory,
   UsePreviousDayDiaryEntryFactory,
 } from '@/model/diary/diaryModelInterfaces';
 import { DiaryEntry } from '@/model/diary/diaryEntry';
 import { Diary } from '@/model/diary/diary';
 import { DairySettingsConstant } from '@/dairySettingsConstant';
+import { DayModifier } from '@/model/diary/dayModifier';
+import { DiarySettings } from '@/model/diary/diarySettings';
 
 container.register<string>('GAME_DATA_NAME', {
   useValue: DairySettingsConstant.DEFAULT_GAME_DATA_NAME,
@@ -39,15 +45,16 @@ container.register<number>('FirstDay', {
 container.register<UsePreviousDayDiaryEntryFactory>(
   'UsePreviousDayDiaryEntryFactory',
   {
-    useFactory: () => (source: IDiaryEntry, settings: IDiarySettings) =>{
+    useFactory: () => (source: IDiaryEntry, settings: IDiarySettings) => {
       const newDay = settings.getNextDay(source.day);
       return new DiaryEntry(
-        newDay, 
+        newDay,
         settings.getModifierDay(newDay),
         '',
         source.day,
         undefined
-      );}
+      );
+    },
   }
 );
 
@@ -81,3 +88,31 @@ container.register<DiaryFactory>('DiaryEntryFactory', {
         lastDay
       ),
 });
+container.register<DayModifierFactory>('DayModifierFactory', {
+  useFactory:
+    () =>
+    (modifier: string, cycleLength: number, ...unit: Array<string>) =>
+      new DayModifier(modifier, cycleLength, ...unit),
+});
+container.register<UseExistingDataDiarySettingsFactory>(
+  'UseExistingDataDiarySettingsFactory',
+  {
+    useFactory:
+      () =>
+      (
+        dayModifier: IDayModifier,
+        playGameDataName: string,
+        dayInterval: number,
+        storageKey: string,
+        version: number
+      ) =>
+        new DiarySettings(
+          dayModifier,
+          playGameDataName,
+          dayInterval,
+          storageKey,
+          version
+        ),
+  }
+);
+container.register<IDiary>('IDiary', { useClass: Diary });

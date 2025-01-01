@@ -34,7 +34,7 @@ export function decompressVersion01(
     !hasField(jsonObj.settings.dayModifier, 'cycleLength', 'number') ||
     !hasField(jsonObj.settings.dayModifier, 'unit', 'Array') ||
     !isArrayType(jsonObj.settings.dayModifier.unit, 'string') ||
-    jsonObj.settings.dayModifier.unit.length <= 4
+    jsonObj.settings.dayModifier.unit.length > 4
   ) {
     throw new InvalidJsonError('DayModifier class is broken');
   }

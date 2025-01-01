@@ -100,7 +100,7 @@ export class Diary implements IDiary {
   toJSON(): object {
     return {
       settings: this.settings,
-      diaryEntries: [...this.diaryEntries],
+      diaryEntries: this.diaryEntries.values().toArray(),
       lastDay: this.lastDay,
     };
   }

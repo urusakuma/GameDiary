@@ -34,7 +34,7 @@ export class DiaryDecompressor {
   constructor(
     @inject('DayModifierFactory')
     private dayModifierFactory: DayModifierFactory,
-    @inject('DiarySettingsFactory')
+    @inject('UseExistingDataDiarySettingsFactory')
     private diarySettingsFactory: UseExistingDataDiarySettingsFactory,
     @inject('UseExistingDataDiaryEntryFactory')
     private diaryEntryFactory: UseExistingDataDiaryEntryFactory,
@@ -57,7 +57,7 @@ export class DiaryDecompressor {
     if (!hasField(jsonObj, 'settings', 'object')) {
       throw new InvalidJsonError('JSON is broken');
     }
-    if (!hasField(jsonObj.settings, 'version', 'number')) {
+    if (!hasField(jsonObj.settings, '_version', 'number')) {
       // versionが無いならv0.00
       return decompressVersion00(
         jsonObj,
@@ -67,7 +67,7 @@ export class DiaryDecompressor {
         this.diaryFactory
       );
     }
-    switch (jsonObj.settings.version) {
+    switch (jsonObj.settings._version) {
       case 1:
         return decompressVersion01(
           jsonObj,
@@ -78,7 +78,7 @@ export class DiaryDecompressor {
         );
       default:
         throw new NotSupportedError(
-          `version=v${jsonObj.settings.version} is not supported`
+          `version=v${jsonObj.settings._version} is not supported`
         );
     }
   }

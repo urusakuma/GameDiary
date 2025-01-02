@@ -53,7 +53,7 @@ export class DiaryService implements IDiaryService {
     // セーブデータを文字列に変換する
     const savaStr = compressDiary(this.currentDiary);
     //変換したセーブデータをキーと紐づけてストレージに保存
-    const key = this.currentDiary.settings.storageKey;
+    const key = this.currentDiary.getSettings().storageKey;
     this.storage.setItem(key, savaStr);
   };
 
@@ -83,17 +83,20 @@ export class DiaryService implements IDiaryService {
   create = (gameName: string): void => {
     // 現在の設定に基づいて新しいDiaryを作成する。
     const newDiary = this.diaryLoader.createNewDiary(
-      this.currentDiary.settings
+      this.currentDiary.getSettings()
     );
     // カレントのDiaryを今作成したものに変更する。
     this.changeCurrentDiary(newDiary);
     // 新しいDiaryを保存する。
-    this.diaryKeyMapper.setGameDataName(newDiary.settings.storageKey, gameName);
+    this.diaryKeyMapper.setGameDataName(
+      newDiary.getSettings().storageKey,
+      gameName
+    );
     this.save();
   };
 
   remove = (key: string): boolean => {
-    if (this.currentDiary.settings.storageKey) {
+    if (this.currentDiary.getSettings().storageKey) {
       return false;
     }
     this.storage.removeItem(key);
@@ -107,6 +110,6 @@ export class DiaryService implements IDiaryService {
    */
   private changeCurrentDiary = (diary: IDiary): void => {
     this.currentDiary = diary;
-    this.diaryKeyMapper.setCurrentGameDataKey(diary.settings.storageKey);
+    this.diaryKeyMapper.setCurrentGameDataKey(diary.getSettings().storageKey);
   };
 }

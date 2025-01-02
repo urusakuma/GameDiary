@@ -44,17 +44,17 @@ export class DiaryLoader implements IDiaryLoader {
       return this.createNewDiary();
     }
     // カレントキーからカレントのデータを読み出す。読み出せなかった場合は新しくDiaryを作成する。
-    const saveDatastr = this.storage.getItem(this.currentGameDataKey);
-    if (saveDatastr === null) {
+    const saveDataStr = this.storage.getItem(this.currentGameDataKey);
+    if (saveDataStr === null) {
       return this.createNewDiary();
     }
     // カレントデータを復号して返却する。破損していた場合はエラーメッセージをそのまま投げる。
-    return this.diaryDecompressor.decompressDiary(saveDatastr);
+    return this.diaryDecompressor.decompressDiary(saveDataStr);
   };
   createNewDiary(settings?: IDiarySettings): IDiary {
     const diary = this.diaryFactory(settings);
     // このクラスのカレントに作成したDiaryのストレージキーを入れる。
-    this.currentGameDataKey = diary.settings.storageKey;
+    this.currentGameDataKey = diary.getSettings().storageKey;
     return diary;
   }
 }

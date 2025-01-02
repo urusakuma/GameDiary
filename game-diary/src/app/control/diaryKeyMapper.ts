@@ -108,7 +108,7 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
 
 export class Item {
   storageKey: string;
-  playGamedataName: string;
+  playGamedataName: string; // dateがDataではないのはv0でのtypo、わざわざ修正する規模のミスでもないのでそのままにしている。
   constructor(storageKey: string, playGamedataName: string) {
     this.storageKey = storageKey;
     this.playGamedataName = playGamedataName;

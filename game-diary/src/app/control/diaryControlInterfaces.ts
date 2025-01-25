@@ -93,3 +93,11 @@ export interface IDiaryKeyMapper {
    */
   setCurrentGameDataKey(key: string): void;
 }
+export interface IDiaryDataMigrator {
+  migrate(): void;
+}
+export interface IKeyNamePair {
+  getKey(): string;
+  getName(): string;
+  setName(newName: string): void;
+}

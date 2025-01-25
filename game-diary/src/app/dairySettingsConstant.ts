@@ -13,6 +13,7 @@ export class DairySettingsConstant {
   static readonly DAY_PLACEHOLDER: string = '$D';
   static readonly TOTAL_DAYS_PLACEHOLDER: string = '$N';
 
-  static readonly CURRENT_GAME_DATA_NAME: string = 'currentGameDataName';
+  static readonly CURRENT_GAME_DATA_NAME: string = 'currentGameDataName'; //v0で使用。実際にはストレージキーが入るためv1で修正
+  static readonly CURRENT_GAME_DATA_KEY: string = 'currentGameDataKey';
   static readonly GAME_DATA_NAME_LIST: string = 'gameDataNameList';
 }

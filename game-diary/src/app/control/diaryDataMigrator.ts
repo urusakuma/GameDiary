@@ -1,4 +1,4 @@
-import { inject } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import { IDiaryDataMigrator } from './diaryControlInterfaces';
 import { DairySettingsConstant } from '@/dairySettingsConstant';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
@@ -8,10 +8,10 @@ import {
   isArrayType,
   hasField,
 } from '@/model/utils/checkTypeMatch';
-
+@injectable()
 export class DiaryDataMigrator implements IDiaryDataMigrator {
   constructor(
-    @inject('StorageService')
+    @inject('IStorageService')
     private storage: IStorageService
   ) {}
   migrate(): void {

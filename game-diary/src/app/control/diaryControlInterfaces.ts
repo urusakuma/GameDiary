@@ -79,11 +79,6 @@ export interface IDiaryKeyMapper {
    */
   collectDiaryNames(): Array<string>;
   /**
-   * 新しい日記を作成する。
-   * @returns {string} 新しく作成された日記のストレージキー
-   */
-  createNewDiaryName(): string;
-  /**
    * ストレージキーを指定して日記名を更新する。新規作成もここで行われる。
    * 名前が既に存在するときは数字を追加して別の名前にする。
    * 保存する際にO(n)の処理が挟まるため呼び出しに注意。

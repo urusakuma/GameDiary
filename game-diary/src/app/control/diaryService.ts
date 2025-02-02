@@ -45,8 +45,8 @@ export class DiaryService implements IDiaryService {
     return this.currentDiary;
   };
 
-  collectGameDataNames = (): Array<string> => {
-    return this.diaryKeyMapper.collectGameDataNames();
+  collectDiaryNames = (): Array<string> => {
+    return this.diaryKeyMapper.collectDiaryNames();
   };
 
   save = (): void => {
@@ -62,7 +62,7 @@ export class DiaryService implements IDiaryService {
     const loadStr = this.storage.getItem(key);
     if (loadStr === null) {
       // Diaryが存在しないなら名前リストから削除してエラーを吐く
-      this.diaryKeyMapper.removeGameDataName(key);
+      this.diaryKeyMapper.removeDiaryName(key);
       throw new KeyNotFoundError(`not exists Key= ${key}`);
     }
     //デシリアライズした内容をカレントレポートに変更する。
@@ -88,7 +88,7 @@ export class DiaryService implements IDiaryService {
     // カレントのDiaryを今作成したものに変更する。
     this.changeCurrentDiary(newDiary);
     // 新しいDiaryを保存する。
-    this.diaryKeyMapper.setGameDataName(
+    this.diaryKeyMapper.updateDiaryName(
       newDiary.getSettings().storageKey,
       gameName
     );
@@ -100,7 +100,7 @@ export class DiaryService implements IDiaryService {
       return false;
     }
     this.storage.removeItem(key);
-    this.diaryKeyMapper.removeGameDataName(key);
+    this.diaryKeyMapper.removeDiaryName(key);
     return true;
   };
 
@@ -110,6 +110,6 @@ export class DiaryService implements IDiaryService {
    */
   private changeCurrentDiary = (diary: IDiary): void => {
     this.currentDiary = diary;
-    this.diaryKeyMapper.setCurrentGameDataKey(diary.getSettings().storageKey);
+    this.diaryKeyMapper.setCurrentDiaryKey(diary.getSettings().storageKey);
   };
 }

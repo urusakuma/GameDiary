@@ -29,7 +29,7 @@ describe('DiaryDataMigrator class tests', () => {
       'testKey0'
     );
     const gameDataNameListJson = storage.getItem(
-      DairySettingsConstant.GAME_DATA_NAME_LIST
+      DairySettingsConstant.DIARY_NAME_LIST
     );
     expect(gameDataNameListJson).not.toBeNull();
     if (gameDataNameListJson === null) {
@@ -59,11 +59,11 @@ describe('DiaryDataMigrator class tests', () => {
     expect(
       storage.getItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME)
     ).toBeNull();
-    expect(storage.getItem(DairySettingsConstant.CURRENT_GAME_DATA_KEY)).toBe(
+    expect(storage.getItem(DairySettingsConstant.CURRENT_DIARY_KEY)).toBe(
       'testKey0'
     );
     const keyNamePairJson = storage.getItem(
-      DairySettingsConstant.GAME_DATA_NAME_LIST
+      DairySettingsConstant.DIARY_NAME_LIST
     );
     if (keyNamePairJson === null) {
       throw Error;

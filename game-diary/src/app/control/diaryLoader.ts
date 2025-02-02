@@ -27,14 +27,14 @@ export class DiaryLoader implements IDiaryLoader {
       this.loadDiary = (..._: any[]) => this.createNewDiary();
     }
     //ローカルストレージからゲームデータネームリストを取得する。
-    const gameDataNames = this.diaryKeyMapper.collectGameDataNames();
+    const gameDataNames = this.diaryKeyMapper.collectDiaryNames();
     if (gameDataNames.length <= 0) {
       // リストが存在しない場合、初めて開いたと判断してnullを入れる。
       this.currentGameDataKey = null;
       return;
     }
     // カレントのゲームデータを保存する。
-    this.currentGameDataKey = this.diaryKeyMapper.getCurrentGameDataKey();
+    this.currentGameDataKey = this.diaryKeyMapper.getCurrentDiaryKey();
   }
   loadDiary = (key?: string): IDiary => {
     // 指定したKeyか、現在のカレントのキーをカレントキーに入れる。

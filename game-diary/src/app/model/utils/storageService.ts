@@ -23,7 +23,7 @@ export class LocalStorageService implements IStorageService {
  */
 export const notSupportFunc = (..._: any[]) => {
   throw new NotSupportedError(
-    'プライベートモードではデータの保存ができません。\n古いブラウザはサポートしていません。'
+    'データが保存できませんでした。\nメモリが足りないか古いブラウザを使用しています。'
   );
 };
 /**

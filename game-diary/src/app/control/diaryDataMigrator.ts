@@ -34,7 +34,7 @@ export class DiaryDataMigrator implements IDiaryDataMigrator {
     );
     if (v0CurrentGameKey !== null) {
       this.storage.setItem(
-        DairySettingsConstant.CURRENT_GAME_DATA_KEY,
+        DairySettingsConstant.CURRENT_DIARY_KEY,
         v0CurrentGameKey
       );
       this.storage.removeItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME);
@@ -42,7 +42,7 @@ export class DiaryDataMigrator implements IDiaryDataMigrator {
 
     // まず、itemListを初期化し、ストレージからゲームデータ名のリストを取得する。
     const gameDataNameList = this.storage.getItem(
-      DairySettingsConstant.GAME_DATA_NAME_LIST
+      DairySettingsConstant.DIARY_NAME_LIST
     );
     if (gameDataNameList === null) {
       return;
@@ -67,7 +67,7 @@ export class DiaryDataMigrator implements IDiaryDataMigrator {
     });
     // データを上書き
     this.storage.setItem(
-      DairySettingsConstant.GAME_DATA_NAME_LIST,
+      DairySettingsConstant.DIARY_NAME_LIST,
       JSON.stringify(keyNamePairList)
     );
   }

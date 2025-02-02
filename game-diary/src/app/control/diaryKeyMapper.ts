@@ -8,7 +8,6 @@ import {
   isStorageAvailable,
   notSupportFunc,
 } from '@/model/utils/storageService';
-import { randomUUID } from 'crypto';
 @injectable()
 export class DiaryKeyMapper implements IDiaryKeyMapper {
   /** ストレージキーと名前の連想配列。ストレージキーがkey、ゲームデータ名がval。 */
@@ -24,7 +23,6 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
       this.updateDiaryName = notSupportFunc;
       this.getCurrentDiaryKey = notSupportFunc;
       this.setCurrentDiaryKey = notSupportFunc;
-      this.createNewDiaryName = notSupportFunc;
       this.collectDiaryNames = notSupportFunc;
       this.removeDiaryName = notSupportFunc;
       return;
@@ -33,7 +31,6 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
     const listStr = storage.getItem(DairySettingsConstant.DIARY_NAME_LIST);
     if (listStr === null) {
       // nullならデータが存在しない
-      this.setCurrentNewDiaryName();
       return;
     }
     // 取得したJSONをゲームデータ名のリストに変換できるか確認
@@ -48,7 +45,7 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
         // ゲームデータ名をMapとSetに保存
         this.storeName(v[0], v[1]);
       });
-    // current_diary_keyがnullならcurrent_diary_key設定する
+    // current_diary_keyがnullならcurrent_diary_keyを設定する
     if (storage.getItem(DairySettingsConstant.CURRENT_DIARY_KEY) === null) {
       this.setAnyDiaryKeyToCurrent();
     }
@@ -60,11 +57,6 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
     return this.names.values().toArray();
   }
 
-  createNewDiaryName(): string {
-    const newKey = randomUUID().toString();
-    this.storeName(newKey, DairySettingsConstant.NEW_DIARY_NAME);
-    return newKey;
-  }
   updateDiaryName(key: string, name: string): boolean {
     // keyかnameが空文字なら変更不可
     if (key === '' || name === '') {
@@ -102,8 +94,11 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
     );
     if (currentKey === null) {
       // 通常操作ではありえないが、ストレージを直接操作した場合やバグなどであり得る
-      this.setAnyDiaryKeyToCurrent();
-      throw new KeyNotFoundError('not exist current_diary_key');
+      try {
+        this.setAnyDiaryKeyToCurrent();
+      } finally {
+        throw new KeyNotFoundError('not exist current_diary_key');
+      }
     }
     return currentKey;
   }
@@ -112,11 +107,6 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
       throw new KeyNotFoundError(`not exist ${key}`);
     }
     this.storage.setItem(DairySettingsConstant.CURRENT_DIARY_KEY, key);
-  }
-  private setCurrentNewDiaryName(): void {
-    /** セーブデータが存在しないので初期データを入れる*/
-    const newKey = this.createNewDiaryName();
-    this.setCurrentDiaryKey(newKey);
   }
   private saveDiaryNames() {
     /** ストレージキーと名前を紐づけてストレージに保存*/
@@ -131,9 +121,8 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
     /** なんでもいいからカレントのKeyを設定する*/
     const firstKey = this.diaryNameMap.keys().next().value;
     if (firstKey === undefined) {
-      // ゲームデータが一つもない
-      this.setCurrentNewDiaryName();
-      return;
+      // 日記名が一つもない
+      throw new RangeError('not exists any diary names');
     }
     this.setCurrentDiaryKey(firstKey);
   }

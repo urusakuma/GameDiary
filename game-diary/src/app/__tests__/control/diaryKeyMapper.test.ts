@@ -97,7 +97,7 @@ describe('UnavailableStorage DiaryKeyMapper class tests', () => {
       useClass: DiaryKeyMapper,
     });
   });
-  test("don't use storage", () => {
+  test("can't use storage", () => {
     const diaryKeyMapper =
       container.resolve<IDiaryKeyMapper>('IDiaryKeyMapper');
     expect(() => diaryKeyMapper.collectDiaryNames()).toThrow(NotSupportedError);

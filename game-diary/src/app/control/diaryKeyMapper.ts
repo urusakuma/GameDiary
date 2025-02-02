@@ -1,116 +1,152 @@
 import { DairySettingsConstant } from '@/dairySettingsConstant';
-import {
-  hasField,
-  isArrayType,
-  isTypeMatch,
-} from '@/model/utils/checkTypeMatch';
+import { isArrayType, isTypeMatch } from '@/model/utils/checkTypeMatch';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
-import { inject } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import { IDiaryKeyMapper } from './diaryControlInterfaces';
 import { InvalidJsonError, KeyNotFoundError } from '@/error';
 import {
   isStorageAvailable,
   notSupportFunc,
 } from '@/model/utils/storageService';
-
+import { randomUUID } from 'crypto';
+@injectable()
 export class DiaryKeyMapper implements IDiaryKeyMapper {
   /** ストレージキーと名前の連想配列。ストレージキーがkey、ゲームデータ名がval。 */
-  private itemMap: Map<string, string> = new Map<string, string>();
+  private diaryNameMap: Map<string, string> = new Map<string, string>();
   /** 名前が重複しないために名前を保存しておく集合 */
   private names: Set<string> = new Set<string>();
   constructor(
-    @inject('StorageService')
+    @inject('IStorageService')
     private storage: IStorageService
   ) {
     if (!isStorageAvailable(storage)) {
-      this.setGameDataName = notSupportFunc;
-      this.getCurrentGameDataKey = notSupportFunc;
-      this.setCurrentGameDataKey = notSupportFunc;
+      // すべてのpublic関数を使用不可にする。
+      this.updateDiaryName = notSupportFunc;
+      this.getCurrentDiaryKey = notSupportFunc;
+      this.setCurrentDiaryKey = notSupportFunc;
+      this.createNewDiaryName = notSupportFunc;
+      this.collectDiaryNames = notSupportFunc;
+      this.removeDiaryName = notSupportFunc;
+      return;
     }
     // まず、itemListを初期化し、ストレージからゲームデータ名のリストを取得する。
-    const list = storage.getItem(DairySettingsConstant.GAME_DATA_NAME_LIST);
-    if (list === null) {
+    const listStr = storage.getItem(DairySettingsConstant.DIARY_NAME_LIST);
+    if (listStr === null) {
+      // nullならデータが存在しない
+      this.setCurrentNewDiaryName();
       return;
     }
     // 取得したJSONをゲームデータ名のリストに変換できるか確認
-    const arrayJson: unknown = JSON.parse(list);
-    if (
-      !isTypeMatch(arrayJson, 'Array') ||
-      !isArrayType(arrayJson, 'object') ||
-      !arrayJson.every(
-        (v) =>
-          hasField(v, 'storageKey', 'string') &&
-          hasField(v, 'playGamedataName', 'string')
-      )
-    ) {
-      throw new InvalidJsonError('game_data_name_list is broken');
+    const diaryNameListJson: unknown = JSON.parse(listStr);
+    if (!isTypeMatch(diaryNameListJson, 'Array')) {
+      throw new InvalidJsonError('diary_name_list is broken');
     }
-    // ゲームデータ名のMapとSetを保管
-    arrayJson.map((v) => {
-      this.itemMap.set(v.storageKey, v.playGamedataName);
-      this.names.add(v.playGamedataName);
-    });
+    // ゲームデータ名をMapとSetに保存
+    diaryNameListJson
+      .filter((v) => isTypeMatch(v, 'Array') && isArrayType(v, 'string'))
+      .forEach((v) => {
+        // ゲームデータ名をMapとSetに保存
+        this.storeName(v[0], v[1]);
+      });
+    // current_diary_keyがnullならcurrent_diary_key設定する
+    if (storage.getItem(DairySettingsConstant.CURRENT_DIARY_KEY) === null) {
+      this.setAnyDiaryKeyToCurrent();
+    }
   }
   get length(): number {
-    return this.itemMap.size;
+    return this.diaryNameMap.size;
   }
-  collectGameDataNames(): Array<string> {
-    return this.itemMap.values().toArray();
+  collectDiaryNames(): Array<string> {
+    return this.names.values().toArray();
   }
 
-  setGameDataName(key: string, name: string): boolean {
-    // keyかnameが空文字、もしくは既に存在する名前なら変更不可
-    if (key === '' || name === '' || this.names.has(name)) {
+  createNewDiaryName(): string {
+    const newKey = randomUUID().toString();
+    this.storeName(newKey, DairySettingsConstant.NEW_DIARY_NAME);
+    return newKey;
+  }
+  updateDiaryName(key: string, name: string): boolean {
+    // keyかnameが空文字なら変更不可
+    if (key === '' || name === '') {
       return false;
     }
     // 既に存在するストレージキーならnamesから名前を削除しておく
-    const oldName = this.itemMap.get(key);
+    const oldName = this.diaryNameMap.get(key);
     if (oldName !== undefined) {
       this.names.delete(oldName);
     }
-
-    //ストレージキーと名前を保管、keyが既に存在するなら上書き
-    this.itemMap.set(key, name);
-    this.names.add(name);
-
-    // ストレージキーと名前を紐づけてストレージに保存
-    const itemList: Array<Item> = [];
-    this.itemMap.entries().map((v) => itemList.push(new Item(v[0], v[1])));
-    this.storage.setItem(
-      DairySettingsConstant.GAME_DATA_NAME_LIST,
-      JSON.stringify(itemList)
-    );
+    //ストレージキーと名前を保存してストレージに登録する
+    this.storeName(key, name);
+    this.saveDiaryNames();
     return true;
   }
 
-  removeGameDataName(key: string): void {
-    const removeName = this.itemMap.get(key);
+  removeDiaryName(key: string): void {
+    const removeName = this.diaryNameMap.get(key);
     if (removeName === undefined) {
       return;
     }
+    // MapとSetから削除してセーブ
+    const isCurrent = this.getCurrentDiaryKey() === key;
+    this.diaryNameMap.delete(key);
     this.names.delete(removeName);
-    this.itemMap.delete(key);
-    this.storage.removeItem(key);
+    this.saveDiaryNames();
+    // カレントを削除した場合は他のDiaryをカレントに登録
+    if (isCurrent) {
+      this.setAnyDiaryKeyToCurrent();
+    }
   }
-  getCurrentGameDataKey(): string {
+  getCurrentDiaryKey(): string {
     const currentKey = this.storage.getItem(
-      DairySettingsConstant.CURRENT_GAME_DATA_NAME
+      DairySettingsConstant.CURRENT_DIARY_KEY
     );
     if (currentKey === null) {
-      throw new KeyNotFoundError('not exist CURRENT_GAME_DATA_NAME');
+      // 通常操作ではありえないが、ストレージを直接操作した場合やバグなどであり得る
+      this.setAnyDiaryKeyToCurrent();
+      throw new KeyNotFoundError('not exist current_diary_key');
     }
     return currentKey;
   }
-  setCurrentGameDataKey(key: string): void {
-    this.storage.setItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME, key);
+  setCurrentDiaryKey(key: string): void {
+    if (!this.diaryNameMap.has(key)) {
+      throw new KeyNotFoundError(`not exist ${key}`);
+    }
+    this.storage.setItem(DairySettingsConstant.CURRENT_DIARY_KEY, key);
   }
-}
-
-export class Item {
-  storageKey: string;
-  playGamedataName: string; // dateがDataではないのはv0でのtypo、わざわざ修正する規模のミスでもないのでそのままにしている。
-  constructor(storageKey: string, playGamedataName: string) {
-    this.storageKey = storageKey;
-    this.playGamedataName = playGamedataName;
+  private setCurrentNewDiaryName(): void {
+    /** セーブデータが存在しないので初期データを入れる*/
+    const newKey = this.createNewDiaryName();
+    this.setCurrentDiaryKey(newKey);
+  }
+  private saveDiaryNames() {
+    /** ストレージキーと名前を紐づけてストレージに保存*/
+    const itemList: Array<[string, string]> = [];
+    this.diaryNameMap.entries().map((v) => itemList.push([v[0], v[1]]));
+    this.storage.setItem(
+      DairySettingsConstant.DIARY_NAME_LIST,
+      JSON.stringify(itemList)
+    );
+  }
+  private setAnyDiaryKeyToCurrent() {
+    /** なんでもいいからカレントのKeyを設定する*/
+    const firstKey = this.diaryNameMap.keys().next().value;
+    if (firstKey === undefined) {
+      // ゲームデータが一つもない
+      this.setCurrentNewDiaryName();
+      return;
+    }
+    this.setCurrentDiaryKey(firstKey);
+  }
+  private storeName(key: string, name: string) {
+    /** ストレージキーと名前をこのクラスに保存する。*/
+    // ゲームデータ名に重複がないか調べる。重複している場合は数字を付加して重複を避ける。
+    let newName: string = name;
+    let i: number = 1;
+    while (this.names.has(newName)) {
+      newName = name + String(i);
+      i++;
+    }
+    this.diaryNameMap.set(key, newName);
+    this.names.add(newName);
   }
 }

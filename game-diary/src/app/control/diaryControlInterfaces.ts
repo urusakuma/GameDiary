@@ -1,5 +1,8 @@
 import { IDiary, IDiarySettings } from '@/model/diary/diaryModelInterfaces';
 
+/**
+ * Diaryを管理し、Diaryへのアクセスを他クラスに提供する。
+ */
 export interface IDiaryService {
   /**
    * カレントのDiaryへのアクセスを提供する。
@@ -10,13 +13,13 @@ export interface IDiaryService {
    * 日記名のリストを返却する。
    * @returns {Array<string>} 日記名のリスト。
    */
-  collectGameDataNames(): Array<string>;
+  collectDiaryNames(): Array<string>;
 
   /**ストレージにDiaryを保存する。*/
   save(): void;
 
   /**
-   * ストレージのKeyを指定し、ストレージからDiaryを読み込む。
+   * 日記のKeyを指定し、ストレージからDiaryを読み込む。
    * 読み込みに失敗した場合はストレージから削除しておく。
    * @param {string} key  読み込む日記のキー。
    * @throws {KeyNotFoundError} 要素がローカルストレージに存在しない。
@@ -37,9 +40,9 @@ export interface IDiaryService {
 
   /**
    * 新しいセーブデータを作り出す。
-   * @param gameName 画面上に表示する日記の名前
+   * @param diaryName 画面上に表示する日記の名前
    */
-  create(gameName: string): void;
+  create(diaryName: string): void;
   /**
    * 指定したKeyのDiaryを削除する。
    * カレントのDiaryなら削除できない。
@@ -48,9 +51,12 @@ export interface IDiaryService {
    */
   remove(key: string): boolean;
 }
+/**
+ * ストレージからDiaryを読み込み返却する。
+ */
 export interface IDiaryLoader {
   /**
-   * 指定したGameDataNameのDiaryを取得する。特に指定がないならカレントを指定されたものとする。
+   * 指定したDiaryNameのDiaryを取得する。特に指定がないならカレントを指定されたものとする。
    * @param {string?} key 取得するDiaryのストレージキー、指定していないならカレントを指定されたものとする。
    * @returns {IDiary} 取得するIDiary
    */
@@ -61,6 +67,9 @@ export interface IDiaryLoader {
    */
   createNewDiary(settings?: IDiarySettings): IDiary;
 }
+/**
+ * 日記の名前とユニークな日記のキーを対応させストレージに保存するクラス
+ */
 export interface IDiaryKeyMapper {
   /** 保存された日記の数を返す */
   get length(): number;
@@ -68,32 +77,42 @@ export interface IDiaryKeyMapper {
    * 保存されている日記名の配列を返す。
    * @returns {Array<string>} 日記名の配列
    */
-  collectGameDataNames(): Array<string>;
+  collectDiaryNames(): Array<string>;
   /**
-   * 新しい日記名を保存する。既に存在するストレージキーを指定した場合、上書きする。
-   * 既に存在する名前は入れられない。
-   * @param key 日記名を引き出すストレージキー
-   * @param name 日記名
+   * 新しい日記を作成する。
+   * @returns {string} 新しく作成された日記のストレージキー
+   */
+  createNewDiaryName(): string;
+  /**
+   * ストレージキーを指定して日記名を更新する。新規作成もここで行われる。
+   * 名前が既に存在するときは数字を追加して別の名前にする。
+   * 保存する際にO(n)の処理が挟まるため呼び出しに注意。
+   * @param key 日記名と対応したストレージキー
+   * @param name 新しい日記名
    * @returns 保存に成功したならtrue、失敗したならfalse
    */
-  setGameDataName(key: string, name: string): boolean;
+  updateDiaryName(key: string, name: string): boolean;
   /**
-   * 指定したストレージキーを日記リストから取り除く。
+   * 指定したストレージキーに対応した日記名を日記リストから取り除く。
+   * 日記名だけを取り除き、日記そのものを取り除くことはない。
    * @param key 取り除く日記のストレージキー
    */
-  removeGameDataName(key: string): void;
+  removeDiaryName(key: string): void;
   /**
    * 現在操作している日記のストレージキーを返す。
    * @returns 現在操作している日記のストレージキー
    */
-  getCurrentGameDataKey(): string;
+  getCurrentDiaryKey(): string;
   /**
    * 現在操作している日記のストレージキーを変更する。
    * @param key 新しく操作する日記のストレージキー
    */
-  setCurrentGameDataKey(key: string): void;
+  setCurrentDiaryKey(key: string): void;
 }
 export interface IDiaryDataMigrator {
+  /**
+   * ストレージに保存された日記のカレントや名前とキーのペアを最新のバージョンに適合させる
+   */
   migrate(): void;
 }
 export interface IKeyNamePair {

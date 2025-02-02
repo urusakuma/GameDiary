@@ -13,7 +13,7 @@ export class MockV0StorageService extends MockStorageService {
       itemList.push(new Item(itemKey, itemName));
     }
     this.setItem(
-      DairySettingsConstant.GAME_DATA_NAME_LIST,
+      DairySettingsConstant.DIARY_NAME_LIST,
       JSON.stringify(itemList)
     );
     this.setItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME, 'testKey0');

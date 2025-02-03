@@ -45,10 +45,6 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
         // ゲームデータ名をMapとSetに保存
         this.storeName(v[0], v[1]);
       });
-    // current_diary_keyがnullならcurrent_diary_keyを設定する
-    if (storage.getItem(DairySettingsConstant.CURRENT_DIARY_KEY) === null) {
-      this.setAnyDiaryKeyToCurrent();
-    }
   }
   get length(): number {
     return this.diaryNameMap.size;
@@ -79,27 +75,14 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
       return;
     }
     // MapとSetから削除してセーブ
-    const isCurrent = this.getCurrentDiaryKey() === key;
     this.diaryNameMap.delete(key);
     this.names.delete(removeName);
     this.saveDiaryNames();
-    // カレントを削除した場合は他のDiaryをカレントに登録
-    if (isCurrent) {
-      this.setAnyDiaryKeyToCurrent();
-    }
   }
-  getCurrentDiaryKey(): string {
+  getCurrentDiaryKey(): string | null {
     const currentKey = this.storage.getItem(
       DairySettingsConstant.CURRENT_DIARY_KEY
     );
-    if (currentKey === null) {
-      // 通常操作ではありえないが、ストレージを直接操作した場合やバグなどであり得る
-      try {
-        this.setAnyDiaryKeyToCurrent();
-      } finally {
-        throw new KeyNotFoundError('not exist current_diary_key');
-      }
-    }
     return currentKey;
   }
   setCurrentDiaryKey(key: string): void {
@@ -107,6 +90,9 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
       throw new KeyNotFoundError(`not exist ${key}`);
     }
     this.storage.setItem(DairySettingsConstant.CURRENT_DIARY_KEY, key);
+  }
+  hasDiaryName(name: string): boolean {
+    return this.names.has(name);
   }
   private saveDiaryNames() {
     /** ストレージキーと名前を紐づけてストレージに保存*/
@@ -117,25 +103,9 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
       JSON.stringify(itemList)
     );
   }
-  private setAnyDiaryKeyToCurrent() {
-    /** なんでもいいからカレントのKeyを設定する*/
-    const firstKey = this.diaryNameMap.keys().next().value;
-    if (firstKey === undefined) {
-      // 日記名が一つもない
-      throw new RangeError('not exists any diary names');
-    }
-    this.setCurrentDiaryKey(firstKey);
-  }
   private storeName(key: string, name: string) {
     /** ストレージキーと名前をこのクラスに保存する。*/
-    // ゲームデータ名に重複がないか調べる。重複している場合は数字を付加して重複を避ける。
-    let newName: string = name;
-    let i: number = 1;
-    while (this.names.has(newName)) {
-      newName = name + String(i);
-      i++;
-    }
-    this.diaryNameMap.set(key, newName);
-    this.names.add(newName);
+    this.diaryNameMap.set(key, name);
+    this.names.add(name);
   }
 }

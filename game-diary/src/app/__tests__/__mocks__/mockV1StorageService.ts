@@ -14,6 +14,6 @@ export class MockV1StorageService extends MockStorageService {
       DairySettingsConstant.DIARY_NAME_LIST,
       JSON.stringify(itemList)
     );
-    this.setItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME, 'testKey0');
+    this.setItem(DairySettingsConstant.CURRENT_DIARY_KEY, 'testKey0');
   }
 }

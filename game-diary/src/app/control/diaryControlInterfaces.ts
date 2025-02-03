@@ -98,12 +98,19 @@ export interface IDiaryKeyMapper {
    * 現在操作している日記のストレージキーを返す。
    * @returns 現在操作している日記のストレージキー
    */
-  getCurrentDiaryKey(): string | undefined;
+  getCurrentDiaryKey(): string | null;
   /**
    * 現在操作している日記のストレージキーを変更する。
    * @param key 新しく操作する日記のストレージキー
    */
   setCurrentDiaryKey(key: string): void;
+
+  /**
+   * 指定した名前がすでに存在するか確認する
+   * @param name 存在するか確認する名前
+   * @returns すでに存在するならtrue、存在しないならfalse
+   */
+  hasDiaryName(name: string): boolean;
 }
 export interface IDiaryDataMigrator {
   /**

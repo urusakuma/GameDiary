@@ -69,6 +69,7 @@ export interface IDiaryLoader {
 }
 /**
  * 日記の名前とユニークな日記のキーを対応させストレージに保存するクラス
+ * このクラスはローカルストレージに保存されているデータが正常であるかの判断は行わない
  */
 export interface IDiaryKeyMapper {
   /** 保存された日記の数を返す */
@@ -97,7 +98,7 @@ export interface IDiaryKeyMapper {
    * 現在操作している日記のストレージキーを返す。
    * @returns 現在操作している日記のストレージキー
    */
-  getCurrentDiaryKey(): string;
+  getCurrentDiaryKey(): string | undefined;
   /**
    * 現在操作している日記のストレージキーを変更する。
    * @param key 新しく操作する日記のストレージキー

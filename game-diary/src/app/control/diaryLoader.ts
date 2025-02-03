@@ -1,18 +1,17 @@
+import { inject } from 'tsyringe';
 import type {
   IDiary,
   IDiarySettings,
   NewDiaryFactory,
-} from '../model/diary/diaryModelInterfaces';
+} from '@/model/diary/diaryModelInterfaces';
 import type { IDiaryKeyMapper, IDiaryLoader } from './diaryControlInterfaces';
-
-import { inject } from 'tsyringe';
-import type { IStorageService } from '../model/utils/storageServiceInterface';
-import type { IDiaryDecompressor } from '../model/serialization/serializationInterface';
-import { isStorageAvailable } from '../model/utils/storageService';
+import type { IStorageService } from '@/model/utils/storageServiceInterface';
+import type { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
+import { isStorageAvailable } from '@/model/utils/storageService';
 
 export class DiaryLoader implements IDiaryLoader {
-  /**現在のGameDataのKey。不明ならnullを入れる。 */
-  currentGameDataKey: string | null;
+  /**現在のDiaryのKey。不明ならnullを入れる。 */
+  currentDiaryKey: string | null;
   constructor(
     @inject('NewDiaryFactory')
     private diaryFactory: NewDiaryFactory,
@@ -20,31 +19,31 @@ export class DiaryLoader implements IDiaryLoader {
     private diaryKeyMapper: IDiaryKeyMapper,
     @inject('DiaryDecompressor')
     private diaryDecompressor: IDiaryDecompressor,
-    @inject('StorageService')
+    @inject('IStorageService')
     private storage: IStorageService
   ) {
     if (!isStorageAvailable(this.storage)) {
       this.loadDiary = (..._: any[]) => this.createNewDiary();
     }
     //ローカルストレージからゲームデータネームリストを取得する。
-    const gameDataNames = this.diaryKeyMapper.collectDiaryNames();
-    if (gameDataNames.length <= 0) {
-      // リストが存在しない場合、初めて開いたと判断してnullを入れる。
-      this.currentGameDataKey = null;
+    const diaryNames = this.diaryKeyMapper.collectDiaryNames();
+    if (diaryNames.length <= 0) {
+      // リストが存在しない場合、初めて開いたと判断してカレントにnullを入れる。
+      this.currentDiaryKey = null;
       return;
     }
     // カレントのゲームデータを保存する。
-    this.currentGameDataKey = this.diaryKeyMapper.getCurrentDiaryKey();
+    this.currentDiaryKey = this.diaryKeyMapper.getCurrentDiaryKey() ?? null;
   }
   loadDiary = (key?: string): IDiary => {
     // 指定したKeyか、現在のカレントのキーをカレントキーに入れる。
-    this.currentGameDataKey = key ?? this.currentGameDataKey;
+    this.currentDiaryKey = key ?? this.currentDiaryKey;
     // カレントがnullなら新しくDiaryを作成する
-    if (this.currentGameDataKey === null) {
+    if (this.currentDiaryKey === null) {
       return this.createNewDiary();
     }
     // カレントキーからカレントのデータを読み出す。読み出せなかった場合は新しくDiaryを作成する。
-    const saveDataStr = this.storage.getItem(this.currentGameDataKey);
+    const saveDataStr = this.storage.getItem(this.currentDiaryKey);
     if (saveDataStr === null) {
       return this.createNewDiary();
     }
@@ -54,7 +53,7 @@ export class DiaryLoader implements IDiaryLoader {
   createNewDiary(settings?: IDiarySettings): IDiary {
     const diary = this.diaryFactory(settings);
     // このクラスのカレントに作成したDiaryのストレージキーを入れる。
-    this.currentGameDataKey = diary.getSettings().storageKey;
+    this.currentDiaryKey = diary.getSettings().storageKey;
     return diary;
   }
 }

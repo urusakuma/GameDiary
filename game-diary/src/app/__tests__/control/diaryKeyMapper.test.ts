@@ -42,9 +42,10 @@ describe('DiaryKeyMapper class tests', () => {
     diaryKeyMapper.updateDiaryName('testKey', '');
     expect(diaryKeyMapper.collectDiaryNames()).toMatchObject(diaryNameList);
 
-    // hasのテスト
-    expect(diaryKeyMapper.hasDiaryName('testName1')).toBeTruthy();
-    expect(diaryKeyMapper.hasDiaryName('testName99')).toBeFalsy();
+    // 同名の日記が存在する場合、1から始まる数字が付加される
+    diaryKeyMapper.updateDiaryName('testKey5', 'testName');
+    diaryNameList.push('testName5');
+    expect(diaryKeyMapper.collectDiaryNames()).toMatchObject(diaryNameList);
   });
   test('CurrentDiaryKey test', () => {
     const diaryKeyMapper =
@@ -79,9 +80,7 @@ describe('EmptyStorage DiaryKeyMapper class tests', () => {
   test('CurrentDiaryKey test', () => {
     const diaryKeyMapper =
       container.resolve<IDiaryKeyMapper>('IDiaryKeyMapper');
-    expect(() => diaryKeyMapper.getCurrentDiaryKey()).toThrow(
-      new KeyNotFoundError('not exist current_diary_key')
-    );
+    expect(diaryKeyMapper.getCurrentDiaryKey()).toBeNull();
   });
 });
 

@@ -2,7 +2,7 @@ import { IDiaryKeyMapper } from '@/control/diaryControlInterfaces';
 
 export class MockDiaryKeyMapper implements IDiaryKeyMapper {
   private diaryNames: Map<string, string> = new Map();
-  private currentDiaryKey: string | undefined = undefined;
+  private currentDiaryKey: string | null = null;
 
   get length(): number {
     return this.diaryNames.size;
@@ -25,7 +25,7 @@ export class MockDiaryKeyMapper implements IDiaryKeyMapper {
     this.diaryNames.delete(key);
   }
 
-  getCurrentDiaryKey(): string | undefined {
+  getCurrentDiaryKey(): string | null {
     return this.currentDiaryKey;
   }
 

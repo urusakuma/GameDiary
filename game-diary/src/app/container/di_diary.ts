@@ -6,6 +6,8 @@ import {
   IDiary,
   IDiaryEntry,
   IDiarySettings,
+  NewDiaryFactory,
+  NewDiarySettingsFactory,
   UseExistingDataDiaryEntryFactory,
   UseExistingDataDiarySettingsFactory,
   UsePreviousDayDiaryEntryFactory,
@@ -15,6 +17,7 @@ import { Diary } from '@/model/diary/diary';
 import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { DayModifier } from '@/model/diary/dayModifier';
 import { DiarySettings } from '@/model/diary/diarySettings';
+import { IUniqueDiaryNameGenerator } from '@/control/diaryControlInterfaces';
 
 container.register<string>('GAME_DATA_NAME', {
   useValue: DairySettingsConstant.DEFAULT_GAME_DATA_NAME,
@@ -37,7 +40,12 @@ container.register<string>('DAY_MODIFIER', {
 container.register<string>('EMPTY_STRING', { useValue: '' });
 
 container.register<Map<number, IDiaryEntry>>('DiaryEntriesContainingFirstDay', {
-  useValue: new Map<number, IDiaryEntry>(),
+  useValue: new Map<number, IDiaryEntry>().set(
+    1,
+    container.resolve<UseExistingDataDiaryEntryFactory>(
+      'UseExistingDataDiaryEntryFactory'
+    )(1, '1日目', '', undefined, undefined)
+  ),
 });
 container.register<number>('FirstDay', {
   useValue: 1,
@@ -73,7 +81,7 @@ container.register<UseExistingDataDiaryEntryFactory>(
         new DiaryEntry(day, title, content, previous, next),
   }
 );
-container.register<DiaryFactory>('DiaryEntryFactory', {
+container.register<DiaryFactory>('DiaryFactory', {
   useFactory:
     () =>
     (
@@ -93,6 +101,22 @@ container.register<DayModifierFactory>('DayModifierFactory', {
     () =>
     (modifier: string, cycleLength: number, ...unit: Array<string>) =>
       new DayModifier(modifier, cycleLength, ...unit),
+});
+container.register<NewDiarySettingsFactory>('NewDiarySettingsFactory', {
+  useFactory:
+    () =>
+    (
+      dayModifier: IDayModifier,
+      playGameDataName: string,
+      dayInterval: number
+    ) =>
+      new DiarySettings(
+        dayModifier,
+        playGameDataName,
+        dayInterval,
+        container.resolve<string>('STORAGE_KEY'),
+        container.resolve<number>('VERSION')
+      ),
 });
 container.register<UseExistingDataDiarySettingsFactory>(
   'UseExistingDataDiarySettingsFactory',
@@ -115,4 +139,30 @@ container.register<UseExistingDataDiarySettingsFactory>(
         ),
   }
 );
+container.register<IDayModifier>('IDayModifier', {
+  useClass: DayModifier,
+});
+container.register<IDiarySettings>('IDiarySettings', {
+  useClass: DiarySettings,
+});
 container.register<IDiary>('IDiary', { useClass: Diary });
+
+container.register<NewDiaryFactory>('NewDiaryFactory', {
+  useFactory: () => (settings?: IDiarySettings) => {
+    settings ??= container.resolve<IDiarySettings>('IDiarySettings');
+    const nameGenerator = container.resolve<IUniqueDiaryNameGenerator>(
+      'IUniqueDiaryNameGenerator'
+    );
+    const name = nameGenerator.ensureUniqueName(settings.getPlayGameDataName());
+    settings.setPlayGameDataName(name);
+    return new Diary(
+      container.resolve<UsePreviousDayDiaryEntryFactory>(
+        'UsePreviousDayDiaryEntryFactory'
+      ),
+      container.resolve<Map<number, IDiaryEntry>>(
+        'DiaryEntriesContainingFirstDay'
+      ),
+      settings
+    );
+  },
+});

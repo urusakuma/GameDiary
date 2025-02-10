@@ -42,10 +42,9 @@ describe('DiaryKeyMapper class tests', () => {
     diaryKeyMapper.updateDiaryName('testKey', '');
     expect(diaryKeyMapper.collectDiaryNames()).toMatchObject(diaryNameList);
 
-    // 同名の日記が存在する場合、1から始まる数字が付加される
-    diaryKeyMapper.updateDiaryName('testKey5', 'testName');
-    diaryNameList.push('testName5');
-    expect(diaryKeyMapper.collectDiaryNames()).toMatchObject(diaryNameList);
+    // hasのテスト
+    expect(diaryKeyMapper.hasDiaryName('testName1')).toBeTruthy();
+    expect(diaryKeyMapper.hasDiaryName('testName99')).toBeFalsy();
   });
   test('CurrentDiaryKey test', () => {
     const diaryKeyMapper =

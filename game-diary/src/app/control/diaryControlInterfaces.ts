@@ -104,6 +104,7 @@ export interface IDiaryKeyMapper {
    * @param key 新しく操作する日記のストレージキー
    */
   setCurrentDiaryKey(key: string): void;
+  hasDiaryName(name: string): boolean;
 }
 export interface IDiaryDataMigrator {
   /**
@@ -115,4 +116,11 @@ export interface IKeyNamePair {
   getKey(): string;
   getName(): string;
   setName(newName: string): void;
+}
+
+/**
+ * 日記名がユニークな名前であることを保証するクラス
+ */
+export interface IUniqueDiaryNameGenerator {
+  ensureUniqueName(name: string): string;
 }

@@ -13,5 +13,5 @@
   "plantuml.server": "http://plantuml-server:8080",
   "plantuml.render": "PlantUMLServer",
   "prettier.configPath": "./game-diary/.prettierrc",
-  "cSpell.words": ["Hoge", "tsyringe"]
+  "cSpell.words": ["enduml", "Hoge", "startuml", "tsyringe"]
 }

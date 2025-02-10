@@ -50,6 +50,9 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
       this.setAnyDiaryKeyToCurrent();
     }
   }
+  hasDiaryName(name: string): boolean {
+    return this.names.has(name);
+  }
   get length(): number {
     return this.diaryNameMap.size;
   }

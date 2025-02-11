@@ -23,7 +23,7 @@ export function decompressVersion01(
   if (
     !hasField(jsonObj, 'settings', 'object') ||
     !hasField(jsonObj.settings, '_storageKey', 'string') ||
-    !hasField(jsonObj.settings, 'playGameDataName', 'string') ||
+    !hasField(jsonObj.settings, 'diaryName', 'string') ||
     !hasField(jsonObj.settings, 'dayInterval', 'number') ||
     !hasField(jsonObj.settings, 'dayModifier', 'object')
   ) {
@@ -45,7 +45,7 @@ export function decompressVersion01(
   );
   const settings = diarySettingsFactory(
     dayModifier,
-    jsonObj.settings.playGameDataName,
+    jsonObj.settings.diaryName,
     jsonObj.settings.dayInterval,
     jsonObj.settings._storageKey,
     DairySettingsConstant.CURRENT_VERSION

@@ -3,7 +3,11 @@
  */
 export class DairySettingsConstant {
   static readonly CURRENT_VERSION: number = 1;
+<<<<<<< HEAD
+  static readonly DEFAULT_DIARY_NAME: string = '新しい日記';
+=======
   static readonly DEFAULT_GAME_DATA_NAME: string = '新しい日記';
+>>>>>>> origin/create_report
   static readonly DEFAULT_DAY_INTERVAL: number = 1;
 
   static readonly DEFAULT_DAY_MODIFIER: string = '日目';
@@ -16,6 +20,4 @@ export class DairySettingsConstant {
   static readonly CURRENT_GAME_DATA_NAME: string = 'currentGameDataName'; //v0で使用。実際にはストレージキーが入るためv1で修正
   static readonly CURRENT_DIARY_KEY: string = 'currentDiaryKey';
   static readonly DIARY_NAME_LIST: string = 'diaryNameList';
-
-  static readonly NEW_DIARY_NAME: string = '新しい日記';
 }

@@ -76,9 +76,9 @@ export interface IDiarySettings {
   /** ゲームデータのバージョン */
   get version(): number;
   /** ゲームデータ名を保存する */
-  setPlayGameDataName(val: string): void;
+  setDiaryName(val: string): void;
   /** ゲームデータ名を取得する */
-  getPlayGameDataName(): string;
+  getDiaryName(): string;
   /** 日記を書く間隔 */
   updateDayInterval(val: number): void;
   /** 日記を書く間隔を取得する */
@@ -129,7 +129,7 @@ export interface IDiarySettings {
 }
 export type UseExistingDataDiarySettingsFactory = (
   dayModifier: IDayModifier,
-  playGameDataName: string,
+  diaryName: string,
   dayInterval: number,
   storageKey: string,
   version: number
@@ -137,7 +137,7 @@ export type UseExistingDataDiarySettingsFactory = (
 
 export type NewDiarySettingsFactory = (
   dayModifier: IDayModifier,
-  playGameDataName: string,
+  diaryName: string,
   dayInterval: number
 ) => IDiarySettings;
 

@@ -80,7 +80,7 @@ export class DiaryService implements IDiaryService {
     return compressDiary(this.currentDiary);
   };
 
-  create = (gameName: string): void => {
+  create = (diaryName: string): void => {
     // 現在の設定に基づいて新しいDiaryを作成する。
     const newDiary = this.diaryLoader.createNewDiary(
       this.currentDiary.getSettings()
@@ -90,7 +90,7 @@ export class DiaryService implements IDiaryService {
     // 新しいDiaryを保存する。
     this.diaryKeyMapper.updateDiaryName(
       newDiary.getSettings().storageKey,
-      gameName
+      diaryName
     );
     this.save();
   };

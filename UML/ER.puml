@@ -13,7 +13,7 @@ entity DailyReport{
 entity Settings{
   * **storageKey**
   * version
-  * playGamedataName
+  * diaryName
   * dayInterval
   * dayModifier
 }

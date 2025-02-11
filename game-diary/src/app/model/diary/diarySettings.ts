@@ -7,7 +7,7 @@ export class DiarySettings implements IDiarySettings {
    * @param {string} storageKey ローカルストレージに保存したときのKey。
    * @param {number} version セーブデータを作成したシステムのバージョン。
    * 遊んでいるゲームデータの名前。セーブファイルの名前になる。
-   * @param {string} playGameDataName
+   * @param {string} diaryName
    * 新規レポートを作成した時に自動で入力されるdayの間隔。
    * 新しいレポートのDayは「参照したレポートのday+dayInterval」となる。
    * @param {number} dayInterval
@@ -16,7 +16,7 @@ export class DiarySettings implements IDiarySettings {
   constructor(
     @inject('IDayModifier') private dayModifier: IDayModifier,
     @inject('GAME_DATA_NAME')
-    private playGameDataName: string,
+    private diaryName: string,
     @inject('DAY_INTERVAL')
     private dayInterval: number,
     @inject('STORAGE_KEY') private _storageKey: string,
@@ -43,11 +43,11 @@ export class DiarySettings implements IDiarySettings {
     this.dayInterval = interval;
   }
 
-  setPlayGameDataName(val: string): void {
-    this.playGameDataName = val;
+  setDiaryName(val: string): void {
+    this.diaryName = val;
   }
-  getPlayGameDataName(): string {
-    return this.playGameDataName;
+  getDiaryName(): string {
+    return this.diaryName;
   }
   setModifier(val: string): void {
     this.dayModifier.setModifier(val);

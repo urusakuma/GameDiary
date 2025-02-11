@@ -7,8 +7,8 @@ export class MockDiarySettings implements IDiarySettings {
   get version(): number {
     return 1;
   }
-  setPlayGameDataName(val: string): void {}
-  getPlayGameDataName(): string {
+  setDiaryName(val: string): void {}
+  getDiaryName(): string {
     return DairySettingsConstant.DEFAULT_GAME_DATA_NAME;
   }
   updateDayInterval(val: number): void {}

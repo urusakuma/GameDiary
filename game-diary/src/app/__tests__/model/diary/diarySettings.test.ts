@@ -37,14 +37,14 @@ describe('DairySettings class tests', () => {
           () =>
           (
             dayModifier: IDayModifier,
-            playGameDataName: string,
+            diaryName: string,
             dayInterval: number,
             storageKey: string,
             version: number
           ) =>
             new DiarySettings(
               dayModifier,
-              playGameDataName,
+              diaryName,
               dayInterval,
               storageKey,
               version
@@ -56,12 +56,12 @@ describe('DairySettings class tests', () => {
         () =>
         (
           dayModifier: IDayModifier,
-          playGameDataName: string,
+          diaryName: string,
           dayInterval: number
         ) =>
           new DiarySettings(
             dayModifier,
-            playGameDataName,
+            diaryName,
             dayInterval,
             container.resolve('STORAGE_KEY'),
             container.resolve('VERSION')
@@ -72,7 +72,7 @@ describe('DairySettings class tests', () => {
     const settings = container.resolve<IDiarySettings>('InitDiarySettings');
     // TODO: バージョンの確認をしていないので確認を追加
     // デフォルトの確認
-    expect(settings.getPlayGameDataName()).toBe(
+    expect(settings.getDiaryName()).toBe(
       DairySettingsConstant.DEFAULT_GAME_DATA_NAME
     );
     expect(settings.getCycleLength()).toBe(
@@ -96,8 +96,8 @@ describe('DairySettings class tests', () => {
   });
   test('set and update', () => {
     const settings = container.resolve<IDiarySettings>('InitDiarySettings');
-    settings.setPlayGameDataName('テストゲーム');
-    expect(settings.getPlayGameDataName()).toBe('テストゲーム');
+    settings.setDiaryName('テストゲーム');
+    expect(settings.getDiaryName()).toBe('テストゲーム');
     settings.setModifier('サイクル');
     expect(settings.getModifier()).toBe('サイクル');
     settings.updateCycleLength(15);
@@ -170,7 +170,7 @@ describe('DairySettings class tests', () => {
     ).toBeTruthy();
     for (let i = 0; i < 2; i++) {
       expect(settingsArr[i].version).toBe(1);
-      expect(settingsArr[i].getPlayGameDataName()).toBe(
+      expect(settingsArr[i].getDiaryName()).toBe(
         'test data ' + String(i)
       );
       expect(settingsArr[i].getDayInterval()).toBe(1);
@@ -193,7 +193,7 @@ describe('DairySettings class tests', () => {
     expect(useExistingDataSettings.storageKey).toBe(
       'bec0da1f-0053-4c59-acfb-f4a574bd8c98'
     );
-    expect(useExistingDataSettings.getPlayGameDataName()).toBe('test data');
+    expect(useExistingDataSettings.getDiaryName()).toBe('test data');
     expect(useExistingDataSettings.getDayInterval()).toBe(1);
     expect(useExistingDataSettings.getModifier()).toBe(
       DairySettingsConstant.DEFAULT_DAY_MODIFIER

@@ -30,12 +30,12 @@ package Diary{
   class Settings{
     storageKey: string
     version: number
-    playGamedataName: string
+    diaryName: string
     dayInterval: number
     dayModifier: DayModifier
-    constructor(storageKey,version,playGamedataName,dayInterval,dayModifier)
-    setPlayGameDateName(string): void
-    getPlayGameDateName(): string
+    constructor(storageKey,version,diaryName,dayInterval,dayModifier)
+    setDiaryName(string): void
+    getDiaryName(): string
     setDayInterval(number): void
     getDayInterval(): number
     setDayModifier(unit: string): void

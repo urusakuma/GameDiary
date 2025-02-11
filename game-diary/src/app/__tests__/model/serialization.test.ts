@@ -45,14 +45,14 @@ describe('serialization test', () => {
           () =>
           (
             dayModifier: IDayModifier,
-            playGameDataName: string,
+            DiaryName: string,
             dayInterval: number,
             storageKey: string,
             version: number
           ) =>
             new DiarySettings(
               dayModifier,
-              playGameDataName,
+              DiaryName,
               dayInterval,
               storageKey,
               version

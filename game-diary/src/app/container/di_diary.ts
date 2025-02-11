@@ -101,14 +101,14 @@ container.register<UseExistingDataDiarySettingsFactory>(
       () =>
       (
         dayModifier: IDayModifier,
-        playGameDataName: string,
+        diaryName: string,
         dayInterval: number,
         storageKey: string,
         version: number
       ) =>
         new DiarySettings(
           dayModifier,
-          playGameDataName,
+          diaryName,
           dayInterval,
           storageKey,
           version

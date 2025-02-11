@@ -9,7 +9,7 @@ export class MockDiarySettings implements IDiarySettings {
   }
   setDiaryName(val: string): void {}
   getDiaryName(): string {
-    return DairySettingsConstant.DEFAULT_GAME_DATA_NAME;
+    return DairySettingsConstant.DEFAULT_DIARY_NAME;
   }
   updateDayInterval(val: number): void {}
   getDayInterval(): number {

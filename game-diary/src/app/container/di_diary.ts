@@ -16,8 +16,8 @@ import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { DayModifier } from '@/model/diary/dayModifier';
 import { DiarySettings } from '@/model/diary/diarySettings';
 
-container.register<string>('GAME_DATA_NAME', {
-  useValue: DairySettingsConstant.DEFAULT_GAME_DATA_NAME,
+container.register<string>('DIARY_NAME', {
+  useValue: DairySettingsConstant.DEFAULT_DIARY_NAME,
 });
 container.register<number>('DAY_INTERVAL', {
   useValue: DairySettingsConstant.DEFAULT_DAY_INTERVAL,

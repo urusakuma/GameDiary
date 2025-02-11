@@ -93,7 +93,7 @@ package View{
     turnOverBefore(): void
   }
   class SettingsView{
-    editGameDataName(string): void
+    editDiaryName(string): void
     editDayInterval(number): void
     editDayModifier(string): void
     editDayModifierCycle(number): void

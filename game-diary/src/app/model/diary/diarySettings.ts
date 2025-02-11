@@ -15,10 +15,8 @@ export class DiarySettings implements IDiarySettings {
    */
   constructor(
     @inject('IDayModifier') private dayModifier: IDayModifier,
-    @inject('GAME_DATA_NAME')
-    private diaryName: string,
-    @inject('DAY_INTERVAL')
-    private dayInterval: number,
+    @inject('DIARY_NAME') private diaryName: string,
+    @inject('DAY_INTERVAL') private dayInterval: number,
     @inject('STORAGE_KEY') private _storageKey: string,
     @inject('VERSION') private _version: number
   ) {}

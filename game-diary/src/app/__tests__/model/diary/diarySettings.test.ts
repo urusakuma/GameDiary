@@ -15,8 +15,8 @@ describe('DairySettings class tests', () => {
     container.register<IDayModifier>('IDayModifier', {
       useClass: MockDayModifier,
     });
-    container.register<string>('GAME_DATA_NAME', {
-      useValue: DairySettingsConstant.DEFAULT_GAME_DATA_NAME,
+    container.register<string>('DIARY_NAME', {
+      useValue: DairySettingsConstant.DEFAULT_DIARY_NAME,
     });
     container.register<number>('DAY_INTERVAL', {
       useValue: DairySettingsConstant.DEFAULT_DAY_INTERVAL,
@@ -73,7 +73,7 @@ describe('DairySettings class tests', () => {
     // TODO: バージョンの確認をしていないので確認を追加
     // デフォルトの確認
     expect(settings.getDiaryName()).toBe(
-      DairySettingsConstant.DEFAULT_GAME_DATA_NAME
+      DairySettingsConstant.DEFAULT_DIARY_NAME
     );
     expect(settings.getCycleLength()).toBe(
       DairySettingsConstant.DEFAULT_CYCLE_LENGTH

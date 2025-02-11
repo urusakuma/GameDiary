@@ -123,3 +123,10 @@ export interface IKeyNamePair {
   getName(): string;
   setName(newName: string): void;
 }
+
+/**
+ * 日記名がユニークな名前であることを保証するクラス
+ */
+export interface IUniqueDiaryNameGenerator {
+  ensureUniqueName(name: string): string;
+}

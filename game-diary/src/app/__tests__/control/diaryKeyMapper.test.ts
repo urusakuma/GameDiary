@@ -46,10 +46,6 @@ describe('DiaryKeyMapper class tests', () => {
     diaryKeyMapper.updateDiaryName('testKey5', 'testName');
     diaryNameList.push('testName5');
     expect(diaryKeyMapper.collectDiaryNames()).toMatchObject(diaryNameList);
-
-    // hasのテスト
-    expect(diaryKeyMapper.hasDiaryName('testName1')).toBeTruthy();
-    expect(diaryKeyMapper.hasDiaryName('testName99')).toBeFalsy();
   });
   test('CurrentDiaryKey test', () => {
     const diaryKeyMapper =

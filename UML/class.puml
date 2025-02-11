@@ -62,23 +62,23 @@ package Diary{
   class DiaryManager{
     reportsList: Array<Diary>
     addDiary(): void
-    selectDiary(strageKey: string): void
-    deleteDiary(strageKey: string): void
+    selectDiary(storageKey: string): void
+    deleteDiary(storageKey: string): void
   }
   DiaryManager *-- Diary
 }
 package ControlDiaryEntry{
   class CreateDiaryEntry{
-    createDiaryEntry(source: DayDiary, DiaryEntrys: Diary)
+    createDiaryEntry(source: DayDiary, DiaryEntries: Diary)
   }
-  class ChengeCurrentDiaryEntry{
-    DiaryEntrys: Diary
+  class ChangeCurrentDiaryEntry{
+    DiaryEntries: Diary
     toNextDay(): number
     toEveDay(): number
     toThisDay(day: number): number
   }
-  ChengeCurrentDiaryEntry -- CreateDiaryEntry
-  ChengeCurrentDiaryEntry -- Diary.Diary
+  ChangeCurrentDiaryEntry -- CreateDiaryEntry
+  ChangeCurrentDiaryEntry -- Diary.Diary
 }
 package View{
   class DiaryList{
@@ -102,7 +102,7 @@ package View{
     deleteDiary(string): void
   }
   DiaryList -- CreateDiaryEntry : CreateDiaryEntry側から\nDiaryList.addDiaryを呼ぶ。
-  DiaryList -- ChengeCurrentDiaryEntry
+  DiaryList -- ChangeCurrentDiaryEntry
   DiaryView -- DiaryEntry
   DiaryView -- Diary
   SettingsView -- Settings

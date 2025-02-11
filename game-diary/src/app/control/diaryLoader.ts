@@ -1,4 +1,4 @@
-import { inject } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import type {
   IDiary,
   IDiarySettings,
@@ -9,20 +9,22 @@ import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import type { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
 import { isStorageAvailable } from '@/model/utils/storageService';
 
+@injectable()
 export class DiaryLoader implements IDiaryLoader {
   /**現在のDiaryのKey。不明ならnullを入れる。 */
   currentDiaryKey: string | null;
   constructor(
     @inject('NewDiaryFactory')
     private diaryFactory: NewDiaryFactory,
-    @inject('DiaryKeyMapper')
+    @inject('IDiaryKeyMapper')
     private diaryKeyMapper: IDiaryKeyMapper,
-    @inject('DiaryDecompressor')
+    @inject('IDiaryDecompressor')
     private diaryDecompressor: IDiaryDecompressor,
     @inject('IStorageService')
     private storage: IStorageService
   ) {
     if (!isStorageAvailable(this.storage)) {
+      // ストレージを使用できないならloadは常に新しい日記を作成するように変更。
       this.loadDiary = (..._: any[]) => this.createNewDiary();
     }
     //ローカルストレージからゲームデータネームリストを取得する。

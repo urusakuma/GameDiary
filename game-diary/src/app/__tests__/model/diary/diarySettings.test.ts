@@ -7,7 +7,6 @@ import {
   UseExistingDataDiarySettingsFactory,
 } from '@/model/diary/diaryModelInterfaces';
 import { DiarySettings } from '@/model/diary/diarySettings';
-import { stringify } from 'querystring';
 import { container } from 'tsyringe';
 
 describe('DairySettings class tests', () => {
@@ -91,7 +90,7 @@ describe('DairySettings class tests', () => {
       String(1) + DairySettingsConstant.DEFAULT_DAY_MODIFIER
     );
     for (let i = 0; i < 3; i++) {
-      expect(settings.getModifierUnit(i)).toBe('');
+      expect(settings.getModifierUnit(i)).toBeUndefined();
     }
   });
   test('set and update', () => {

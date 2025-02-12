@@ -16,10 +16,10 @@ export class DiaryDataMigrator implements IDiaryDataMigrator {
   ) {}
   migrate(): void {
     // current_game_data_nameが存在するならv0
-    const v0CurrentGameKey = this.storage.getItem(
+    const v0CurrentDiaryKey = this.storage.getItem(
       DairySettingsConstant.CURRENT_GAME_DATA_NAME
     );
-    if (v0CurrentGameKey !== null) {
+    if (v0CurrentDiaryKey !== null) {
       this.migrateV0toV1();
     }
     // v0でなければ今のところ最新
@@ -29,30 +29,30 @@ export class DiaryDataMigrator implements IDiaryDataMigrator {
    * v0のデータをv1に整形する。
    */
   migrateV0toV1(): void {
-    const v0CurrentGameKey = this.storage.getItem(
+    const v0CurrentDiaryKey = this.storage.getItem(
       DairySettingsConstant.CURRENT_GAME_DATA_NAME
     );
-    if (v0CurrentGameKey !== null) {
+    if (v0CurrentDiaryKey !== null) {
       this.storage.setItem(
         DairySettingsConstant.CURRENT_DIARY_KEY,
-        v0CurrentGameKey
+        v0CurrentDiaryKey
       );
       this.storage.removeItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME);
     }
 
     // まず、itemListを初期化し、ストレージからゲームデータ名のリストを取得する。
-    const gameDataNameList = this.storage.getItem(
+    const diaryNameList = this.storage.getItem(
       DairySettingsConstant.DIARY_NAME_LIST
     );
-    if (gameDataNameList === null) {
+    if (diaryNameList === null) {
       return;
     }
     // 取得したJSONをゲームデータ名のリストに変換できるか確認
-    const gameDataNameJson: unknown = JSON.parse(gameDataNameList);
+    const diaryNameJson: unknown = JSON.parse(diaryNameList);
     if (
-      !isTypeMatch(gameDataNameJson, 'Array') ||
-      !isArrayType(gameDataNameJson, 'object') ||
-      !gameDataNameJson.every(
+      !isTypeMatch(diaryNameJson, 'Array') ||
+      !isArrayType(diaryNameJson, 'object') ||
+      !diaryNameJson.every(
         (v) =>
           hasField(v, 'storageKey', 'string') &&
           hasField(v, 'playGamedataName', 'string')
@@ -62,7 +62,7 @@ export class DiaryDataMigrator implements IDiaryDataMigrator {
     }
     const keyNamePairList: Array<[string, string]> = new Array();
     // ゲームデータ名のリストをArray<[string,string]>に変換
-    gameDataNameJson.map((v) => {
+    diaryNameJson.map((v) => {
       keyNamePairList.push([v.storageKey, v.playGamedataName]);
     });
     // データを上書き

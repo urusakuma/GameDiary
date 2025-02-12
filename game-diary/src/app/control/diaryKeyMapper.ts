@@ -46,9 +46,6 @@ export class DiaryKeyMapper implements IDiaryKeyMapper {
         this.storeName(v[0], v[1]);
       });
   }
-  hasDiaryName(name: string): boolean {
-    return this.names.has(name);
-  }
   get length(): number {
     return this.diaryNameMap.size;
   }

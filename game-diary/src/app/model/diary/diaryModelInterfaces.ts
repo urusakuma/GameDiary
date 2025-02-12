@@ -88,8 +88,8 @@ export interface IDiarySettings {
   /** 日付を修飾する文字列を取得する */
   getModifier(): string;
   /**
-   * 日付に対して周期的に付加する単位の設定
-   * @param val 付加する単位
+   * 日付を修飾する周期的な単位を設定する。空文字を設定された場合は取り除く
+   * @param val 設定する単位の文字列。
    * @param index valを付加する周期の番号。0~3
    */
   updateModifierUnit(val: string, index: number): void;
@@ -103,13 +103,6 @@ export interface IDiarySettings {
   updateCycleLength(val: number): void;
   /** 周期的な単位が一度にどれだけ続くのか取得する */
   getCycleLength(): number;
-
-  /**
-   * 日付を修飾する周期的な単位を設定する。空文字を設定された場合は取り除く
-   * @param val 設定する単位の文字列。
-   * @param index unitのどこにsetするか。
-   */
-  updateModifierUnit(unit: string, i: number): void;
 
   /**
    * 新しく作成される日付を返す。

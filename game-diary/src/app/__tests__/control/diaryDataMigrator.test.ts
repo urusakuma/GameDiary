@@ -1,4 +1,4 @@
-import { IDiaryDataMigrator } from '@/model/repository/diaryControlInterfaces';
+import { IDiaryDataMigrator } from '@/model/repository/diaryRepositoryInterfaces';
 import { DiaryDataMigrator } from '@/model/repository/diaryDataMigrator';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { container } from 'tsyringe';

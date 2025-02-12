@@ -2,7 +2,7 @@ import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { isArrayType, isTypeMatch } from '@/model/utils/checkTypeMatch';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import { inject, injectable } from 'tsyringe';
-import { IDiaryKeyMapper } from './diaryControlInterfaces';
+import { IDiaryKeyMapper } from './diaryRepositoryInterfaces';
 import { InvalidJsonError, KeyNotFoundError } from '@/error';
 import {
   isStorageAvailable,

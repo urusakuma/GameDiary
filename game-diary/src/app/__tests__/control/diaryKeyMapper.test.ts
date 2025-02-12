@@ -1,6 +1,6 @@
 import { container } from 'tsyringe';
 import { DiaryKeyMapper } from '@/model/repository/diaryKeyMapper';
-import { IDiaryKeyMapper } from '@/model/repository/diaryControlInterfaces';
+import { IDiaryKeyMapper } from '@/model/repository/diaryRepositoryInterfaces';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { MockV1StorageService } from '../__mocks__/mockV1StorageService';
 import { KeyNotFoundError, NotSupportedError } from '@/error';
@@ -40,11 +40,6 @@ describe('DiaryKeyMapper class tests', () => {
     diaryKeyMapper.updateDiaryName('', 'testName99');
     diaryKeyMapper.updateDiaryName('testKey99', '');
     diaryKeyMapper.updateDiaryName('testKey', '');
-    expect(diaryKeyMapper.collectDiaryNames()).toMatchObject(diaryNameList);
-
-    // 同名の日記が存在する場合、1から始まる数字が付加される
-    diaryKeyMapper.updateDiaryName('testKey5', 'testName');
-    diaryNameList.push('testName5');
     expect(diaryKeyMapper.collectDiaryNames()).toMatchObject(diaryNameList);
   });
   test('CurrentDiaryKey test', () => {

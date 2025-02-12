@@ -70,14 +70,14 @@ describe('DiaryLoader class tests', () => {
           () =>
           (
             dayModifier: IDayModifier,
-            playGameDataName: string,
+            DiaryName: string,
             dayInterval: number,
             storageKey: string,
             version: number
           ) =>
             new DiarySettings(
               dayModifier,
-              playGameDataName,
+              DiaryName,
               dayInterval,
               storageKey,
               version
@@ -90,14 +90,10 @@ describe('DiaryLoader class tests', () => {
     container.register<NewDiarySettingsFactory>('NewDiarySettingsFactory', {
       useFactory:
         () =>
-        (
-          dayModifier: IDayModifier,
-          playGameDataName: string,
-          dayInterval: number
-        ) =>
+        (dayModifier: IDayModifier, DiaryName: string, dayInterval: number) =>
           new DiarySettings(
             dayModifier,
-            playGameDataName,
+            DiaryName,
             dayInterval,
             container.resolve<string>('STORAGE_KEY'),
             container.resolve<number>('VERSION')
@@ -125,7 +121,7 @@ describe('DiaryLoader class tests', () => {
           );
           newSettings = newSettingsFactory(
             newDayModifier,
-            DairySettingsConstant.DEFAULT_GAME_DATA_NAME,
+            DairySettingsConstant.DEFAULT_DIARY_NAME,
             settings.getDayInterval()
           );
         } else {
@@ -185,8 +181,8 @@ describe('DiaryLoader class tests', () => {
           ),
       }
     );
-    container.register<string>('GAME_DATA_NAME', {
-      useValue: DairySettingsConstant.DEFAULT_GAME_DATA_NAME,
+    container.register<string>('DIARY_NAME', {
+      useValue: DairySettingsConstant.DEFAULT_DIARY_NAME,
     });
     container.register<number>('DAY_INTERVAL', {
       useValue: DairySettingsConstant.DEFAULT_DAY_INTERVAL,
@@ -219,7 +215,7 @@ describe('DiaryLoader class tests', () => {
           unit: [],
         },
         dayInterval: 1,
-        playGameDataName: 'test',
+        DiaryName: 'test',
         _storageKey: diaryKey,
         _version: 1,
       },
@@ -249,7 +245,7 @@ describe('DiaryLoader class tests', () => {
           unit: [],
         },
         dayInterval: 1,
-        playGameDataName: DairySettingsConstant.DEFAULT_GAME_DATA_NAME,
+        DiaryName: DairySettingsConstant.DEFAULT_DIARY_NAME,
         _storageKey: diaryKey,
         _version: 1,
       },

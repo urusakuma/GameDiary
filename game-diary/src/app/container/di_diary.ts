@@ -104,15 +104,10 @@ container.register<DayModifierFactory>('DayModifierFactory', {
 });
 container.register<NewDiarySettingsFactory>('NewDiarySettingsFactory', {
   useFactory:
-    () =>
-    (
-      dayModifier: IDayModifier,
-      playGameDataName: string,
-      dayInterval: number
-    ) =>
+    () => (dayModifier: IDayModifier, diaryName: string, dayInterval: number) =>
       new DiarySettings(
         dayModifier,
-        playGameDataName,
+        diaryName,
         dayInterval,
         container.resolve<string>('STORAGE_KEY'),
         container.resolve<number>('VERSION')
@@ -153,8 +148,8 @@ container.register<NewDiaryFactory>('NewDiaryFactory', {
     const nameGenerator = container.resolve<IUniqueDiaryNameGenerator>(
       'IUniqueDiaryNameGenerator'
     );
-    const name = nameGenerator.ensureUniqueName(settings.getPlayGameDataName());
-    settings.setPlayGameDataName(name);
+    const name = nameGenerator.ensureUniqueName(settings.getDiaryName());
+    settings.setDiaryName(name);
     return new Diary(
       container.resolve<UsePreviousDayDiaryEntryFactory>(
         'UsePreviousDayDiaryEntryFactory'

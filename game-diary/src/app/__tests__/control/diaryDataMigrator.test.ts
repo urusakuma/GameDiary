@@ -1,5 +1,5 @@
-import { IDiaryDataMigrator } from '@/control/diaryControlInterfaces';
-import { DiaryDataMigrator } from '@/control/diaryDataMigrator';
+import { IDiaryDataMigrator } from '@/model/repository/diaryControlInterfaces';
+import { DiaryDataMigrator } from '@/model/repository/diaryDataMigrator';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { container } from 'tsyringe';
 import { MockV0StorageService } from '../__mocks__/mockV0StorageService';

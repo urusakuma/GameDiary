@@ -17,7 +17,7 @@ import { Diary } from '@/model/diary/diary';
 import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { DayModifier } from '@/model/diary/dayModifier';
 import { DiarySettings } from '@/model/diary/diarySettings';
-import { IUniqueDiaryNameGenerator } from '@/control/diaryControlInterfaces';
+import { IUniqueDiaryNameGenerator } from '@/model/repository/diaryControlInterfaces';
 
 container.register<string>('DIARY_NAME', {
   useValue: DairySettingsConstant.DEFAULT_DIARY_NAME,

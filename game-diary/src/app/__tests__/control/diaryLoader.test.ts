@@ -1,10 +1,10 @@
 import {
   IDiaryKeyMapper,
   IDiaryLoader,
-} from '@/control/diaryControlInterfaces';
+} from '@/model/repository/diaryControlInterfaces';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { container, Lifecycle } from 'tsyringe';
-import { DiaryLoader } from '@/control/diaryLoader';
+import { DiaryLoader } from '@/model/repository/diaryLoader';
 import {
   DayModifierFactory,
   DiaryFactory,

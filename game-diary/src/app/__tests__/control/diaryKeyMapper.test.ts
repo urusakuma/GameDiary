@@ -1,6 +1,6 @@
 import { container } from 'tsyringe';
-import { DiaryKeyMapper } from '@/control/diaryKeyMapper';
-import { IDiaryKeyMapper } from '@/control/diaryControlInterfaces';
+import { DiaryKeyMapper } from '@/model/repository/diaryKeyMapper';
+import { IDiaryKeyMapper } from '@/model/repository/diaryControlInterfaces';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { MockV1StorageService } from '../__mocks__/mockV1StorageService';
 import { KeyNotFoundError, NotSupportedError } from '@/error';

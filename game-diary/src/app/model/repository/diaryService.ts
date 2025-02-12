@@ -7,7 +7,7 @@ import type {
   IDiaryKeyMapper,
   IDiaryLoader,
   IDiaryService,
-} from './diaryControlInterfaces';
+} from './diaryRepositoryInterfaces';
 import { compressDiary } from '@/model/serialization/diarySerializer';
 import {
   isStorageAvailable,

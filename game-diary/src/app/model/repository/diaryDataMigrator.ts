@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import { IDiaryDataMigrator } from './diaryControlInterfaces';
+import { IDiaryDataMigrator } from './diaryRepositoryInterfaces';
 import { DairySettingsConstant } from '@/dairySettingsConstant';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import { InvalidJsonError } from '@/error';

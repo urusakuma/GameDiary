@@ -4,7 +4,10 @@ import type {
   IDiarySettings,
   NewDiaryFactory,
 } from '@/model/diary/diaryModelInterfaces';
-import type { IDiaryKeyMapper, IDiaryLoader } from './diaryControlInterfaces';
+import type {
+  IDiaryKeyMapper,
+  IDiaryLoader,
+} from './diaryRepositoryInterfaces';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import type { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
 import { isStorageAvailable } from '@/model/utils/storageService';

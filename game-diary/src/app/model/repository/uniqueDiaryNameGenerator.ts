@@ -2,7 +2,7 @@ import { inject } from 'tsyringe';
 import type {
   IDiaryKeyMapper,
   IUniqueDiaryNameGenerator,
-} from './diaryControlInterfaces';
+} from './diaryRepositoryInterfaces';
 
 export class UniqueDiaryNameGenerator implements IUniqueDiaryNameGenerator {
   constructor(

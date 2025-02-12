@@ -1,7 +1,7 @@
 import {
   IDiaryKeyMapper,
   IDiaryLoader,
-} from '@/model/repository/diaryControlInterfaces';
+} from '@/model/repository/diaryRepositoryInterfaces';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { container, Lifecycle } from 'tsyringe';
 import { DiaryLoader } from '@/model/repository/diaryLoader';
@@ -70,14 +70,14 @@ describe('DiaryLoader class tests', () => {
           () =>
           (
             dayModifier: IDayModifier,
-            DiaryName: string,
+            diaryName: string,
             dayInterval: number,
             storageKey: string,
             version: number
           ) =>
             new DiarySettings(
               dayModifier,
-              DiaryName,
+              diaryName,
               dayInterval,
               storageKey,
               version
@@ -215,7 +215,7 @@ describe('DiaryLoader class tests', () => {
           unit: [],
         },
         dayInterval: 1,
-        DiaryName: 'test',
+        diaryName: 'test',
         _storageKey: diaryKey,
         _version: 1,
       },
@@ -245,7 +245,7 @@ describe('DiaryLoader class tests', () => {
           unit: [],
         },
         dayInterval: 1,
-        DiaryName: DairySettingsConstant.DEFAULT_DIARY_NAME,
+        diaryName: DairySettingsConstant.DEFAULT_DIARY_NAME,
         _storageKey: diaryKey,
         _version: 1,
       },

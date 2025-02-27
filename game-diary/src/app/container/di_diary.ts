@@ -148,7 +148,7 @@ container.register<NewDiaryFactory>('NewDiaryFactory', {
     const nameGenerator = container.resolve<IUniqueDiaryNameGenerator>(
       'IUniqueDiaryNameGenerator'
     );
-    const name = nameGenerator.ensureUniqueName(settings.getDiaryName());
+    const name = nameGenerator.generateUniqueName(settings.getDiaryName());
     settings.setDiaryName(name);
     return new Diary(
       container.resolve<UsePreviousDayDiaryEntryFactory>(

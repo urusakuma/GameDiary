@@ -1,125 +1,155 @@
 @startuml class
 package Model{
-  class Diary{
-    diaryEntries: Map<day,DiaryEntry>
-    settings: Settings
-    currentDay: number
-    createNewEntry(): number
-    getLastDay(): number
-    getEntry(day: number): DiaryEntry
-    getSettings(): Settings\n\t直接アクセスなのでこの戻り値を編集すると本体も編集される
-    deleteEntry(day: number): boolean
+  package Diary{
+    '日記を保持するクラス
+    class Diary{
+      diaryEntries: Map<day,DiaryEntry>
+      settings: Settings
+      currentDay: number
+      createNewEntry(): number
+      getLastDay(): number
+      getEntry(day: number): DiaryEntry
+      getSettings(): Settings\n\t直接アクセスなのでこの戻り値を編集すると本体も編集される
+      deleteEntry(day: number): boolean
+    }
+    '日記のエントリを作成する関数
+    class DiaryEntryFactory{
+      constructor(source: DiaryEntryFactoryDiaryEntry, settings: Settings)
+      constructor(day: number, title: string, content: string, previous?: number,next?: number)
+      create(): DiaryEntry
+    }
+    Diary ..> DiaryEntryFactory
+    DiaryEntryFactory ..> DiaryEntry
+    '日記のエントリを保持するクラス
+    class DiaryEntry{
+      constructor(day: number, title: string, content: string, previous?: number, next?: number)
+      day: number
+      title: string
+      content: string
+      previous: number | undefined
+      next: number | undefined
+      getDay(): number
+      setTitle(val: string): void
+      getTitle(): string
+      setContent(val: string): void
+      getContent(): string
+      isEdited(settings: DiarySettings): boolean
+    }
+    ' 日記の設定を保持するクラス
+    class DiarySettings{
+      _storageKey: string
+      _version: number
+      diaryName: string
+      dayInterval: number
+      dayModifier: DayModifier
+      constructor(dayModifier: DayModifier, diaryName: string, dayInterval: number, storageKey: string, version: number)
+      setDiaryName(string): void
+      getDiaryName(): string
+      updateDayInterval(number): void
+      getDayInterval(): number
+      setModifier(val: string): void
+      getModifier():string
+      updateModifierUnit(val: string, index: number): void
+      getModifierUnit(index: number): string
+      updateCycleLength(val: number): void
+      getCycleLength(): number
+      setDayModifierCycle(cycleLength: number): void
+      getDayModifierCycle(): number
+      getNextDay(day: number): number
+      getModifierDay(day: number): string
+    }
+    Diary "1" o-- DiaryEntry
+    Diary "1" o-- "1" DiarySettings
+    DiarySettings "1" *-- "1" DayModifier
+    class DayModifier{
+      constructor(modifier: string, cycleLength: number,...unit: string)
+      setModifier(val: string): void
+      getModifier(): string
+      updateCycleLength(val: number): void
+      getCycleLength(): number
+      getUnit(index: number): string
+      updateUnit(val: string, index: number): void
+      modifyDay(naturalDay: number): string
+    }
   }
-  class DiaryEntryBuilder{
-    constructor(source: DiaryEntryBuilderDiaryEntry, settings: Settings)
-    constructor(\n\tday: number = 1, \n\ttitle: string = "", \n\tcontent: string = "", \n\tprevious?: number, \n\tnext?: number\n)
-    constructor(a: any, b: any, c: string?, d: number?, e: number?)
-    built(): DiaryEntry
+  package Storage {
+    class DiaryService{
+      constructor(storage; IStorageService)
+      getDiary(key: string): Diary
+      deleteDiary(key: string): void
+      addDiary(diary: Diary):void
+    }
+    '日記の名前とユニークな日記のキーを対応させストレージに保存するクラス。
+    'このクラスはローカルストレージに保存されているデータが正常であるかの判断は行わない。
+    class DiaryNameManager{
+      constructor(diaryService: DiaryService, storage: IStorageService)
+      length: number
+      collectDiaryNames(): Array<string>
+      updateDiaryName(key: string, name: string): boolean
+      removeDiaryName(key: string): void :保存する際にO(n)の処理が挟まるため呼び出しに注意。
+      hasDiaryName(name: string): boolean
+    }
+    class CurrentDiaryManager{
+      constructor(storage: IStorageService)
+      currentDiaryKey: string
+      getCurrentDiaryKey(): string
+      setCurrentDiaryKey(key: string): void
+    }
+    '受け取った文字列をDiaryに変換してストレージに保存する。
+    'カレントの操作は行わない。
+    class DiaryImport{
+      constructor(storage: IStorageService, diaryFactory: DiaryFactory)
+      import(val: string): string : keyを返却する
+    }
+    'KeyからDiaryを選択し、文字列に変換して返却する 
+    class DiaryExport{
+      constructor(storage: IStorageService, diarySerializer: DiarySerializer)
+      export(key: string): string : Diaryを文字列化して返却する
+    }
+    class DiarySave{
+      constructor(storage: IStorageService, diarySerializer: DiarySerializer)
+      save(diary: IDiary): void
+    }
+    '受け取ったKeyからストレージのデータを読み取り、IDiaryに変換して返却する。
+    'カレントの操作は行わない。
+    class DiaryLoad{
+      constructor(storage: IStorageService, diaryFactory: DiaryFactory)
+      load(key: string): void
+    }
+    class DiaryFactory{
+      constructor(uniqueDiaryNameGenerator: UniqueDiaryNameGenerator)
+      createDiary(): string : Keyを返却する 
+      createDiary(diary: Diary): string : Settingsをコピーして新しいDiaryを作成する
+    }
+    class UniqueDiaryNameGenerator{
+      constructor(DiaryNameManager: DiaryNameManager)
+      generate(): string
+    }
+    class IStorageService{
+      length: number
+      getItem(key: string): string | null
+      setItem(key: string, value: string): void
+      removeItem(key: string): void
+    }
+    class DiarySerializer{
+      compressDiary(diary: Diary): string
+      decompressDiary(val: string): Diary
+    }
+    CurrentDiaryManager ..> IStorageService
+    DiaryImport ..> DiaryFactory
+    DiaryImport ..> IStorageService
+    DiaryExport ..> DiarySerializer
+    DiaryExport ..> IStorageService
+    DiarySave ..> DiarySerializer
+    DiarySave ..> IStorageService
+    DiaryLoad ..> DiaryFactory
+    DiaryLoad ..> IStorageService
+    DiaryNameManager ..> DiaryService
+    DiaryNameManager ..> IStorageService
+    DiaryFactory ..> UniqueDiaryNameGenerator
+    UniqueDiaryNameGenerator ..> DiaryNameManager
   }
-  Diary -l- DiaryEntryBuilder
-  DiaryEntryBuilder -- DiaryEntry
-  class DiaryEntry{
-    constructor(day: number, title: string, content: string, previous?: number, next?: number)
-    day: number
-    title: string
-    content: string
-    previous: number | undefined
-    next: number | undefined
-    getDay(): number
-    setTitle(val: string): void
-    getTitle(): string
-    setContent(val: string): void
-    getContent(): string
-    isEdited(settings: DiarySettings): boolean
-  }
-
-  class DiarySettings{
-    _storageKey: string
-    _version: number
-    diaryName: string
-    dayInterval: number
-    dayModifier: DayModifier
-    constructor(dayModifier: DayModifier, diaryName: string, dayInterval: number, storageKey: string, version: number)
-    setDiaryName(string): void
-    getDiaryName(): string
-    updateDayInterval(number): void
-    getDayInterval(): number
-    setModifier(val: string): void
-    getModifier():string
-    updateModifierUnit(val: string, index: number): void
-    getModifierUnit(index: number): string
-    updateCycleLength(val: number): void
-    getCycleLength(): number
-    setDayModifierCycle(cycleLength: number): void
-    getDayModifierCycle(): number
-    getNextDay(day: number): number
-    getModifierDay(day: number): string
-  }
-  Diary *-- DiaryEntry
-  Diary -- DiarySettings
-  DiarySettings -- DayModifier
-  class DayModifier{
-    constructor(modifier: string, cycleLength: number,...unit: string)
-    setModifier(val: string): void
-    getModifier(): string
-    updateCycleLength(val: number): void
-    getCycleLength(): number
-    getUnit(index: number): string
-    updateUnit(val: string, index: number): void
-    modifyDay(naturalDay: number): string
-  }
-  class DiaryService{
-    constructor(storage; IStorageService, currentDiaryManager: CurrentDiaryManager)
-    diariesList: Array<Diary>
-    getDiary(key: string): IDiary
-    selectDiary(key: string): void
-    deleteDiary(key: string): void
-    addDiary(diary: Diary):void
-  }
-  class DiaryNameManager{
-    constructor(diaryService: DiaryService)
-    length: number
-    collectDiaryNames(): Array<string>
-    updateDiaryName(key: string, name: string): boolean
-    removeDiaryName(key: string): void
-    hasDiaryName(name: string): boolean
-  }
-  class CurrentDiaryManager{
-    constructor(storage; IStorageService)
-    currentDiary: Diary
-    getCurrentDiary(): Diary
-    setCurrentDiary(key: string): Diary
-  }
-  class DiaryImportExport{
-    constructor(diaryFactory: DiaryFactory, diarySerializer: DiarySerializer)
-    import(val: string): string : keyを返却する
-    export(key: string): string : Diaryを文字列化して返却する
-  }
-  class DiarySaveLoad{
-    constructor(diaryFactory: DiaryFactory, storage: IStorageService, diarySerializer: DiarySerializer)
-    save(): void
-    load(key: string): void
-  }
-  class DiaryFactory{
-    constructor(diaryService: DiaryService, DiaryNameManager: DiaryNameManager, uniqueDiaryNameGenerator: UniqueDiaryNameGenerator)
-    createDiary(): string : Keyを返却する 
-    createDiary(diary: Diary): string : Settingsをコピーして新しいDiaryを作成する
-  }
-  class UniqueDiaryNameGenerator{
-    constructor(DiaryNameManager: DiaryNameManager)
-    generate(): string
-  }
-  class DiarySerializer{
-    compressDiary(diary: Diary): string
-    decompressDiary(val: string): Diary
-  }
-  DiaryService *-- Diary
-  CurrentDiaryManager ..> DiaryService
-  DiaryImportExport ..> DiaryFactory
-  DiarySaveLoad ..> DiaryFactory
-  DiaryNameManager ..> DiaryService
-  DiaryFactory ..> DiaryService
-  UniqueDiaryNameGenerator ..> DiaryNameManager
+  DiaryService o-- Diary.Diary
 }
 package ControlDiaryEntry{
   class CreateDiaryEntry{

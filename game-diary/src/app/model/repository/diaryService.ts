@@ -4,7 +4,7 @@ import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import type { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
 import type { IDiary } from '@/model/diary/diaryModelInterfaces';
 import type {
-  IDiaryKeyMapper,
+  IDiaryNameManager,
   IDiaryLoader,
   IDiaryService,
 } from './diaryRepositoryInterfaces';
@@ -28,7 +28,7 @@ export class DiaryService implements IDiaryService {
     @inject('DiaryLoader')
     private diaryLoader: IDiaryLoader,
     @inject('DiaryKeyMapper')
-    private diaryKeyMapper: IDiaryKeyMapper
+    private diaryKeyMapper: IDiaryNameManager
   ) {
     if (!isStorageAvailable(storage)) {
       this.save = notSupportFunc;

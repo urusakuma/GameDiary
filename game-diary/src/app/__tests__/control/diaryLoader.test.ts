@@ -1,5 +1,5 @@
 import {
-  IDiaryKeyMapper,
+  IDiaryNameManager,
   IDiaryLoader,
 } from '@/model/repository/diaryRepositoryInterfaces';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
@@ -35,7 +35,7 @@ describe('DiaryLoader class tests', () => {
       'IStorageService',
       MockEnvironmentStorageService
     );
-    container.register<IDiaryKeyMapper>('IDiaryKeyMapper', {
+    container.register<IDiaryNameManager>('IDiaryNameManager', {
       useClass: MockDiaryKeyMapper,
     });
     container.register<IDiaryDecompressor>('IDiaryDecompressor', {

@@ -1,14 +1,14 @@
 import { inject } from 'tsyringe';
 import type {
-  IDiaryKeyMapper,
+  IDiaryNameManager,
   IUniqueDiaryNameGenerator,
 } from './diaryRepositoryInterfaces';
 
 export class UniqueDiaryNameGenerator implements IUniqueDiaryNameGenerator {
   constructor(
-    @inject('IDiaryKeyMapper') private diaryKeyMapper: IDiaryKeyMapper
+    @inject('IDiaryNameManager') private diaryKeyMapper: IDiaryNameManager
   ) {}
-  ensureUniqueName(name: string): string {
+  generateUniqueName(name: string): string {
     // 日記名に重複がないか調べる。重複している場合は数字を付加して重複を避ける。
     let newName: string = name;
     let i: number = 1;

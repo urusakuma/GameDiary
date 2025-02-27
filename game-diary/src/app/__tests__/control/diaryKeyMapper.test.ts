@@ -1,6 +1,6 @@
 import { container } from 'tsyringe';
 import { DiaryKeyMapper } from '@/model/repository/diaryKeyMapper';
-import { IDiaryKeyMapper } from '@/model/repository/diaryRepositoryInterfaces';
+import { IDiaryNameManager } from '@/model/repository/diaryRepositoryInterfaces';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { MockV1StorageService } from '../__mocks__/mockV1StorageService';
 import { KeyNotFoundError, NotSupportedError } from '@/error';
@@ -14,13 +14,13 @@ describe('DiaryKeyMapper class tests', () => {
       'IStorageService',
       MockV1StorageService
     );
-    container.register<IDiaryKeyMapper>('IDiaryKeyMapper', {
+    container.register<IDiaryNameManager>('IDiaryNameManager', {
       useClass: DiaryKeyMapper,
     });
   });
   test('DiaryNames test', () => {
     const diaryKeyMapper =
-      container.resolve<IDiaryKeyMapper>('IDiaryKeyMapper');
+      container.resolve<IDiaryNameManager>('IDiaryNameManager');
     // 初期データの読み込み
     const diaryNameList = Array<String>();
     for (let i = 0; i < 5; i++) {
@@ -44,7 +44,7 @@ describe('DiaryKeyMapper class tests', () => {
   });
   test('CurrentDiaryKey test', () => {
     const diaryKeyMapper =
-      container.resolve<IDiaryKeyMapper>('IDiaryKeyMapper');
+      container.resolve<IDiaryNameManager>('IDiaryNameManager');
     // 初期データの読み込み
     expect(diaryKeyMapper.getCurrentDiaryKey()).toBe('testKey0');
     // カレントの変更
@@ -63,18 +63,18 @@ describe('EmptyStorage DiaryKeyMapper class tests', () => {
       'IStorageService',
       MockStorageService
     );
-    container.register<IDiaryKeyMapper>('IDiaryKeyMapper', {
+    container.register<IDiaryNameManager>('IDiaryNameManager', {
       useClass: DiaryKeyMapper,
     });
   });
   test('DiaryNames test', () => {
     const diaryKeyMapper =
-      container.resolve<IDiaryKeyMapper>('IDiaryKeyMapper');
+      container.resolve<IDiaryNameManager>('IDiaryNameManager');
     expect(diaryKeyMapper.collectDiaryNames()).toMatchObject([]);
   });
   test('CurrentDiaryKey test', () => {
     const diaryKeyMapper =
-      container.resolve<IDiaryKeyMapper>('IDiaryKeyMapper');
+      container.resolve<IDiaryNameManager>('IDiaryNameManager');
     expect(diaryKeyMapper.getCurrentDiaryKey()).toBeNull();
   });
 });
@@ -86,13 +86,13 @@ describe('UnavailableStorage DiaryKeyMapper class tests', () => {
       'IStorageService',
       MockUnavailableStorageService
     );
-    container.register<IDiaryKeyMapper>('IDiaryKeyMapper', {
+    container.register<IDiaryNameManager>('IDiaryNameManager', {
       useClass: DiaryKeyMapper,
     });
   });
   test("can't use storage", () => {
     const diaryKeyMapper =
-      container.resolve<IDiaryKeyMapper>('IDiaryKeyMapper');
+      container.resolve<IDiaryNameManager>('IDiaryNameManager');
     expect(() => diaryKeyMapper.collectDiaryNames()).toThrow(NotSupportedError);
     expect(() => diaryKeyMapper.getCurrentDiaryKey()).toThrow(
       NotSupportedError

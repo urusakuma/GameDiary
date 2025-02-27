@@ -1,6 +1,6 @@
-import { IDiaryKeyMapper } from '@/model/repository/diaryRepositoryInterfaces';
+import { IDiaryNameManager } from '@/model/repository/diaryRepositoryInterfaces';
 
-export class MockDiaryKeyMapper implements IDiaryKeyMapper {
+export class MockDiaryKeyMapper implements IDiaryNameManager {
   private diaryNames: Map<string, string> = new Map();
   private currentDiaryKey: string | null = null;
 

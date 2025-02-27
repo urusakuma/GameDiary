@@ -2,14 +2,14 @@ import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { isArrayType, isTypeMatch } from '@/model/utils/checkTypeMatch';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import { inject, injectable } from 'tsyringe';
-import { IDiaryKeyMapper } from './diaryRepositoryInterfaces';
+import { IDiaryNameManager } from './diaryRepositoryInterfaces';
 import { InvalidJsonError, KeyNotFoundError } from '@/error';
 import {
   isStorageAvailable,
   notSupportFunc,
 } from '@/model/utils/storageService';
 @injectable()
-export class DiaryKeyMapper implements IDiaryKeyMapper {
+export class DiaryKeyMapper implements IDiaryNameManager {
   /** ストレージキーと名前の連想配列。ストレージキーがkey、ゲームデータ名がval。 */
   private diaryNameMap: Map<string, string> = new Map<string, string>();
   /** 名前が重複しないために名前を保存しておく集合 */

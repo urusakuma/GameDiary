@@ -5,7 +5,7 @@ import type {
   NewDiaryFactory,
 } from '@/model/diary/diaryModelInterfaces';
 import type {
-  IDiaryKeyMapper,
+  IDiaryNameManager,
   IDiaryLoader,
 } from './diaryRepositoryInterfaces';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
@@ -19,8 +19,8 @@ export class DiaryLoader implements IDiaryLoader {
   constructor(
     @inject('NewDiaryFactory')
     private diaryFactory: NewDiaryFactory,
-    @inject('IDiaryKeyMapper')
-    private diaryKeyMapper: IDiaryKeyMapper,
+    @inject('IDiaryNameManager')
+    private diaryKeyMapper: IDiaryNameManager,
     @inject('IDiaryDecompressor')
     private diaryDecompressor: IDiaryDecompressor,
     @inject('IStorageService')

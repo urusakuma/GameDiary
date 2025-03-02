@@ -150,6 +150,7 @@ package Model{
     UniqueDiaryNameGenerator ..> DiaryNameManager
   }
   DiaryService o-- Diary.Diary
+  DiaryService --> Diary.DiarySettings
 }
 package ControlDiaryEntry{
   class CreateDiaryEntry{

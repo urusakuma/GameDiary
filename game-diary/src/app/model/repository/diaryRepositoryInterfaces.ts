@@ -9,7 +9,7 @@ export interface IDiaryService {
    * @param {string} key 取得するDiaryのストレージキー
    * @returns {IDiary} 取得したDiary
    */
-  getDiary(key: string): IDiary;
+  getDiary(key: string): IDiary | undefined;
   /**
    * 渡されたDiaryをストレージに保存する。
    * @param {IDiary} diary 保存するDiary

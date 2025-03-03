@@ -23,23 +23,6 @@ export interface IDiaryService {
   deleteDiary(key: string): void;
 }
 /**
- * ストレージからDiaryを読み込み返却する。
- */
-export interface IDiaryLoader {
-  /**
-   * 指定したDiaryNameのDiaryを取得する。
-   * @param {string?} key 取得するDiaryのストレージキー
-   * @returns {IDiary} 取得するIDiary
-   */
-  loadDiary(key: string): IDiary;
-  /**
-   * 新しいDiaryを作成する関数。
-   * @param {IDiary?} diary 新しいDiaryのSettings
-   * @returns 新しく作成されたDiary
-   */
-  createNewDiary(diary?: IDiary): IDiary;
-}
-/**
  * 新しいDiaryを作成する関数。
  * Diaryを受け取った場合、DiaryのSettingsをストレージキー以外をコピーする。
  * @param {IDiary?} diary 新しいDiaryのSettingsの基となるDiary

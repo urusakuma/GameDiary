@@ -98,22 +98,22 @@ package Model{
     '受け取った文字列をDiaryに変換してストレージに保存する。
     'カレントの操作は行わない。
     class DiaryImport{
-      constructor(storage: IStorageService, diaryFactory: DiaryFactory)
+      constructor(storage: DiaryService, diaryFactory: DiaryFactory)
       import(val: string): string : keyを返却する
     }
     'KeyからDiaryを選択し、文字列に変換して返却する 
     class DiaryExport{
-      constructor(storage: IStorageService, diarySerializer: DiarySerializer)
+      constructor(storage: DiaryService, diarySerializer: DiarySerializer)
       export(key: string): string : Diaryを文字列化して返却する
     }
     class DiarySave{
-      constructor(storage: IStorageService, diarySerializer: DiarySerializer)
+      constructor(storage: DiaryService, diarySerializer: DiarySerializer)
       save(diary: IDiary): void
     }
     '受け取ったKeyからストレージのデータを読み取り、IDiaryに変換して返却する。
     'カレントの操作は行わない。
     class DiaryLoad{
-      constructor(storage: IStorageService, diaryFactory: DiaryFactory)
+      constructor(storage: DiaryService, diaryFactory: DiaryFactory)
       load(key: string): void
     }
     class DiaryFactory{
@@ -137,13 +137,13 @@ package Model{
     }
     CurrentDiaryManager ..> IStorageService
     DiaryImport ..> DiaryFactory
-    DiaryImport ..> IStorageService
+    DiaryImport ..> DiaryService
     DiaryExport ..> DiarySerializer
-    DiaryExport ..> IStorageService
+    DiaryExport ..> DiaryService
     DiarySave ..> DiarySerializer
     DiarySave ..> IStorageService
     DiaryLoad ..> DiaryFactory
-    DiaryLoad ..> IStorageService
+    DiaryLoad ..> DiaryService
     DiaryNameManager ..> DiaryService
     DiaryNameManager ..> IStorageService
     DiaryFactory ..> UniqueDiaryNameGenerator

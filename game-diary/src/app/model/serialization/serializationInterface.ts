@@ -10,3 +10,4 @@ export interface IDiaryDecompressor {
    */
   decompressDiary(compressed: string): IDiary;
 }
+export type CompressDiary = (diary: IDiary) => string;

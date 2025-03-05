@@ -98,7 +98,7 @@ package Model{
     '受け取った文字列をDiaryに変換してストレージに保存する。
     'カレントの操作は行わない。
     class DiaryImport{
-      constructor(storage: DiaryService, diaryFactory: DiaryFactory)
+      constructor(storage: DiaryService, diarySerializer: DiarySerializer)
       import(val: string): string : keyを返却する
     }
     'KeyからDiaryを選択し、文字列に変換して返却する 

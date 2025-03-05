@@ -28,7 +28,7 @@ export interface IDiaryService {
  * @param {IDiary?} diary 新しいDiaryのSettingsの基となるDiary
  * @returns {IDiary} 作成したDiary
  */
-export interface DiaryFactory {
+export interface IDiaryFactory {
   create(diary?: IDiary): IDiary;
 }
 
@@ -102,7 +102,7 @@ export interface ICurrentDiaryManager {
  */
 export interface IDiaryImport {
   /**
-   * 文字列をユーザから直接受け取ってレポートに復号、複合出来たらカレントの日記にする。
+   * 文字列をユーザから直接受け取ってDiaryに復号、複合出来たらそのDiaryのKeyを返却する。
    * @param {string} val ユーザから受け取った文字列。
    * @returns {string} 復号したDiaryのKey
    * @throws {DecompressionError} 圧縮した文字列が破損している。
@@ -114,7 +114,7 @@ export interface IDiaryImport {
 export interface IDiaryExport {
   /**
    * Diaryのデータを文字列に変換して出力する。
-   * @returns {string} レポートを圧縮した文字列
+   * @returns {string} Diaryを圧縮した文字列
    */
   export(key: string): string;
 }

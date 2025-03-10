@@ -1,13 +1,11 @@
 import 'reflect-metadata';
-import { IDiary } from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';
 import { MockDiary } from '@/__tests__/__mocks__/mockDiary';
 import { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
-import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
 import { DiaryImport } from '@/model/repository/diaryImport';
 import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 
-describe('DiarySave', () => {
+describe('DiaryImport', () => {
   let diaryImport: DiaryImport;
   let mockDiaryService: jest.Mocked<IDiaryService>;
   let mockDiaryDecompressor: jest.Mocked<IDiaryDecompressor>;
@@ -31,7 +29,7 @@ describe('DiarySave', () => {
     diaryImport = container.resolve(DiaryImport);
   });
 
-  it('should save the diary using storage service and compressDiary function', () => {
+  it('should import the diary using diary service and decompressDiary function', () => {
     const dairyStr = 'diaryData';
     diaryImport.import(dairyStr);
 

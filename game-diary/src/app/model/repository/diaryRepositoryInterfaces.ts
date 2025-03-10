@@ -11,13 +11,12 @@ export interface IDiaryService {
    */
   getDiary(key: string): IDiary | undefined;
   /**
-   * 渡されたDiaryをストレージに保存する。
-   * @param {IDiary} diary 保存するDiary
+   * 渡されたDiaryを保管する。
+   * @param {IDiary} diary 保管するDiary
    */
   addDiary(diary: IDiary): void;
   /**
    * 指定したKeyのDiaryを削除する。
-   * カレントのDiaryなら削除できない。
    * @param {string} key 削除する日記の名前
    */
   deleteDiary(key: string): void;

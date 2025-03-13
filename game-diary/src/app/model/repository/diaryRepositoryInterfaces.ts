@@ -61,7 +61,7 @@ export interface IDiaryNameManager {
    * @param name 存在するか確認する名前
    * @returns すでに存在するならtrue、存在しないならfalse
    */
-  hasDiaryName(name: string): boolean;
+  isIncludeDiaryName(name: string): boolean;
 }
 /**
  * ストレージに保存されたカレントの日記・名前とキーのペアを最新のバージョンに適合させるクラス。

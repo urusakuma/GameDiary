@@ -25,7 +25,8 @@ export function decompressVersion01(
     !hasField(jsonObj.settings, '_storageKey', 'string') ||
     !hasField(jsonObj.settings, 'diaryName', 'string') ||
     !hasField(jsonObj.settings, 'dayInterval', 'number') ||
-    !hasField(jsonObj.settings, 'dayModifier', 'object')
+    !hasField(jsonObj.settings, 'dayModifier', 'object') ||
+    !hasField(jsonObj.settings, '_version', 'number')
   ) {
     throw new InvalidJsonError('Settings class is broken');
   }

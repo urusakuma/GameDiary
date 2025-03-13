@@ -60,15 +60,15 @@ export class DiaryDataMigrator implements IDiaryDataMigrator {
     ) {
       throw new InvalidJsonError('game_data_name_list is broken');
     }
-    const keyNamePairList: Array<[string, string]> = new Array();
-    // ゲームデータ名のリストをArray<[string,string]>に変換
+    const keyNamePairObj: Record<string, string> = {};
+    // ゲームデータ名のリストをRecord<[string,string]>に変換
     diaryNameJson.map((v) => {
-      keyNamePairList.push([v.storageKey, v.playGamedataName]);
+      keyNamePairObj[v.storageKey] = v.playGamedataName;
     });
     // データを上書き
     this.storage.setItem(
       DairySettingsConstant.DIARY_NAME_LIST,
-      JSON.stringify(keyNamePairList)
+      JSON.stringify(keyNamePairObj)
     );
   }
 }

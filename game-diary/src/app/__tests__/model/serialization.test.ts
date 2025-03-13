@@ -19,6 +19,7 @@ import {
 } from '@/model/serialization/diarySerializer';
 import { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
 import {
+  CheckedType,
   hasField,
   isArrayType,
   isTypeMatch,
@@ -128,15 +129,27 @@ describe('serialization test', () => {
     container.register<IDiary>('IDiary', { useClass: Diary });
   });
   test('checkTypeMatch', () => {
-    expect(isTypeMatch(false, 'boolean')).toBeTruthy();
-    expect(isTypeMatch(0, 'number')).toBeTruthy();
-    expect(isTypeMatch('文字列', 'string')).toBeTruthy();
-    expect(isTypeMatch(new Object(), 'object')).toBeTruthy();
-    expect(isTypeMatch([0, 1, 2, 3, 4, 5], 'object')).toBeTruthy();
+    const testCases: { value: unknown; expectedType: CheckedType }[] = [
+      { value: false, expectedType: 'boolean' },
+      { value: 0, expectedType: 'number' },
+      { value: '文字列', expectedType: 'string' },
+      { value: new Object(), expectedType: 'object' },
+    ];
+    testCases.forEach(({ value, expectedType }) => {
+      const allTypes: CheckedType[] = ['object', 'string', 'number', 'boolean'];
+      expect(isTypeMatch(value, expectedType)).toBeTruthy();
+      allTypes
+        .filter((type) => type !== expectedType)
+        .forEach((wrongType) => {
+          expect(isTypeMatch(value, wrongType)).toBeFalsy();
+        });
+    });
     expect(isTypeMatch([0, 1, 2, 3, 4, 5], 'Array')).toBeTruthy();
-
-    expect(isTypeMatch(new Object(), 'number')).toBeFalsy();
+    expect(isTypeMatch({ key: 'value' }, 'record')).toBeTruthy();
+    expect(isTypeMatch(new Object(), 'Array')).toBeFalsy();
     expect(isTypeMatch(new Map(), 'Array')).toBeFalsy();
+    expect(isTypeMatch([0, 1, 2, 3, 4, 5], 'record')).toBeFalsy();
+    expect(isTypeMatch(new Map(), 'record')).toBeFalsy();
 
     class Hoge {
       hogeNum = 1;
@@ -146,6 +159,8 @@ describe('serialization test', () => {
       hogeArr = [0, 1, 2];
     }
     const hoge = new Hoge();
+    expect(isTypeMatch(hoge, 'record')).toBeFalsy();
+
     expect(hasField(hoge, 'hogeNum', 'number')).toBeTruthy();
     expect(hasField(hoge, 'hogeStr', 'string')).toBeTruthy();
     expect(hasField(hoge, 'hogeBool', 'boolean')).toBeTruthy();
@@ -172,12 +187,12 @@ describe('serialization test', () => {
   });
   // 正常系のテストしかしていない。セーブデータを弄られることを想定していないため。
   test('deserialization v0', () => {
-    const fileName = '/app/v0CompressionFile.txt';
+    const fileName = '/app/testFileV0.txt';
     deserialization(fileName);
   });
   // 正常系のテストしかしていない。セーブデータを弄られることを想定していないため。
   test('deserialization v1', () => {
-    const fileName = '/app/v1CompressionFile.txt';
+    const fileName = '/app/testFileV1.txt';
     deserialization(fileName);
   });
   function deserialization(fileName: string) {
@@ -189,20 +204,14 @@ describe('serialization test', () => {
     expect(diary.getSettings().version).toBe(1);
     // 正確に読み込めているかのテスト
     expect(diary.getSettings().storageKey).toBe(
-      'c47f8ff6-46ad-49c3-acdc-5f63e18b1583'
+      '726af4c3-30f9-4076-a42e-4645af041097'
     );
     expect(diary.getEntry(1).previous).toBe(undefined);
-    expect(diary.getEntry(1).getTitle()).toBe('1サイクル目');
-    expect(diary.getEntry(1).getContent()).toBe(
-      '左方向と下方向に水。左方向の水をトイレに使用する。'
-    );
-    expect(diary.getLastDay()).toBe(136);
-    expect(diary.getEntry(136).getTitle()).toBe('136サイクル目');
-    expect(diary.getEntry(136).getContent()).toBe(
-      'スウィートルを貰う。即お肉に変換。\n'
-    );
-    expect(diary.getEntry(133).next).toBe(136);
-    expect(diary.getEntry(133).previous).toBe(130);
-    expect(diary.getEntry(136).next).toBe(undefined);
+    for (let i = 1; i <= 5; i++) {
+      expect(diary.getEntry(i).getTitle()).toBe(`${i}日目`);
+      expect(diary.getEntry(i).getContent()).toBe(`test${i}`);
+      expect(diary.getEntry(i).previous).toBe(i > 1 ? i - 1 : undefined);
+      expect(diary.getEntry(i).next).toBe(i < 5 ? i + 1 : undefined);
+    }
   }
 });

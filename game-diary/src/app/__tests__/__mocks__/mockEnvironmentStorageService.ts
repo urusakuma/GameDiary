@@ -5,7 +5,7 @@ import { readFileSync } from 'fs';
 export class MockEnvironmentStorageService extends MockStorageService {
   constructor() {
     super();
-    const fileName = '/app/testFile.txt';
+    const fileName = '/app/testFileV0.txt';
     const file = readFileSync(fileName).toString();
     const diaryKey = '726af4c3-30f9-4076-a42e-4645af041097';
     this.setItem(

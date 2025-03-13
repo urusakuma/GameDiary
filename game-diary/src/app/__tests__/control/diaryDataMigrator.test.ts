@@ -68,17 +68,15 @@ describe('DiaryDataMigrator class tests', () => {
     if (keyNamePairJson === null) {
       throw Error;
     }
-    const keyNamePairList = JSON.parse(keyNamePairJson);
+    const keyNamePairObj = JSON.parse(keyNamePairJson);
 
-    if (
-      !isTypeMatch(keyNamePairList, 'Array') ||
-      !isArrayType(keyNamePairList, 'object')
-    ) {
+    if (!isTypeMatch(keyNamePairObj, 'record')) {
       throw new InvalidJsonError('game_data_name_list is broken');
     }
+    const keyNamePairList = Object.entries(keyNamePairObj);
     for (let i = 0; i < 5; i++) {
       const pair = keyNamePairList[i];
-      if (!isTypeMatch(pair, 'Array') || !isArrayType(pair, 'string')) {
+      if (!isArrayType(pair, 'string')) {
         throw new InvalidJsonError('game_data_name_list is broken');
       }
       expect(pair[0]).toBe('testKey' + String(i));

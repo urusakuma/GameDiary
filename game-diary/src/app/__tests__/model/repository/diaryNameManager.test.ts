@@ -2,8 +2,8 @@ import { container } from 'tsyringe';
 import { DiaryNameManager } from '@/model/repository/diaryNameManager';
 import { IDiaryNameManager } from '@/model/repository/diaryRepositoryInterfaces';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
-import { MockV1StorageService } from '../__mocks__/mockV1StorageService';
-import { MockStorageService } from '../__mocks__/mockStorageService';
+import { MockV1StorageService } from '../../__mocks__/mockV1StorageService';
+import { MockStorageService } from '../../__mocks__/mockStorageService';
 
 describe('DiaryNameManager class tests', () => {
   let diaryNameManager: IDiaryNameManager;

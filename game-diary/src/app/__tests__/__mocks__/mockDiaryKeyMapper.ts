@@ -33,7 +33,7 @@ export class MockDiaryKeyMapper implements IDiaryNameManager {
     this.currentDiaryKey = key;
   }
 
-  hasDiaryName(name: string): boolean {
+  isIncludeDiaryName(name: string): boolean {
     return Array.from(this.diaryNames.values()).includes(name);
   }
 }

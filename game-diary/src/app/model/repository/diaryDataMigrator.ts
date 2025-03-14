@@ -29,6 +29,7 @@ export class DiaryDataMigrator implements IDiaryDataMigrator {
    * v0のデータをv1に整形する。
    */
   migrateV0toV1(): void {
+    // CURRENT_GAME_DATA_NAMEをCURRENT_DIARY_KEYに名前変更
     const v0CurrentDiaryKey = this.storage.getItem(
       DairySettingsConstant.CURRENT_GAME_DATA_NAME
     );

@@ -13,7 +13,7 @@ export class MockV0StorageService extends MockStorageService {
       itemList.push(new Item(itemKey, itemName));
     }
     this.setItem(
-      DairySettingsConstant.DIARY_NAME_LIST,
+      DairySettingsConstant.GAME_DATA_NAME_LIST,
       JSON.stringify(itemList)
     );
     this.setItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME, 'testKey0');
@@ -22,7 +22,7 @@ export class MockV0StorageService extends MockStorageService {
 
 class Item {
   storageKey: string;
-  playGamedataName: string; // dateがDataではないのはv0でのtypo、わざわざ修正する規模のミスでもないのでそのままにしている。
+  playGamedataName: string; // dateがDataではないのはv0でのtypo。
   constructor(storageKey: string, playGamedataName: string) {
     this.storageKey = storageKey;
     this.playGamedataName = playGamedataName;

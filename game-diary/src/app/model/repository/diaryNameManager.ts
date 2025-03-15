@@ -1,10 +1,12 @@
 import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { isTypeMatch } from '@/model/utils/checkTypeMatch';
-import type { IStorageService } from '@/model/utils/storageServiceInterface';
+import type {
+  IsStorageAvailableFunc,
+  IStorageService,
+} from '@/model/utils/storageServiceInterface';
 import { inject, injectable } from 'tsyringe';
 import { IDiaryNameManager } from './diaryRepositoryInterfaces';
 import { InvalidJsonError } from '@/error';
-import { isStorageAvailable } from '@/model/utils/storageService';
 @injectable()
 export class DiaryNameManager implements IDiaryNameManager {
   /** ストレージキーと名前の連想配列。ストレージキーがkey、ゲームデータ名がval。 */
@@ -13,7 +15,9 @@ export class DiaryNameManager implements IDiaryNameManager {
 
   constructor(
     @inject('IStorageService')
-    private storage: IStorageService
+    private storage: IStorageService,
+    @inject('IsStorageAvailableFunc')
+    private isStorageAvailable: IsStorageAvailableFunc
   ) {
     // まず、itemListを初期化し、ストレージからゲームデータ名のリストを取得する。
     const recordStr = storage.getItem(DairySettingsConstant.DIARY_NAME_LIST);
@@ -49,7 +53,7 @@ export class DiaryNameManager implements IDiaryNameManager {
     }
     //ストレージキーと名前を保存してストレージに登録する
     this.diaryNames[key] = name;
-    if (isStorageAvailable(this.storage)) {
+    if (this.isStorageAvailable(this.storage)) {
       this.storage.setItem(
         DairySettingsConstant.DIARY_NAME_LIST,
         JSON.stringify(this.diaryNames)
@@ -64,7 +68,7 @@ export class DiaryNameManager implements IDiaryNameManager {
       return;
     }
     delete this.diaryNames[key];
-    if (isStorageAvailable(this.storage)) {
+    if (this.isStorageAvailable(this.storage)) {
       this.storage.setItem(
         DairySettingsConstant.DIARY_NAME_LIST,
         JSON.stringify(this.diaryNames)

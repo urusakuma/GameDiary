@@ -1,4 +1,4 @@
-import { IDiary } from '../diary/diaryModelInterfaces';
+import { IDiary } from '@/model/diary/diaryModelInterfaces';
 
 export interface IDiaryDecompressor {
   /**
@@ -10,3 +10,4 @@ export interface IDiaryDecompressor {
    */
   decompressDiary(compressed: string): IDiary;
 }
+export type CompressDiary = (diary: IDiary) => string;

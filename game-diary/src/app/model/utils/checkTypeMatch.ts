@@ -1,9 +1,16 @@
-type CheckedType = 'object' | 'string' | 'number' | 'boolean' | 'Array';
+export type CheckedType =
+  | 'object'
+  | 'string'
+  | 'number'
+  | 'boolean'
+  | 'record'
+  | 'Array';
 type TypeMap = {
   object: object;
   string: string;
   number: number;
   boolean: boolean;
+  record: Record<string, unknown>;
   Array: Array<unknown>;
 };
 /**
@@ -22,8 +29,7 @@ export function hasField<K extends string, T extends CheckedType>(
 } {
   return (
     field in obj && // obj has field
-    typeof (obj as any)[field] === type && // obj.field is type of "type"
-    (obj as any)[field] !== null // obj.field is not null
+    isTypeMatch((obj as any)[field], type) // obj.field is type of "type"
   );
 }
 /**
@@ -36,7 +42,15 @@ export function isTypeMatch<T extends CheckedType>(
   val: unknown,
   type: T
 ): val is TypeMap[T] {
-  return typeof val !== type || val === null;
+  return (
+    (typeof val === type && val !== null) || // val is type of "type"
+    (type === 'Array' && val instanceof Array) || // val is Array
+    (type === 'record' &&
+      typeof val === 'object' &&
+      val !== null &&
+      !Array.isArray(val) &&
+      Object.getPrototypeOf(val) === Object.prototype)
+  );
 }
 
 /**

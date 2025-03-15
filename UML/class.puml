@@ -1,84 +1,169 @@
 @startuml class
-package Diary{
-  class Diary{
-    report: Map<day,DiaryEntry>
-    settings: Settings
-    currentDay: number
-    createNewDiary(): number
-    getSettings(): Settings\n\t直接アクセスなのでこの戻り値を編集すると本体も編集される
+package Model{
+  package Diary{
+    '日記を保持するクラス
+    class Diary{
+      diaryEntries: Map<day,DiaryEntry>
+      settings: Settings
+      currentDay: number
+      createNewEntry(): number
+      getLastDay(): number
+      getEntry(day: number): DiaryEntry
+      getSettings(): Settings\n\t直接アクセスなのでこの戻り値を編集すると本体も編集される
+      deleteEntry(day: number): boolean
+    }
+    '日記のエントリを作成する関数
+    class DiaryEntryFactory{
+      constructor(source: DiaryEntryFactoryDiaryEntry, settings: Settings)
+      constructor(day: number, title: string, content: string, previous?: number,next?: number)
+      create(): DiaryEntry
+    }
+    Diary ..> DiaryEntryFactory
+    DiaryEntryFactory ..> DiaryEntry
+    '日記のエントリを保持するクラス
+    class DiaryEntry{
+      constructor(day: number, title: string, content: string, previous?: number, next?: number)
+      day: number
+      title: string
+      content: string
+      previous: number | undefined
+      next: number | undefined
+      getDay(): number
+      setTitle(val: string): void
+      getTitle(): string
+      setContent(val: string): void
+      getContent(): string
+      isEdited(settings: DiarySettings): boolean
+    }
+    ' 日記の設定を保持するクラス
+    class DiarySettings{
+      _storageKey: string
+      _version: number
+      diaryName: string
+      dayInterval: number
+      dayModifier: DayModifier
+      constructor(dayModifier: DayModifier, diaryName: string, dayInterval: number, storageKey: string, version: number)
+      setDiaryName(string): void
+      getDiaryName(): string
+      updateDayInterval(number): void
+      getDayInterval(): number
+      setModifier(val: string): void
+      getModifier():string
+      updateModifierUnit(val: string, index: number): void
+      getModifierUnit(index: number): string
+      updateCycleLength(val: number): void
+      getCycleLength(): number
+      setDayModifierCycle(cycleLength: number): void
+      getDayModifierCycle(): number
+      getNextDay(day: number): number
+      getModifierDay(day: number): string
+    }
+    Diary "1" o-- DiaryEntry
+    Diary "1" o-- "1" DiarySettings
+    DiarySettings "1" *-- "1" DayModifier
+    class DayModifier{
+      constructor(modifier: string, cycleLength: number,...unit: string)
+      setModifier(val: string): void
+      getModifier(): string
+      updateCycleLength(val: number): void
+      getCycleLength(): number
+      getUnit(index: number): string
+      updateUnit(val: string, index: number): void
+      modifyDay(naturalDay: number): string
+    }
   }
-  class DiaryEntryBuilder{
-    constructor(source: DiaryEntryBuilderDiaryEntry, settings: Settings)
-    constructor(\n\tday: number = 1,\n\treportTitle: string = "",\n\treport: string = "",\n\tprevious?: number,\n\tnext?: number\n)
-    constructor(a: any,b: any,c: string?,d: number?,e: number?)
-    built(): DiaryEntry
+  package Storage {
+    class DiaryService{
+      constructor(storage; IStorageService)
+      getDiary(key: string): Diary
+      deleteDiary(key: string): void
+      addDiary(diary: Diary):void
+    }
+    '日記の名前とユニークな日記のキーを対応させストレージに保存するクラス。
+    'このクラスはローカルストレージに保存されているデータが正常であるかの判断は行わない。
+    class DiaryNameManager{
+      constructor(diaryService: DiaryService, storage: IStorageService)
+      length: number
+      collectDiaryNames(): Array<string>
+      updateDiaryName(key: string, name: string): boolean
+      removeDiaryName(key: string): void :保存する際にO(n)の処理が挟まるため呼び出しに注意。
+      hasDiaryName(name: string): boolean
+    }
+    class CurrentDiaryManager{
+      constructor(storage: IStorageService)
+      currentDiaryKey: string
+      getCurrentDiaryKey(): string
+      setCurrentDiaryKey(key: string): void
+    }
+    '受け取った文字列をDiaryに変換してストレージに保存する。
+    'カレントの操作は行わない。
+    class DiaryImport{
+      constructor(storage: DiaryService, diarySerializer: DiarySerializer)
+      import(val: string): string : keyを返却する
+    }
+    'KeyからDiaryを選択し、文字列に変換して返却する 
+    class DiaryExport{
+      constructor(storage: DiaryService, diarySerializer: DiarySerializer)
+      export(key: string): string : Diaryを文字列化して返却する
+    }
+    class DiarySave{
+      constructor(storage: DiaryService, diarySerializer: DiarySerializer)
+      save(diary: IDiary): void
+    }
+    '受け取ったKeyからストレージのデータを読み取り、IDiaryに変換して返却する。
+    'カレントの操作は行わない。
+    class DiaryLoad{
+      constructor(storage: DiaryService, diaryFactory: DiaryFactory)
+      load(key: string): void
+    }
+    class DiaryFactory{
+      constructor(uniqueDiaryNameGenerator: UniqueDiaryNameGenerator)
+      createDiary(): string : Keyを返却する 
+      createDiary(diary: Diary): string : Settingsをコピーして新しいDiaryを作成する
+    }
+    class UniqueDiaryNameGenerator{
+      constructor(DiaryNameManager: DiaryNameManager)
+      generate(): string
+    }
+    class IStorageService{
+      length: number
+      getItem(key: string): string | null
+      setItem(key: string, value: string): void
+      removeItem(key: string): void
+    }
+    class DiarySerializer{
+      compressDiary(diary: Diary): string
+      decompressDiary(val: string): Diary
+    }
+    CurrentDiaryManager ..> IStorageService
+    DiaryImport ..> DiaryFactory
+    DiaryImport ..> DiaryService
+    DiaryExport ..> DiarySerializer
+    DiaryExport ..> DiaryService
+    DiarySave ..> DiarySerializer
+    DiarySave ..> IStorageService
+    DiaryLoad ..> DiaryFactory
+    DiaryLoad ..> DiaryService
+    DiaryNameManager ..> DiaryService
+    DiaryNameManager ..> IStorageService
+    DiaryFactory ..> UniqueDiaryNameGenerator
+    UniqueDiaryNameGenerator ..> DiaryNameManager
   }
-  Diary -l- DiaryEntryBuilder
-  DiaryEntryBuilder -- DiaryEntry
-  class DiaryEntry{
-    day: number
-    reportTitle: string
-    report: string
-    constructor(day: number)
-    setDiaryTitle(string): void
-    setDiary(string): void
-    getDay(): number
-    getDiaryTitle(): string
-    getDiary(): string
-  }
-
-  class Settings{
-    storageKey: string
-    version: number
-    playGamedataName: string
-    dayInterval: number
-    dayModifier: DayModifier
-    constructor(storageKey,version,playGamedataName,dayInterval,dayModifier)
-    setPlayGameDateName(string): void
-    getPlayGameDateName(): string
-    setDayInterval(number): void
-    getDayInterval(): number
-    setDayModifier(unit: string): void
-    setDayModifier(cycleIndex: number,unit: string): void
-    setDayModifier(a: any, b: string): void
-    getDayModifier(index: number): string | null
-    setDayModifierCycle(cycleLength: number): void
-    getDayModifierCycle(): number
-
-    getNextDay(day: number): number
-    getModifierDay(day: number)string
-  }
-  Diary *-- DiaryEntry
-  Diary -- Settings
-  Settings -- DayModifier
-  class DayModifier{
-    constructor(cycleLength: number,...unit: string)
-    constructor(unit: string)
-    constructor(a: any,...b: string)
-    modifyDay(naturalDay: number): string
-    getDayModifier(): Array<string>
-    getDayModifierCycle(): number
-  }
-  class DiaryManager{
-    reportsList: Array<Diary>
-    addDiary(): void
-    selectDiary(strageKey: string): void
-    deleteDiary(strageKey: string): void
-  }
-  DiaryManager *-- Diary
+  DiaryService o-- Diary.Diary
+  DiaryService --> Diary.DiarySettings
 }
 package ControlDiaryEntry{
   class CreateDiaryEntry{
-    createDiaryEntry(source: DayDiary, DiaryEntrys: Diary)
+    createDiaryEntry(source: DayDiary, DiaryEntries: Diary)
   }
-  class ChengeCurrentDiaryEntry{
-    DiaryEntrys: Diary
+  class ChangeCurrentDiaryEntry{
+    DiaryEntries: Diary
     toNextDay(): number
     toEveDay(): number
     toThisDay(day: number): number
   }
-  ChengeCurrentDiaryEntry -- CreateDiaryEntry
-  ChengeCurrentDiaryEntry -- Diary.Diary
+  ChangeCurrentDiaryEntry -- CreateDiaryEntry
+  ChangeCurrentDiaryEntry -- Diary.Diary
 }
 package View{
   class DiaryList{
@@ -93,7 +178,7 @@ package View{
     turnOverBefore(): void
   }
   class SettingsView{
-    editGameDataName(string): void
+    editDiaryName(string): void
     editDayInterval(number): void
     editDayModifier(string): void
     editDayModifierCycle(number): void
@@ -102,11 +187,11 @@ package View{
     deleteDiary(string): void
   }
   DiaryList -- CreateDiaryEntry : CreateDiaryEntry側から\nDiaryList.addDiaryを呼ぶ。
-  DiaryList -- ChengeCurrentDiaryEntry
+  DiaryList -- ChangeCurrentDiaryEntry
   DiaryView -- DiaryEntry
   DiaryView -- Diary
   SettingsView -- Settings
-  SettingsView -- DiaryManager
+  SettingsView -- DiaryService
 
 
 }

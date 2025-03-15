@@ -54,25 +54,29 @@ export function decompressVersion00(
     jsonObj.settings.storageKey,
     DairySettingsConstant.CURRENT_VERSION
   );
-  if (!hasField(jsonObj, 'dayDiary', 'Array')) {
+  if (!hasField(jsonObj, 'dayReports', 'Array')) {
     throw new InvalidJsonError('Array<DayReport> class is broken');
   }
   const map = new Map<number, IDiaryEntry>();
-  for (let element of jsonObj.dayDiary) {
+  for (let element of jsonObj.dayReports) {
     if (
-      !isTypeMatch(element, 'object') ||
-      !hasField(element, 'day', 'number') ||
-      !hasField(element, 'reportTitle', 'string') ||
-      !hasField(element, 'report', 'string')
+      !isTypeMatch(element, 'Array') ||
+      element.length < 1 ||
+      !isTypeMatch(element[1], 'object') ||
+      !hasField(element[1], 'day', 'number') ||
+      !hasField(element[1], 'reportTitle', 'string') ||
+      !hasField(element[1], 'report', 'string')
     ) {
       throw new InvalidJsonError('DayReport class is broken');
     }
     const diary = diaryEntryFactory(
-      element.day,
-      element.reportTitle,
-      element.report,
-      hasField(element, 'previous', 'number') ? element.previous : undefined,
-      hasField(element, 'next', 'number') ? element.next : undefined
+      element[1].day,
+      element[1].reportTitle,
+      element[1].report,
+      hasField(element[1], 'previous', 'number')
+        ? element[1].previous
+        : undefined,
+      hasField(element[1], 'next', 'number') ? element[1].next : undefined
     );
     map.set(diary.day, diary);
   }

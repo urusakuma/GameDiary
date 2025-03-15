@@ -18,3 +18,4 @@ export interface IStorageService {
   /** 登録されている文字列の数  */
   length: number;
 }
+export type IsStorageAvailableFunc = (storage: IStorageService) => boolean;

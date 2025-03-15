@@ -5,3 +5,4 @@ export class QuotaExceededError extends Error {}
 export class KeyAlreadyExistsError extends Error {}
 export class DecompressionError extends Error {}
 export class InvalidJsonError extends Error {}
+export class UnusedStorageError extends Error {}

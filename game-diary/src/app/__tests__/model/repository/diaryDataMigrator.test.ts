@@ -1,8 +1,5 @@
-import { IDiaryDataMigrator } from '@/model/repository/diaryRepositoryInterfaces';
 import { DiaryDataMigrator } from '@/model/repository/diaryDataMigrator';
-import { IStorageService } from '@/model/utils/storageServiceInterface';
-import { container } from 'tsyringe';
-import { MockV0StorageService } from '../__mocks__/mockV0StorageService';
+import { MockV0StorageService } from '../../__mocks__/mockV0StorageService';
 import { DairySettingsConstant } from '@/dairySettingsConstant';
 import {
   hasField,
@@ -12,24 +9,14 @@ import {
 import { InvalidJsonError } from '@/error';
 
 describe('DiaryDataMigrator class tests', () => {
-  beforeEach(() => {
-    container.clearInstances();
-    container.registerSingleton<IStorageService>(
-      'IStorageService',
-      MockV0StorageService
-    );
-    container.register<IDiaryDataMigrator>('IDiaryDataMigrator', {
-      useClass: DiaryDataMigrator,
-    });
-  });
-  test('v0 storage test', () => {
-    const storage = container.resolve<IStorageService>('IStorageService');
+  test('is the storage v0 test', () => {
+    const storage = new MockV0StorageService();
 
     expect(storage.getItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME)).toBe(
       'testKey0'
     );
     const gameDataNameListJson = storage.getItem(
-      DairySettingsConstant.DIARY_NAME_LIST
+      DairySettingsConstant.GAME_DATA_NAME_LIST
     );
     expect(gameDataNameListJson).not.toBeNull();
     if (gameDataNameListJson === null) {
@@ -45,7 +32,7 @@ describe('DiaryDataMigrator class tests', () => {
           hasField(v, 'playGamedataName', 'string')
       )
     ) {
-      throw new InvalidJsonError('game_data_name_list is broken');
+      throw new InvalidJsonError('gameDataNameList is broken');
     }
     for (let i = 0; i < 5; i++) {
       const item = gameDataNameJson[i];
@@ -54,8 +41,8 @@ describe('DiaryDataMigrator class tests', () => {
     }
   });
   test('v0 migrator', () => {
-    const storage = container.resolve<IStorageService>('IStorageService');
-    container.resolve<IDiaryDataMigrator>('IDiaryDataMigrator').migrate();
+    const storage = new MockV0StorageService();
+    new DiaryDataMigrator(storage).migrate();
     expect(
       storage.getItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME)
     ).toBeNull();
@@ -71,13 +58,13 @@ describe('DiaryDataMigrator class tests', () => {
     const keyNamePairObj = JSON.parse(keyNamePairJson);
 
     if (!isTypeMatch(keyNamePairObj, 'record')) {
-      throw new InvalidJsonError('game_data_name_list is broken');
+      throw new InvalidJsonError('diaryNameList is broken');
     }
     const keyNamePairList = Object.entries(keyNamePairObj);
     for (let i = 0; i < 5; i++) {
       const pair = keyNamePairList[i];
       if (!isArrayType(pair, 'string')) {
-        throw new InvalidJsonError('game_data_name_list is broken');
+        throw new InvalidJsonError('diaryNameList is broken');
       }
       expect(pair[0]).toBe('testKey' + String(i));
       expect(pair[1]).toBe('testName' + String(i));

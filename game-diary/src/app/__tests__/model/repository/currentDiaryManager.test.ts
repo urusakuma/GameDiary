@@ -3,15 +3,10 @@ import { container } from 'tsyringe';
 import { CurrentDiaryManager } from '@/model/repository/currentDiaryManager';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import { DairySettingsConstant } from '@/dairySettingsConstant';
-import { isStorageAvailable } from '@/model/utils/storageService';
-
-jest.mock('@/model/utils/storageService', () => ({
-  isStorageAvailable: jest.fn(),
-}));
 
 describe('CurrentDiaryManager', () => {
   let storageServiceMock: jest.Mocked<IStorageService>;
-
+  let isStorageAvailable: jest.Mock;
   beforeEach(() => {
     storageServiceMock = {
       getItem: jest.fn(),
@@ -19,6 +14,7 @@ describe('CurrentDiaryManager', () => {
       removeItem: jest.fn(),
       length: 0,
     };
+    isStorageAvailable = jest.fn();
     container.registerInstance('IStorageService', storageServiceMock);
   });
 
@@ -29,7 +25,10 @@ describe('CurrentDiaryManager', () => {
   it('should not set currentDiaryKey if storage is not available', () => {
     (isStorageAvailable as jest.Mock).mockReturnValue(false);
 
-    const manager = new CurrentDiaryManager(storageServiceMock);
+    const manager = new CurrentDiaryManager(
+      storageServiceMock,
+      isStorageAvailable
+    );
 
     expect(manager.getCurrentDiaryKey()).toBe('');
     expect(storageServiceMock.getItem).not.toHaveBeenCalled();
@@ -39,7 +38,10 @@ describe('CurrentDiaryManager', () => {
     (isStorageAvailable as jest.Mock).mockReturnValue(true);
     storageServiceMock.getItem.mockReturnValue('test-key');
 
-    const manager = new CurrentDiaryManager(storageServiceMock);
+    const manager = new CurrentDiaryManager(
+      storageServiceMock,
+      isStorageAvailable
+    );
 
     expect(manager.getCurrentDiaryKey()).toBe('test-key');
     expect(storageServiceMock.getItem).toHaveBeenCalledWith(
@@ -51,7 +53,10 @@ describe('CurrentDiaryManager', () => {
     (isStorageAvailable as jest.Mock).mockReturnValue(true);
     storageServiceMock.getItem.mockReturnValue(null);
 
-    const manager = new CurrentDiaryManager(storageServiceMock);
+    const manager = new CurrentDiaryManager(
+      storageServiceMock,
+      isStorageAvailable
+    );
 
     expect(manager.getCurrentDiaryKey()).toBe('');
     expect(storageServiceMock.getItem).toHaveBeenCalledWith(
@@ -59,7 +64,10 @@ describe('CurrentDiaryManager', () => {
     );
   });
   it('should set currentDiaryKey', () => {
-    const manager = new CurrentDiaryManager(storageServiceMock);
+    const manager = new CurrentDiaryManager(
+      storageServiceMock,
+      isStorageAvailable
+    );
 
     const key = 'test-key';
     manager.setCurrentDiaryKey(key);

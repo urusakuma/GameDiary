@@ -1,98 +1,60 @@
 'use client';
-
-import { useState, useEffect } from 'react';
+import 'reflect-metadata';
 import classNames from 'classnames';
-import ListItem from 'src/components/listItem';
+import { useDarkMode } from 'src/hooks/useDarkMode';
+import { useSettingOpen } from 'src/hooks/useSettingsOpen';
+import DiaryEntriesList from 'src/components/diaryEntriesList';
+import { useState } from 'react';
 const DiaryLayout = () => {
-  const [isDarkMode, setDarkMode] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
-  const [items, setItems] = useState<string[]>(['日記1', '日記2', '日記3']);
-  const [pendingDelete, setPendingDelete] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-      setDarkMode(savedDarkMode);
-    }
-  }, []);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      setDarkMode(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
-
-  const handleRemove = (index: number) => {
-    if (pendingDelete === index) {
-      // 2回目のクリック → 削除
-      setItems(items.filter((_, i) => i !== index));
-      setPendingDelete(null); // リセット
-    } else {
-      // 最初のクリック → 削除待ち状態にする
-      setPendingDelete(index);
-
-      // 3秒後に削除待ちを解除
-      setTimeout(() => {
-        setPendingDelete((prev) => (prev === index ? null : prev));
-      }, 300);
-    }
-  };
+  const { isOpen, setIsOpen } = useSettingOpen();
+  const { isDarkMode, setDarkMode } = useDarkMode();
+  const [addItem, setAddItem] = useState<(day: number, title: string) => void>(
+    () => () => {}
+  );
   return (
     <div
-      className={`flex h-screen p-4 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}
+      className={`flex h-screen p-4 overflow-y-clip overflow-x-clip overflow-x-scroll ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}
     >
       {/* 左サイドバー */}
       <div
-        className={`w-1/8 p-2 flex flex-col ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}
+        className={`w-1/8 p-2 overflow-hidden flex flex-col ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}
       >
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2 mb-4 overflow-hidden">
           <button
             className={classNames(
-              'border p-2',
+              'border p-2 whitespace-nowrap',
               isDarkMode ? darkButton : lightButton
             )}
             onClick={() => setDarkMode(!isDarkMode)}
           >
             {isDarkMode ? 'ライトモード' : 'ダークモード'}
           </button>
-          <button className="p-2">日記名</button>
         </div>
-        <div className="flex-1">
-          <ol>
-            {items.map((text, index) => (
-              <ListItem
-                key={index}
-                text={text}
-                index={index}
-                onRemove={() => handleRemove(index)}
-                isDarkMode={isDarkMode}
-                pendingDelete={pendingDelete}
-              />
-            ))}
-          </ol>
+        <div className="flex-1 max-h-[72.5vh]">
+          <DiaryEntriesList
+            isDarkMode={isDarkMode}
+            onAdd={(callback) => setAddItem(() => callback)}
+          ></DiaryEntriesList>
         </div>
         <div className={`grid grid-cols-2 gap-2`}>
-          <button className={isDarkMode ? darkButton : lightButton}>
+          <button
+            className={`overflow-hidden ${isDarkMode ? darkButton : lightButton}`}
+          >
             セーブ
           </button>
-          <button className={isDarkMode ? darkButton : lightButton}>
+          <button
+            className={`overflow-y-clip overflow-x-clip ${isDarkMode ? darkButton : lightButton}`}
+          >
             エクスポート
           </button>
-          <button className={isDarkMode ? darkButton : lightButton}>
+          <button
+            className={`overflow-y-clip overflow-x-clip ${isDarkMode ? darkButton : lightButton}`}
+          >
             ロード
           </button>
-          <button className={isDarkMode ? darkButton : lightButton}>
+          <button
+            className={`overflow-y-clip overflow-x-clip ${isDarkMode ? darkButton : lightButton}`}
+          >
             インポート
           </button>
         </div>

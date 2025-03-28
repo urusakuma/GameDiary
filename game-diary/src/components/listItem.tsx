@@ -1,23 +1,38 @@
 import React from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
-
+import { container } from 'tsyringe';
+import { ISelectDiary } from 'src/lib/control/controlInterface';
 interface ListItemProps {
   text: string;
   index: number;
   onRemove: () => void;
   isDarkMode: boolean;
-  pendingDelete: number | null;
 }
-
+// const selectDiaryByDate =
+//   container.resolve<ISelectDiary>('ISelectDiary').byDate;
 const ListItem: React.FC<ListItemProps> = ({
   text,
   index,
   onRemove,
   isDarkMode: isDarkMode,
-  pendingDelete: pendingDelete,
 }) => {
+  const [isWaitingDelete, setIsWaitingDelete] = useState<boolean>(false);
+  const pendingDeleteListItem = () => {
+    if (isWaitingDelete) {
+      onRemove();
+    } else {
+      setIsWaitingDelete(true);
+      setTimeout(() => {
+        setIsWaitingDelete(false);
+      }, 300);
+    }
+  };
   return (
     <li
+      onClick={() => {
+        // selectDiaryByDate(index);
+      }}
       className={classNames(
         'flex justify-between items-center p-2 border rounded-md shadow-md transition-colors',
         isDarkMode
@@ -31,11 +46,11 @@ const ListItem: React.FC<ListItemProps> = ({
     >
       <span>{text}</span>
       <button
-        onClick={onRemove}
+        onClick={() => pendingDeleteListItem()}
         className={classNames(
           'ml-2 p-1 w-6 h-6 flex items-center justify-center border rounded-full',
 
-          pendingDelete === index
+          isWaitingDelete
             ? 'bg-red-500 hover:bg-red-600'
             : isDarkMode
               ? 'bg-gray-300 hover:bg-gray-500 text-black'

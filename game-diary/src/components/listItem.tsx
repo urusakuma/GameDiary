@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import classNames from 'classnames';
 import { container } from 'tsyringe';
-import { ISelectDiary } from 'src/lib/control/controlInterface';
+import { IChangeCurrentDiaryEntry } from 'src/lib/control/controlInterface';
 interface ListItemProps {
   text: string;
   index: number;
@@ -10,7 +10,7 @@ interface ListItemProps {
   isDarkMode: boolean;
 }
 // const selectDiaryByDate =
-//   container.resolve<ISelectDiary>('ISelectDiary').byDate;
+//   container.resolve<IChangeCurrentDiaryEntry>('IChangeCurrentDiaryEntry').moveByDate;
 const ListItem: React.FC<ListItemProps> = ({
   text,
   index,

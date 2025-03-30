@@ -152,47 +152,92 @@ package Model{
   DiaryService o-- Diary.Diary
   DiaryService --> Diary.DiarySettings
 }
-package ControlDiaryEntry{
-  class CreateDiaryEntry{
-    createDiaryEntry(source: DayDiary, DiaryEntries: Diary)
+package Control{
+  package ControlDiary{
+    class CurrentDiaryAccessor{
+      constructor(currentDiaryManager: CurrentDiaryManager, diaryService: DiaryService)
+      getCurrentDiary(): Diary
+      setCurrentDiary(key:string): void
+    }
+    class CreateDiary{
+      constructor(diaryAccessor: CurrentDiaryAccessor, diaryFactory:DiaryFactory)
+      create(): void
+    }
+    class DeleteDiary {
+      constructor(diaryAccessor: CurrentDiaryAccessor)
+      delete(key: string): void;
+    }
+    ' 日記のインポートボタンを押したときの挙動を定義するクラス
+    class DiaryImporter{
+      constructor(diaryImport:DiaryImport, diaryAccessor: CurrentDiaryAccessor)
+      importText(val: string): string : keyを返却する
+      importFile(file: File): string : keyを返却する
+    }
+    ' 日記のエクスポートボタンを押したときの挙動を定義するクラス
+    class DiaryExporter{
+      constructor(diaryExport:DiaryExport)
+      exportText(key: string): string : Diaryを文字列化して返却する
+      exportFile(key: string): File : Diaryをファイル化して返却する
+    }
+    ' 日記のセーブボタンを押したときの挙動を定義するクラス
+    class DiarySaveHandler{
+      constructor(diarySave:DiarySave)
+      save(): void
+    }
+    ' 日記のロードボタンを押したときの挙動を定義するクラス
+    class DiaryLoadHandler{
+      constructor(diaryLoad: DiaryLoad, diaryAccessor: CurrentDiaryAccessor)
+      load(key: string): void
+    }
+    
+    CurrentDiaryAccessor ..> CurrentDiaryManager
+    CurrentDiaryAccessor ..> DiaryService
+    CreateDiary ..> CurrentDiaryAccessor
+    CreateDiary ..> DiaryFactory
+    DeleteDiary ..> CurrentDiaryAccessor
+    DiaryImporter ..> DiaryImport
+    DiaryExporter ..> DiaryExport
+    DiarySaveHandler ..> DiarySave
+    DiaryLoadHandler ..> DiaryLoad
   }
-  class ChangeCurrentDiaryEntry{
-    DiaryEntries: Diary
-    toNextDay(): number
-    toEveDay(): number
-    toThisDay(day: number): number
+  package ControlDiaryEntry{
+    class CurrentDiaryEntryAccessor{
+      constructor(diaryAccessor: CurrentDiaryAccessor)
+      getCurrentDiaryEntry(): DiaryEntry
+      setCurrentDiaryEntry(day: number): void
+    }
+    class ChangeCurrentDiaryEntry{
+      constructor(diaryEntryAccessor: CurrentDiaryEntryAccessor diaryEntryFactory: DiaryEntryFactory)
+      moveByDate(date: number): void;
+      moveToNext(): void;
+      moveToPrevious(): void;
+    }
+    class DeleteDiaryEntry {
+      constructor(diaryAccessor: CurrentDiaryAccessor)
+      delete(day: number): void;
+    }
+    class EditDiarySettings{
+      constructor(diaryAccessor: CurrentDiaryAccessor)
+      editDiaryName(name:string): void
+      editDayInterval(interval:number): void
+      editDayModifier(modifier:string): void
+      editDayModifierCycle(cycle:number,cycleModifier:string): void
+    }
+    class EditDiaryEntry{
+      constructor(diaryEntryAccessor: CurrentDiaryEntryAccessor)
+      editTitle(title:string): void
+      editContent(content:string): void
+      clear(): void;
+    }
+    CurrentDiaryEntryAccessor..> CurrentDiaryAccessor
+    ChangeCurrentDiaryEntry ..> CurrentDiaryEntryAccessor
+    ChangeCurrentDiaryEntry ..> DiaryEntryFactory
+    DeleteDiaryEntry ..> CurrentDiaryAccessor
+    EditDiarySettings ..> CurrentDiaryAccessor
+    EditDiarySettings -- DiarySettings
+    EditDiaryEntry ..> CurrentDiaryEntryAccessor
+    EditDiaryEntry -- DiaryEntry
   }
-  ChangeCurrentDiaryEntry -- CreateDiaryEntry
-  ChangeCurrentDiaryEntry -- Diary.Diary
-}
-package View{
-  class DiaryList{
-    addDiary(day: number, title: string): void
-    turnOverThis(day: number): void
-    deleteDiary(day: number): void
-  }
-  class DiaryView{
-    editDiary(string): void
-    clearDiary(): void
-    turnOverNext(): void
-    turnOverBefore(): void
-  }
-  class SettingsView{
-    editDiaryName(string): void
-    editDayInterval(number): void
-    editDayModifier(string): void
-    editDayModifierCycle(number): void
-    addNewDiary(string): void
-    selectDiary(string): void
-    deleteDiary(string): void
-  }
-  DiaryList -- CreateDiaryEntry : CreateDiaryEntry側から\nDiaryList.addDiaryを呼ぶ。
-  DiaryList -- ChangeCurrentDiaryEntry
-  DiaryView -- DiaryEntry
-  DiaryView -- Diary
-  SettingsView -- Settings
-  SettingsView -- DiaryService
-
 
 }
 @enduml

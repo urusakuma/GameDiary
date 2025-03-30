@@ -1,5 +1,5 @@
-import { QuotaExceededError } from 'src/lib/error';
-import { IStorageService } from 'src/lib/model/utils/storageServiceInterface';
+import { QuotaExceededError } from '@/error';
+import { IStorageService } from '@/model/utils/storageServiceInterface';
 
 export class MockUnavailableStorageService implements IStorageService {
   getItem(key: string): string | null {

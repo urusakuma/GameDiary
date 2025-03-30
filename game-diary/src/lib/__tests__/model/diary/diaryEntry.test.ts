@@ -1,12 +1,12 @@
-import { MockDiarySettings } from 'src/lib/__tests__/__mocks__/mockDiarySettings';
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
-import { DiaryEntry } from 'src/lib/model/diary/diaryEntry';
+import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
+import { DiaryEntry } from '@/model/diary/diaryEntry';
 import {
   IDiaryEntry,
   IDiarySettings,
   UseExistingDataDiaryEntryFactory,
   UsePreviousDayDiaryEntryFactory,
-} from 'src/lib/model/diary/diaryModelInterfaces';
+} from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';
 
 describe('DiaryEntry class tests', () => {
@@ -42,6 +42,7 @@ describe('DiaryEntry class tests', () => {
           ),
       }
     );
+    container.register('MockKey', { useFactory: () => undefined });
     container.register<IDiarySettings>('MockSettings', {
       useClass: MockDiarySettings,
     });

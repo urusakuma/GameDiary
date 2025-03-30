@@ -1,9 +1,9 @@
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
-import { DayModifier } from 'src/lib/model/diary/dayModifier';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
+import { DayModifier } from '@/model/diary/dayModifier';
 import {
   DayModifierFactory,
   IDayModifier,
-} from 'src/lib/model/diary/diaryModelInterfaces';
+} from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';
 
 describe('DayModifier class tests', () => {

@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { MockDiary } from 'src/lib/__tests__/__mocks__/mockDiary';
-import { IDiaryDecompressor } from 'src/lib/model/serialization/serializationInterface';
-import { DiaryImport } from 'src/lib/model/repository/diaryImport';
-import { IDiaryService } from 'src/lib/model/repository/diaryRepositoryInterfaces';
+import { MockDiary } from '@/__tests__/__mocks__/mockDiary';
+import { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
+import { DiaryImport } from '@/model/repository/diaryImport';
+import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 
 describe('DiaryImport', () => {
   let diaryImport: DiaryImport;

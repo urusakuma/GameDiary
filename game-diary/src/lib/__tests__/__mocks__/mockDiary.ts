@@ -1,3 +1,4 @@
+import { inject } from 'tsyringe';
 import {
   IDiary,
   IDiaryEntry,
@@ -11,9 +12,9 @@ export class MockDiary implements IDiary {
   private settings: IDiarySettings;
   private lastDay: number = 1;
 
-  constructor() {
+  constructor(@inject('MockKey') key?: string) {
     this.diaryEntries.set(this.lastDay, new MockDiaryEntry(this.lastDay));
-    this.settings = new MockDiarySettings();
+    this.settings = new MockDiarySettings(key);
   }
   getSettings(): IDiarySettings {
     return this.settings;

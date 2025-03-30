@@ -1,4 +1,4 @@
-import { IDiaryNameManager } from 'src/lib/model/repository/diaryRepositoryInterfaces';
+import { IDiaryNameManager } from '@/model/repository/diaryRepositoryInterfaces';
 
 export class MockDiaryKeyMapper implements IDiaryNameManager {
   private diaryNames: Map<string, string> = new Map();

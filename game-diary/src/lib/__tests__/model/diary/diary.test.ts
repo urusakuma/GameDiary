@@ -1,13 +1,13 @@
-import { MockDiaryEntry } from 'src/lib/__tests__/__mocks__/mockDiaryEntry';
-import { MockDiarySettings } from 'src/lib/__tests__/__mocks__/mockDiarySettings';
-import { Diary } from 'src/lib/model/diary/diary';
+import { MockDiaryEntry } from '@/__tests__/__mocks__/mockDiaryEntry';
+import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
+import { Diary } from '@/model/diary/diary';
 import {
   IDiary,
   IDiaryEntry,
   IDiarySettings,
   UseExistingDataDiaryEntryFactory,
   UsePreviousDayDiaryEntryFactory,
-} from 'src/lib/model/diary/diaryModelInterfaces';
+} from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';
 
 describe('DairySettings class tests', () => {
@@ -16,6 +16,7 @@ describe('DairySettings class tests', () => {
     container.register<number>('FirstDay', {
       useValue: 1,
     });
+    container.register('MockKey', { useFactory: () => undefined });
     container.register<IDiarySettings>('IDiarySettings', {
       useClass: MockDiarySettings,
     });
@@ -103,7 +104,7 @@ describe('DairySettings class tests', () => {
   });
   test('JSON test', () => {
     const diaryJson =
-      '{"settings":{},"diaryEntries":[{"day":1,"title":"","content":"","next":2},{"day":2,"title":"","content":"","next":3},{"day":3,"title":"","content":"","next":4},{"day":4,"title":"","content":"","next":5},{"day":5,"title":"","content":""}],"lastDay":5}';
+      '{"settings":{"_storageKey":"bec0da1f-0053-4c59-acfb-f4a574bd8c98"},"diaryEntries":[{"day":1,"title":"","content":"","next":2},{"day":2,"title":"","content":"","next":3},{"day":3,"title":"","content":"","next":4},{"day":4,"title":"","content":"","next":5},{"day":5,"title":"","content":""}],"lastDay":5}';
     const diary = container.resolve<IDiary>('InitDiary');
     for (let i = 2; i < 6; i++) {
       diary.createNewEntry();

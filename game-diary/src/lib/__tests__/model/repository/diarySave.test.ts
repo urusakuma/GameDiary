@@ -1,15 +1,15 @@
 import 'reflect-metadata';
-import { DiarySave } from 'src/lib/model/repository/diarySave';
-import { IDiary } from 'src/lib/model/diary/diaryModelInterfaces';
+import { DiarySave } from '@/model/repository/diarySave';
+import { IDiary } from '@/model/diary/diaryModelInterfaces';
 import {
   IsStorageAvailableFunc,
   IStorageService,
-} from 'src/lib/model/utils/storageServiceInterface';
+} from '@/model/utils/storageServiceInterface';
 import { container } from 'tsyringe';
-import { MockDiary } from 'src/lib/__tests__/__mocks__/mockDiary';
-import { CompressDiary } from 'src/lib/model/serialization/serializationInterface';
-import { MockDiarySettings } from 'src/lib/__tests__/__mocks__/mockDiarySettings';
-import { UnusedStorageError } from 'src/lib/error';
+import { MockDiary } from '@/__tests__/__mocks__/mockDiary';
+import { CompressDiary } from '@/model/serialization/serializationInterface';
+import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
+import { UnusedStorageError } from '@/error';
 
 describe('DiarySave', () => {
   let diarySave: DiarySave;
@@ -26,7 +26,7 @@ describe('DiarySave', () => {
     };
 
     mockCompressDiary = jest.fn().mockReturnValue('compressedDiaryData');
-    container.register('IDiary', MockDiary);
+    container.register('IDiary', { useFactory: () => new MockDiary() });
     container.register(DiarySave, DiarySave);
   });
 

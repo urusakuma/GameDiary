@@ -2,8 +2,8 @@ import { inject, injectable, singleton } from 'tsyringe';
 import type {
   IsStorageAvailableFunc,
   IStorageService,
-} from 'src/lib/model/utils/storageServiceInterface';
-import type { IDiary } from 'src/lib/model/diary/diaryModelInterfaces';
+} from '@/model/utils/storageServiceInterface';
+import type { IDiary } from '@/model/diary/diaryModelInterfaces';
 import type { IDiaryService } from './diaryRepositoryInterfaces';
 /**
  * 全ての日記を管理するクラス。

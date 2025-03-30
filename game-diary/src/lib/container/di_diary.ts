@@ -11,13 +11,13 @@ import {
   UseExistingDataDiaryEntryFactory,
   UseExistingDataDiarySettingsFactory,
   UsePreviousDayDiaryEntryFactory,
-} from 'src/lib/model/diary/diaryModelInterfaces';
-import { DiaryEntry } from 'src/lib/model/diary/diaryEntry';
-import { Diary } from 'src/lib/model/diary/diary';
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
-import { DayModifier } from 'src/lib/model/diary/dayModifier';
-import { DiarySettings } from 'src/lib/model/diary/diarySettings';
-import { IUniqueDiaryNameGenerator } from 'src/lib/model/repository/diaryRepositoryInterfaces';
+} from '@/model/diary/diaryModelInterfaces';
+import { DiaryEntry } from '@/model/diary/diaryEntry';
+import { Diary } from '@/model/diary/diary';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
+import { DayModifier } from '@/model/diary/dayModifier';
+import { DiarySettings } from '@/model/diary/diarySettings';
+import { IUniqueDiaryNameGenerator } from '@/model/repository/diaryRepositoryInterfaces';
 
 container.register<string>('DIARY_NAME', {
   useValue: DairySettingsConstant.DEFAULT_DIARY_NAME,

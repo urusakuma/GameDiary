@@ -1,13 +1,13 @@
 import { inject, injectable } from 'tsyringe';
 import { IDiaryDataMigrator } from './diaryRepositoryInterfaces';
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
-import type { IStorageService } from 'src/lib/model/utils/storageServiceInterface';
-import { InvalidJsonError } from 'src/lib/error';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
+import type { IStorageService } from '@/model/utils/storageServiceInterface';
+import { InvalidJsonError } from '@/error';
 import {
   isTypeMatch,
   isArrayType,
   hasField,
-} from 'src/lib/model/utils/checkTypeMatch';
+} from '@/model/utils/checkTypeMatch';
 @injectable()
 export class DiaryDataMigrator implements IDiaryDataMigrator {
   constructor(

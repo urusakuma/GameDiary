@@ -1,12 +1,12 @@
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
-import { isTypeMatch } from 'src/lib/model/utils/checkTypeMatch';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
+import { isTypeMatch } from '@/model/utils/checkTypeMatch';
 import type {
   IsStorageAvailableFunc,
   IStorageService,
-} from 'src/lib/model/utils/storageServiceInterface';
+} from '@/model/utils/storageServiceInterface';
 import { inject, injectable } from 'tsyringe';
 import { IDiaryNameManager } from './diaryRepositoryInterfaces';
-import { InvalidJsonError } from 'src/lib/error';
+import { InvalidJsonError } from '@/error';
 @injectable()
 export class DiaryNameManager implements IDiaryNameManager {
   /** ストレージキーと名前の連想配列。ストレージキーがkey、ゲームデータ名がval。 */

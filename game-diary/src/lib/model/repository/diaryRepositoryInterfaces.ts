@@ -1,4 +1,4 @@
-import { IDiary } from 'src/lib/model/diary/diaryModelInterfaces';
+import { IDiary } from '@/model/diary/diaryModelInterfaces';
 
 /**
  * Diaryを管理し、Diaryへのアクセスを他クラスに提供する。

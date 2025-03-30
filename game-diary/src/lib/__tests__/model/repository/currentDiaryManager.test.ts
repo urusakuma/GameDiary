@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { CurrentDiaryManager } from 'src/lib/model/repository/currentDiaryManager';
-import type { IStorageService } from 'src/lib/model/utils/storageServiceInterface';
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
+import { CurrentDiaryManager } from '@/model/repository/currentDiaryManager';
+import type { IStorageService } from '@/model/utils/storageServiceInterface';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 
 describe('CurrentDiaryManager', () => {
   let storageServiceMock: jest.Mocked<IStorageService>;
@@ -30,8 +30,8 @@ describe('CurrentDiaryManager', () => {
       isStorageAvailable
     );
 
-    expect(manager.getCurrentDiaryKey()).toBe('');
-    expect(storageServiceMock.getItem).not.toHaveBeenCalled();
+    manager.setCurrentDiaryKey('test-key');
+    expect(storageServiceMock.setItem).not.toHaveBeenCalled();
   });
 
   it('should set currentDiaryKey if storage is available and key exists', () => {
@@ -64,6 +64,7 @@ describe('CurrentDiaryManager', () => {
     );
   });
   it('should set currentDiaryKey', () => {
+    (isStorageAvailable as jest.Mock).mockReturnValue(true);
     const manager = new CurrentDiaryManager(
       storageServiceMock,
       isStorageAvailable

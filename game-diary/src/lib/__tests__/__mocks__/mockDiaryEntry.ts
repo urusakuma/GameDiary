@@ -1,7 +1,7 @@
 import {
   IDiaryEntry,
   IDiarySettings,
-} from 'src/lib/model/diary/diaryModelInterfaces';
+} from '@/model/diary/diaryModelInterfaces';
 export class MockDiaryEntry implements IDiaryEntry {
   private title: string = '';
   private content: string = '';

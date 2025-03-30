@@ -1,16 +1,16 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { DiaryService } from 'src/lib/model/repository/diaryService';
+import { DiaryService } from '@/model/repository/diaryService';
 import type {
   IsStorageAvailableFunc,
   IStorageService,
-} from 'src/lib/model/utils/storageServiceInterface';
+} from '@/model/utils/storageServiceInterface';
 import type {
   IDiary,
   IDiarySettings,
-} from 'src/lib/model/diary/diaryModelInterfaces';
+} from '@/model/diary/diaryModelInterfaces';
 import { MockDiary } from '../../__mocks__/mockDiary';
-import { IDiaryService } from 'src/lib/model/repository/diaryRepositoryInterfaces';
+import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 import { MockDiarySettings } from '../../__mocks__/mockDiarySettings';
 
 describe('DiaryService', () => {
@@ -29,6 +29,7 @@ describe('DiaryService', () => {
     };
     isStorageAvailableFunc = jest.fn().mockReturnValue(true);
     container.registerInstance('IStorageService', storageMock);
+    container.register('MockKey', { useFactory: () => undefined });
     container.register<IDiarySettings>('IDiarySettings', {
       useClass: MockDiarySettings,
     });

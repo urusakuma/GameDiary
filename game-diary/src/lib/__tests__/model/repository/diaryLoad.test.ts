@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { MockDiary } from 'src/lib/__tests__/__mocks__/mockDiary';
-import { IDiaryDecompressor } from 'src/lib/model/serialization/serializationInterface';
-import { IDiaryService } from 'src/lib/model/repository/diaryRepositoryInterfaces';
-import { DiaryLoad } from 'src/lib/model/repository/diaryLoad';
-import { IStorageService } from 'src/lib/model/utils/storageServiceInterface';
-import { KeyNotFoundError } from 'src/lib/error';
+import { MockDiary } from '@/__tests__/__mocks__/mockDiary';
+import { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
+import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
+import { DiaryLoad } from '@/model/repository/diaryLoad';
+import { IStorageService } from '@/model/utils/storageServiceInterface';
+import { KeyNotFoundError } from '@/error';
 
 describe('DiaryLoad', () => {
   let diaryLoad: DiaryLoad;

@@ -1,4 +1,4 @@
-import { NotSupportedError } from 'src/lib/error';
+import { NotSupportedError } from '@/error';
 import { IStorageService } from './storageServiceInterface';
 
 export class LocalStorageService implements IStorageService {

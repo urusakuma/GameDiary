@@ -1,4 +1,4 @@
-import { KeyNotFoundError } from 'src/lib/error';
+import { KeyNotFoundError } from '@/error';
 import { IDiary } from '../diary/diaryModelInterfaces';
 import type { IDiaryDecompressor } from '../serialization/serializationInterface';
 import type { IStorageService } from '../utils/storageServiceInterface';

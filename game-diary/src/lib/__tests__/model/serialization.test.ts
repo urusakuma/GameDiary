@@ -1,6 +1,6 @@
-import { DayModifier } from 'src/lib/model/diary/dayModifier';
-import { Diary } from 'src/lib/model/diary/diary';
-import { DiaryEntry } from 'src/lib/model/diary/diaryEntry';
+import { DayModifier } from '@/model/diary/dayModifier';
+import { Diary } from '@/model/diary/diary';
+import { DiaryEntry } from '@/model/diary/diaryEntry';
 import {
   DayModifierFactory,
   UseExistingDataDiaryEntryFactory,
@@ -11,19 +11,19 @@ import {
   IDiarySettings,
   IDiary,
   UsePreviousDayDiaryEntryFactory,
-} from 'src/lib/model/diary/diaryModelInterfaces';
-import { DiarySettings } from 'src/lib/model/diary/diarySettings';
+} from '@/model/diary/diaryModelInterfaces';
+import { DiarySettings } from '@/model/diary/diarySettings';
 import {
   compressDiary,
   DiaryDecompressor,
-} from 'src/lib/model/serialization/diarySerializer';
-import { IDiaryDecompressor } from 'src/lib/model/serialization/serializationInterface';
+} from '@/model/serialization/diarySerializer';
+import { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
 import {
   CheckedType,
   hasField,
   isArrayType,
   isTypeMatch,
-} from 'src/lib/model/utils/checkTypeMatch';
+} from '@/model/utils/checkTypeMatch';
 import { readFileSync } from 'fs';
 import { container } from 'tsyringe';
 import { MockDiarySettings } from '../__mocks__/mockDiarySettings';
@@ -108,6 +108,7 @@ describe('serialization test', () => {
         ),
       }
     );
+    container.register('MockKey', { useFactory: () => undefined });
     container.register<IDiarySettings>('IDiarySettings', {
       useClass: MockDiarySettings,
     });

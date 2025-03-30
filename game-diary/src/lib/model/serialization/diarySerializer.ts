@@ -2,7 +2,7 @@ import {
   DecompressionError,
   InvalidJsonError,
   NotSupportedError,
-} from 'src/lib/error';
+} from '@/error';
 import {
   compressToEncodedURIComponent,
   decompressFromEncodedURIComponent,

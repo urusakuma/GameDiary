@@ -4,7 +4,7 @@ import type {
   IStorageService,
 } from '../utils/storageServiceInterface';
 import { ICurrentDiaryManager } from './diaryRepositoryInterfaces';
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 
 export class CurrentDiaryManager implements ICurrentDiaryManager {
   private currentDiaryKey: string = '';

@@ -1,4 +1,4 @@
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { MockStorageService } from './mockStorageService';
 import { readFileSync } from 'fs';
 

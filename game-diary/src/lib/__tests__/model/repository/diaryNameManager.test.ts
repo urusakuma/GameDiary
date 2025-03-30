@@ -1,13 +1,13 @@
 import { container } from 'tsyringe';
-import { DiaryNameManager } from 'src/lib/model/repository/diaryNameManager';
-import { IDiaryNameManager } from 'src/lib/model/repository/diaryRepositoryInterfaces';
+import { DiaryNameManager } from '@/model/repository/diaryNameManager';
+import { IDiaryNameManager } from '@/model/repository/diaryRepositoryInterfaces';
 import {
   IsStorageAvailableFunc,
   IStorageService,
-} from 'src/lib/model/utils/storageServiceInterface';
+} from '@/model/utils/storageServiceInterface';
 import { MockV1StorageService } from '../../__mocks__/mockV1StorageService';
 import { MockStorageService } from '../../__mocks__/mockStorageService';
-import { isStorageAvailable } from 'src/lib/model/utils/storageService';
+import { isStorageAvailable } from '@/model/utils/storageService';
 
 describe('DiaryNameManager class tests', () => {
   let diaryNameManager: IDiaryNameManager;

@@ -1,11 +1,11 @@
 import 'reflect-metadata';
-import { IDiary } from 'src/lib/model/diary/diaryModelInterfaces';
+import { IDiary } from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';
-import { MockDiary } from 'src/lib/__tests__/__mocks__/mockDiary';
-import { CompressDiary } from 'src/lib/model/serialization/serializationInterface';
-import { MockDiarySettings } from 'src/lib/__tests__/__mocks__/mockDiarySettings';
-import { DiaryExport } from 'src/lib/model/repository/diaryExport';
-import { IDiaryService } from 'src/lib/model/repository/diaryRepositoryInterfaces';
+import { MockDiary } from '@/__tests__/__mocks__/mockDiary';
+import { CompressDiary } from '@/model/serialization/serializationInterface';
+import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
+import { DiaryExport } from '@/model/repository/diaryExport';
+import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 
 describe('DiaryExport', () => {
   let diaryExport: DiaryExport;

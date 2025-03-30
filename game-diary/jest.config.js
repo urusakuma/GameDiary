@@ -6,9 +6,9 @@ module.exports = {
   },
   testMatch: ['**/!(__mocks__)/**/?(*.)+(test).ts'],
   testPathIgnorePatterns: ['/node_modules/', '/old_data/'],
-  roots: ['<rootDir>/src/app'],
+  roots: ['<rootDir>/src/lib'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/app/$1',
+    '^@/(.*)$': '<rootDir>/src/lib/$1',
   },
   setupFiles: ['<rootDir>/node_modules/reflect-metadata'],
   globals: {

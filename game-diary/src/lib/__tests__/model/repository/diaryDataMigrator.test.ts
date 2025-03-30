@@ -1,12 +1,12 @@
-import { DiaryDataMigrator } from 'src/lib/model/repository/diaryDataMigrator';
+import { DiaryDataMigrator } from '@/model/repository/diaryDataMigrator';
 import { MockV0StorageService } from '../../__mocks__/mockV0StorageService';
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
 import {
   hasField,
   isArrayType,
   isTypeMatch,
-} from 'src/lib/model/utils/checkTypeMatch';
-import { InvalidJsonError } from 'src/lib/error';
+} from '@/model/utils/checkTypeMatch';
+import { InvalidJsonError } from '@/error';
 
 describe('DiaryDataMigrator class tests', () => {
   test('is the storage v0 test', () => {

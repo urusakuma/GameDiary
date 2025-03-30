@@ -1,8 +1,18 @@
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
-import { IDiarySettings } from 'src/lib/model/diary/diaryModelInterfaces';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
+import { IDiarySettings } from '@/model/diary/diaryModelInterfaces';
+import { inject, injectable } from 'tsyringe';
+
+@injectable()
 export class MockDiarySettings implements IDiarySettings {
+  private _storageKey = 'bec0da1f-0053-4c59-acfb-f4a574bd8c98';
+  constructor(@inject('MockKey') key?: string) {
+    if (key === undefined) {
+      return;
+    }
+    this._storageKey = key;
+  }
   get storageKey(): string {
-    return 'bec0da1f-0053-4c59-acfb-f4a574bd8c98';
+    return this._storageKey;
   }
   get version(): number {
     return 1;

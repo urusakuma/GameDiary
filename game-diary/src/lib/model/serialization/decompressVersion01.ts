@@ -1,5 +1,5 @@
-import { DairySettingsConstant } from 'src/lib/dairySettingsConstant';
-import { InvalidJsonError } from 'src/lib/error';
+import { DairySettingsConstant } from '@/dairySettingsConstant';
+import { InvalidJsonError } from '@/error';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import {
   DayModifierFactory,

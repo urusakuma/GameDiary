@@ -1,4 +1,4 @@
-import { UnusedStorageError } from 'src/lib/error';
+import { UnusedStorageError } from '@/error';
 import { IDiary } from '../diary/diaryModelInterfaces';
 import type { CompressDiary } from '../serialization/serializationInterface';
 import type {

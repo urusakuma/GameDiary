@@ -1,4 +1,4 @@
-import { IStorageService } from 'src/lib/model/utils/storageServiceInterface';
+import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { injectable, singleton } from 'tsyringe';
 
 @singleton()

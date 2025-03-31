@@ -22,9 +22,11 @@ export interface ICreateDiary {
 export interface IDeleteDiary {
   /**
    * 指定した日記を削除する
+   * 指定した日記がカレントの場合、削除しない
    * @param key 削除する日記のキー
+   * @returns {boolean} 日記の削除に成功したならtrue
    */
-  delete(key: string): void;
+  delete(key: string): boolean;
 }
 /** 日記のデータをインポートする */
 export interface IDiaryImporter {

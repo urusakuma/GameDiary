@@ -39,9 +39,9 @@ export interface IDiaryImporter {
   /**
    * テキストファイルをユーザから受け取ってDiaryに復号、複合出来たらそのDiaryのKeyを返却する。
    * @param {File} file ユーザから受け取ったテキストファイル
-   * @returns {string} 復号したDiaryのKey
+   * @returns {Promise<string>} 復号したDiaryのKey
    */
-  importFile(file: File): string;
+  importFile(file: File): Promise<string>;
 }
 /** カレントの日記を出力する */
 export interface IDiaryExporter {

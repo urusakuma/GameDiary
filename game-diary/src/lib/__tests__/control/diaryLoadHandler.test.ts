@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { IDiaryLoad } from '@/model/repository/diaryRepositoryInterfaces';
-import { ICurrentDiaryAccessor } from '@/control/controlInterface';
+import { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
 import { MockDiary } from '../__mocks__/mockDiary';
-import DiaryLoadHandler from '@/control/diaryLoadHandler';
+import DiaryLoadHandler from '@/control/controlDiary/diaryLoadHandler';
 import { IDiary } from '@/model/diary/diaryModelInterfaces';
 
 describe('DiaryLoadHandler', () => {

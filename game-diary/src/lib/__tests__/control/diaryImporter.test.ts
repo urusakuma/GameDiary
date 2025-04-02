@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 import 'reflect-metadata';
-import DiaryImporter from '../../control/diaryImporter';
+import DiaryImporter from '@/control/controlDiary/diaryImporter';
 import type { IDiaryImport } from '@/model/repository/diaryRepositoryInterfaces';
-import type { ICurrentDiaryAccessor } from '../../control/controlInterface';
+import type { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
 import fs from 'fs';
 
 describe('DiaryImporter - importText', () => {

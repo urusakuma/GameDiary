@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { IDiarySave } from '@/model/repository/diaryRepositoryInterfaces';
-import DiarySaveHandler from '@/control/diarySaveHandler';
-import { ICurrentDiaryAccessor } from '@/control/controlInterface';
+import DiarySaveHandler from '@/control/controlDiary/diarySaveHandler';
+import { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
 import { MockDiary } from '../__mocks__/mockDiary';
 
 describe('DiarySaveHandler', () => {

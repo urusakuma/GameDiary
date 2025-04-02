@@ -2,7 +2,7 @@ import type { IDiaryLoad } from '@/model/repository/diaryRepositoryInterfaces';
 import type {
   IDiaryLoadHandler,
   ICurrentDiaryAccessor,
-} from './controlInterface';
+} from './controlDiaryInterface';
 import { inject, injectable } from 'tsyringe';
 @injectable()
 export default class DiaryLoadHandler implements IDiaryLoadHandler {

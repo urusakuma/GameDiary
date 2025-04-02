@@ -1,7 +1,10 @@
 import type { IDiaryImport } from '@/model/repository/diaryRepositoryInterfaces';
-import type { ICurrentDiaryAccessor, IDiaryImporter } from './controlInterface';
-import { inject } from 'tsyringe';
-
+import type {
+  ICurrentDiaryAccessor,
+  IDiaryImporter,
+} from './controlDiaryInterface';
+import { inject, injectable } from 'tsyringe';
+@injectable()
 export default class DiaryImporter implements IDiaryImporter {
   constructor(
     @inject('IDiaryImport') private diaryImport: IDiaryImport,

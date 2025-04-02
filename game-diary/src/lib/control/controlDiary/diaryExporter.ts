@@ -1,7 +1,9 @@
 import { inject, injectable } from 'tsyringe';
-import type { ICurrentDiaryAccessor, IDiaryExporter } from './controlInterface';
+import type {
+  ICurrentDiaryAccessor,
+  IDiaryExporter,
+} from './controlDiaryInterface';
 import { DiaryExport } from '@/model/repository/diaryExport';
-import { NotFoundError } from '@/error';
 
 @injectable()
 export default class DiaryExporter implements IDiaryExporter {

@@ -1,10 +1,10 @@
 import { inject, injectable } from 'tsyringe';
-import { IDiary } from '../model/diary/diaryModelInterfaces';
-import { ICurrentDiaryAccessor } from './controlInterface';
+import { IDiary } from '@/model/diary/diaryModelInterfaces';
+import { ICurrentDiaryAccessor } from './controlDiaryInterface';
 import type {
   ICurrentDiaryManager,
   IDiaryService,
-} from '../model/repository/diaryRepositoryInterfaces';
+} from '@/model/repository/diaryRepositoryInterfaces';
 import { NotFoundError } from '@/error';
 
 @injectable()

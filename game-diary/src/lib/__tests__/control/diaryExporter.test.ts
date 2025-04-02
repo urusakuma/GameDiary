@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import DiaryExporter from '../../control/diaryExporter';
-import type { ICurrentDiaryAccessor } from '@/control/controlInterface';
+import DiaryExporter from '@/control/controlDiary/diaryExporter';
+import type { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
 import { DiaryExport } from '@/model/repository/diaryExport';
 import fs from 'fs';
 import { MockDiary } from '../__mocks__/mockDiary';

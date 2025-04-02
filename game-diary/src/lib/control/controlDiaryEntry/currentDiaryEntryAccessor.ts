@@ -1,8 +1,6 @@
 import { IDiaryEntry } from '@/model/diary/diaryModelInterfaces';
-import type {
-  ICurrentDiaryAccessor,
-  ICurrentDiaryEntryAccessor,
-} from './controlInterface';
+import type { ICurrentDiaryAccessor } from '../controlDiary/controlDiaryInterface';
+import type { ICurrentDiaryEntryAccessor } from './controlDiaryEntryInterface';
 import { inject, injectable } from 'tsyringe';
 @injectable()
 export default class CurrentDiaryEntryAccessor

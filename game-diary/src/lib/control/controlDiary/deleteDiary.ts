@@ -1,8 +1,8 @@
-import { inject } from 'tsyringe';
-import { IDeleteDiary } from './controlInterface';
+import { inject, injectable } from 'tsyringe';
+import { IDeleteDiary } from './controlDiaryInterface';
 import type { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 import { CurrentDiaryManager } from '@/model/repository/currentDiaryManager';
-
+@injectable()
 export class DeleteDiary implements IDeleteDiary {
   constructor(
     @inject('CurrentDiaryManager')

@@ -14,13 +14,14 @@ export default class CurrentDiaryEntryAccessor
     private diaryAccessor: ICurrentDiaryAccessor
   ) {
     const diary = this.diaryAccessor.getCurrentDiary();
-    const lastDay = diary?.getLastDay();
-    diary?.getEntry(lastDay);
+    const lastDay = diary.getLastDay();
+    this.entry = diary.getEntry(lastDay);
   }
   getCurrentDiaryEntry(): IDiaryEntry {
-    throw new Error('Method not implemented.');
+    return this.entry;
   }
   setCurrentDiaryEntry(day: number): void {
-    throw new Error('Method not implemented.');
+    const diary = this.diaryAccessor.getCurrentDiary();
+    this.entry = diary.getEntry(day);
   }
 }

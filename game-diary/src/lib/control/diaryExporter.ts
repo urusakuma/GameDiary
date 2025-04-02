@@ -12,16 +12,10 @@ export default class DiaryExporter implements IDiaryExporter {
   ) {}
   exportText(): string {
     const diary = this.diaryAccessor.getCurrentDiary();
-    if (diary === undefined) {
-      throw new NotFoundError('カレントの日記は見つかりませんでした');
-    }
     return this.diaryExport.export(diary.getSettings().storageKey);
   }
   exportFile(): Blob {
     const diary = this.diaryAccessor.getCurrentDiary();
-    if (diary === undefined) {
-      throw new NotFoundError('カレントの日記は見つかりませんでした');
-    }
     const exportStr = this.diaryExport.export(diary.getSettings().storageKey);
     return new Blob([exportStr]);
   }

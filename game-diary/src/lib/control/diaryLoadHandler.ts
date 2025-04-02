@@ -13,7 +13,7 @@ export default class DiaryLoadHandler implements IDiaryLoadHandler {
   ) {}
   load(key: string): void {
     const diary = this.diaryAccessor.getCurrentDiary();
-    if (diary !== undefined && diary.getSettings().storageKey === key) {
+    if (diary.getSettings().storageKey === key) {
       return;
     }
     this.diaryLoad.load(key);

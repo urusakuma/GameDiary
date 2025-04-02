@@ -37,15 +37,6 @@ describe('DiaryLoadHandler', () => {
     expect(mockDiaryAccessor.setCurrentDiary).toHaveBeenCalledWith(key);
     expect(mockDiaryLoad.load).toHaveBeenCalledWith(key);
   });
-
-  it('should load the new diary if no current diary exists', () => {
-    mockDiaryAccessor.getCurrentDiary.mockReturnValue(undefined);
-    diaryLoadHandler.load(key);
-
-    expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalled();
-    expect(mockDiaryAccessor.setCurrentDiary).toHaveBeenCalledWith(key);
-    expect(mockDiaryLoad.load).toHaveBeenCalledWith(key);
-  });
   it('should not reload the diary if it is already loaded', () => {
     mockDiaryAccessor.getCurrentDiary.mockReturnValue(diary);
     diaryLoadHandler.load(key);

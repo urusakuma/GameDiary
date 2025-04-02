@@ -1,11 +1,10 @@
 import 'reflect-metadata';
-import CreateDiary from '../../control/createDiary';
-import type { ICurrentDiaryAccessor } from '../../control/controlInterface';
-
+import CreateDiary from '@/control/controlDiary/createDiary';
+import type { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
 import type {
   IDiaryFactory,
   IDiaryService,
-} from '../../model/repository/diaryRepositoryInterfaces';
+} from '@/model/repository/diaryRepositoryInterfaces';
 import { MockDiary } from '../__mocks__/mockDiary';
 
 describe('CreateDiary', () => {

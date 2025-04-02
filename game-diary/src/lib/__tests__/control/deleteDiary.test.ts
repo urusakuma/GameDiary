@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { DeleteDiary } from '../../control/deleteDiary';
+import { DeleteDiary } from '@/control/controlDiary/deleteDiary';
 import { CurrentDiaryManager } from '@/model/repository/currentDiaryManager';
 import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 

@@ -1,9 +1,12 @@
 import { inject, injectable } from 'tsyringe';
-import type { ICreateDiary, ICurrentDiaryAccessor } from './controlInterface';
+import type {
+  ICreateDiary,
+  ICurrentDiaryAccessor,
+} from './controlDiaryInterface';
 import type {
   IDiaryFactory,
   IDiaryService,
-} from '../model/repository/diaryRepositoryInterfaces';
+} from '@/model/repository/diaryRepositoryInterfaces';
 @injectable()
 export default class CreateDiary implements ICreateDiary {
   constructor(

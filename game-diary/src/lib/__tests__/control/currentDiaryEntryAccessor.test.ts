@@ -1,5 +1,5 @@
-import type { ICurrentDiaryAccessor } from '../../control/controlInterface';
-import CurrentDiaryEntryAccessor from '@/control/currentDiaryEntryAccessor';
+import type { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
+import CurrentDiaryEntryAccessor from '@/control/controlDiaryEntry/currentDiaryEntryAccessor';
 import { IDiary, IDiaryEntry } from '@/model/diary/diaryModelInterfaces';
 
 describe('CurrentDiaryEntryAccessor', () => {

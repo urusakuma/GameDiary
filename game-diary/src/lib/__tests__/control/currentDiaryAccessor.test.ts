@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { CurrentDiaryAccessor } from '@/control/currentDiaryAccessor';
+import { CurrentDiaryAccessor } from '@/control/controlDiary/currentDiaryAccessor';
 import type {
   ICurrentDiaryManager,
   IDiaryService,

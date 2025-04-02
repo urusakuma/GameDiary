@@ -2,7 +2,7 @@ import { inject } from 'tsyringe';
 import type {
   ICurrentDiaryAccessor,
   IDiarySaveHandler,
-} from './controlInterface';
+} from './controlDiaryInterface';
 import type { IDiarySave } from '@/model/repository/diaryRepositoryInterfaces';
 
 export default class DiarySaveHandler implements IDiarySaveHandler {

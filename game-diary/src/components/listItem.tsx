@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import classNames from 'classnames';
 import { container } from 'tsyringe';
-import { IChangeCurrentDiaryEntry } from '@/control/controlInterface';
+import { IChangeCurrentDiaryEntry } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
 interface ListItemProps {
   text: string;
   index: number;

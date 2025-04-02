@@ -181,7 +181,7 @@ package Control{
     }
     ' 日記のセーブボタンを押したときの挙動を定義するクラス
     class DiarySaveHandler{
-      constructor(diarySave:DiarySave)
+      constructor(diarySave:DiarySave, diaryAccessor: CurrentDiaryAccessor)
       save(): void
     }
     ' 日記のロードボタンを押したときの挙動を定義するクラス

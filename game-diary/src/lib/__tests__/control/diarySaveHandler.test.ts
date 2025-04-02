@@ -29,13 +29,4 @@ describe('DiarySaveHandler', () => {
     expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalledWith();
     expect(mockDiarySave.save).toHaveBeenCalledWith(mockDiary);
   });
-
-  it('should not save the diary if no current diary exists', () => {
-    mockDiaryAccessor.getCurrentDiary.mockReturnValue(undefined);
-
-    diarySaveHandler.save();
-
-    expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalledWith();
-    expect(mockDiarySave.save).not.toHaveBeenCalled();
-  });
 });

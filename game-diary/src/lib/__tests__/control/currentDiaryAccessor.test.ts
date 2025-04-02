@@ -6,6 +6,7 @@ import type {
   IDiaryService,
 } from '@/model/repository/diaryRepositoryInterfaces';
 import { MockDiary } from '../__mocks__/mockDiary';
+import { NotFoundError } from '@/error';
 
 describe('CurrentDiaryAccessor Constructor', () => {
   let mockCurrentDiaryManager: ICurrentDiaryManager;
@@ -43,7 +44,9 @@ describe('CurrentDiaryAccessor Constructor', () => {
     );
     (mockDiaryService.getDiary as jest.Mock).mockReturnValue(undefined);
     const accessor = container.resolve(CurrentDiaryAccessor);
-    expect(accessor.getCurrentDiary()).toBe(undefined);
+    expect(() => accessor.getCurrentDiary()).toThrow(
+      new NotFoundError('current diary is not found')
+    );
     expect(mockCurrentDiaryManager.getCurrentDiaryKey).toHaveBeenCalled();
     expect(mockDiaryService.getDiary).toHaveBeenCalledWith(key);
   });

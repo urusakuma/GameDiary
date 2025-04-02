@@ -12,9 +12,6 @@ export default class DiarySaveHandler implements IDiarySaveHandler {
   ) {}
   save(): void {
     const diary = this.diaryAccessor.getCurrentDiary();
-    if (diary === undefined) {
-      return;
-    }
     this.diarySave.save(diary);
   }
 }

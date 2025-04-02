@@ -5,6 +5,7 @@ import type {
   ICurrentDiaryManager,
   IDiaryService,
 } from '../model/repository/diaryRepositoryInterfaces';
+import { NotFoundError } from '@/error';
 
 @injectable()
 export class CurrentDiaryAccessor implements ICurrentDiaryAccessor {
@@ -14,9 +15,12 @@ export class CurrentDiaryAccessor implements ICurrentDiaryAccessor {
     @inject('IDiaryService') private diaryService: IDiaryService
   ) {}
 
-  getCurrentDiary(): IDiary | undefined {
+  getCurrentDiary(): IDiary {
     const key = this.currentDiaryManager.getCurrentDiaryKey();
     const diary = this.diaryService.getDiary(key);
+    if (diary === undefined) {
+      throw new NotFoundError('current diary is not found');
+    }
     return diary;
   }
   setCurrentDiary(key: string): void {

@@ -5,7 +5,7 @@ export interface ICurrentDiaryAccessor {
    * カレントの日記を取得する
    * @returns {IDiary} カレントの日記
    */
-  getCurrentDiary(): IDiary | undefined;
+  getCurrentDiary(): IDiary;
   /**
    * カレントの日記を設定する
    * @param {string} key 日記のキー

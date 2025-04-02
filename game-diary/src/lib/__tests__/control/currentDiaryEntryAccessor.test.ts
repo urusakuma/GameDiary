@@ -1,7 +1,6 @@
 import type { ICurrentDiaryAccessor } from '../../control/controlInterface';
 import CurrentDiaryEntryAccessor from '@/control/currentDiaryEntryAccessor';
 import { IDiary, IDiaryEntry } from '@/model/diary/diaryModelInterfaces';
-import { notDeepEqual } from 'assert';
 
 describe('CurrentDiaryEntryAccessor', () => {
   let mockDiaryAccessor: jest.Mocked<ICurrentDiaryAccessor>;

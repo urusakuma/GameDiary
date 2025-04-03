@@ -54,7 +54,19 @@ export interface IDiaryEntry {
   /**JSONに変換する。JSON.stringifyで自動的に呼び出される。*/
   toJSON(): object;
 }
-
+export interface IDiaryEntryFactory {
+  createUsePreviousDay(
+    source: IDiaryEntry,
+    settings: IDiarySettings
+  ): IDiaryEntry;
+  createUseExistingData(
+    day: number,
+    title: string,
+    content: string,
+    previous: number | undefined,
+    next: number | undefined
+  ): IDiaryEntry;
+}
 /** 前日のエントリーと設定クラスから新しいエントリーを組み立てる */
 export type UsePreviousDayDiaryEntryFactory = (
   source: IDiaryEntry,

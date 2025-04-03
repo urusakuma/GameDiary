@@ -8,7 +8,7 @@ export class UniqueDiaryNameGenerator implements IUniqueDiaryNameGenerator {
   constructor(
     @inject('IDiaryNameManager') private diaryKeyMapper: IDiaryNameManager
   ) {}
-  generateUniqueName(name: string): string {
+  generate(name: string): string {
     // 日記名に重複がないか調べる。重複している場合は数字を付加して重複を避ける。
     let newName: string = name;
     let i: number = 1;

@@ -55,13 +55,18 @@ export interface IEditDiarySettings {
    * 日記の修飾子を変更する
    * @param modifier 日記の修飾子
    */
-  editDayModifier(modifier: string): void;
+  editModifier(modifier: string): void;
   /**
    * 日記のサイクルの修飾子を変更する
    * @param cycle どのサイクルの修飾子を変更するか
    * @param cycleModifier サイクルの修飾子
    */
-  editDayModifierCycle(cycle: number, cycleModifier: string): void;
+  editModifierCycle(cycle: number, cycleModifier: string): void;
+  /**
+   * サイクルが変化する周期を変更する
+   * @param len 1サイクルの長さ
+   */
+  editCycleLength(len: number): void;
 }
 export interface IEditDiaryEntry {
   /**

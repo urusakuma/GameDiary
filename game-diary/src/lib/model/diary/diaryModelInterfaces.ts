@@ -54,6 +54,7 @@ export interface IDiaryEntry {
   /**JSONに変換する。JSON.stringifyで自動的に呼び出される。*/
   toJSON(): object;
 }
+/** IDiaryEntryを生成するファクトリクラス */
 export interface IDiaryEntryFactory {
   createUsePreviousDay(
     source: IDiaryEntry,

@@ -16,9 +16,10 @@ export default class DiaryExporter implements IDiaryExporter {
     const diary = this.diaryAccessor.getCurrentDiary();
     return this.diaryExport.export(diary.getSettings().storageKey);
   }
-  exportFile(): Blob {
+  exportFile(): [Blob, string] {
     const diary = this.diaryAccessor.getCurrentDiary();
+    const fileName = `${diary.getSettings().getDiaryName()}.txt`;
     const exportStr = this.diaryExport.export(diary.getSettings().storageKey);
-    return new Blob([exportStr]);
+    return [new Blob([exportStr], { type: 'text/plain' }), fileName];
   }
 }

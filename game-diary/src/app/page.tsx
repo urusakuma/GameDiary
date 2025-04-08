@@ -1,16 +1,28 @@
 'use client';
 import 'reflect-metadata';
 import classNames from 'classnames';
-import { useDarkMode } from 'src/hooks/useDarkMode';
-import { useSettingOpen } from 'src/hooks/useSettingsOpen';
+import useDarkMode from 'src/hooks/useDarkMode';
+import useSettingOpen from 'src/hooks/useSettingsOpen';
 import DiaryEntriesList from 'src/components/diaryEntriesList';
 import { useState } from 'react';
+import ExportModal from 'src/components/exportModal';
+enum modal {
+  Home,
+  Export,
+  Import,
+  Load,
+  Delete,
+}
 const DiaryLayout = () => {
   const { isOpen, setIsOpen } = useSettingOpen();
   const { isDarkMode, setDarkMode } = useDarkMode();
   const [addItem, setAddItem] = useState<(day: number, title: string) => void>(
     () => () => {}
   );
+  const [showModal, setShowModal] = useState(modal.Home);
+  const goHome = () => {
+    setShowModal(modal.Home);
+  };
   return (
     <div
       className={`flex h-screen p-4 overflow-y-clip overflow-x-clip overflow-x-scroll ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}
@@ -44,9 +56,13 @@ const DiaryLayout = () => {
           </button>
           <button
             className={`overflow-y-clip overflow-x-clip ${isDarkMode ? darkButton : lightButton}`}
+            onClick={() => setShowModal(modal.Export)}
           >
             エクスポート
           </button>
+          {showModal === modal.Export && (
+            <ExportModal onClose={goHome} isDarkMode={isDarkMode} />
+          )}
           <button
             className={`overflow-y-clip overflow-x-clip ${isDarkMode ? darkButton : lightButton}`}
           >

@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect } from 'react';
 
-export const useDarkMode = () => {
+const useDarkMode = () => {
   const [isDarkMode, setDarkMode] = useState(true);
   useLayoutEffect(() => {
     if (typeof window !== 'undefined') {
@@ -27,3 +27,4 @@ export const useDarkMode = () => {
   }, [isDarkMode]);
   return { isDarkMode, setDarkMode };
 };
+export default useDarkMode;

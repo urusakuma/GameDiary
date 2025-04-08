@@ -55,7 +55,7 @@ export interface IDiaryExporter {
    * 文字列ではなくBlobを返すことで、ファイルとして保存できるようにする。
    * @returns {Blob} Diaryを圧縮したBlob
    */
-  exportFile(): Blob;
+  exportFile(): [Blob, string];
 }
 /** カレントの日記をストレージに保存するハンドラ */
 export interface IDiarySaveHandler {

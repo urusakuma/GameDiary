@@ -11,6 +11,7 @@ describe('DiaryExporter Constructor', () => {
   let mockDiaryAccessor: jest.Mocked<ICurrentDiaryAccessor>;
   const fileStr = fs.readFileSync('/app/testFileV1.txt', 'utf8');
   const mockDiary = new MockDiary();
+  const mockDiarySettings = mockDiary.getSettings();
 
   beforeEach(() => {
     mockDiaryExport = {
@@ -41,8 +42,9 @@ describe('DiaryExporter Constructor', () => {
   });
   it('should export the current diary file based on storageKey', async () => {
     const diaryExporter = container.resolve<DiaryExporter>('DiaryExporter');
-    const diaryBlob = diaryExporter.exportFile();
+    const [diaryBlob, fileName] = diaryExporter.exportFile();
     expect(await diaryBlob.text()).toBe(fileStr);
+    expect(fileName).toBe(`${mockDiarySettings.getDiaryName()}.txt`);
     expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalled();
     expect(mockDiaryExport.export).toHaveBeenCalledWith(
       mockDiary.getSettings().storageKey

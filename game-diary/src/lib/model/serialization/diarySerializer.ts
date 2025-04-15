@@ -11,7 +11,7 @@ import { hasField, isTypeMatch } from '../utils/checkTypeMatch';
 import { decompressVersion00 } from './decompressVersion00';
 import { decompressVersion01 } from './decompressVersion01';
 import type {
-  DayModifierFactory,
+  UseExistingDataDayModifierFactory,
   DiaryFactory,
   UseExistingDataDiarySettingsFactory,
   IDiary,
@@ -33,7 +33,7 @@ export function compressDiary(reports: IDiary): string {
 export class DiaryDecompressor {
   constructor(
     @inject('DayModifierFactory')
-    private dayModifierFactory: DayModifierFactory,
+    private dayModifierFactory: UseExistingDataDayModifierFactory,
     @inject('UseExistingDataDiarySettingsFactory')
     private diarySettingsFactory: UseExistingDataDiarySettingsFactory,
     @inject('UseExistingDataDiaryEntryFactory')

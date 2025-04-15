@@ -1,7 +1,7 @@
 import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { DayModifier } from '@/model/diary/dayModifier';
 import {
-  DayModifierFactory,
+  UseExistingDataDayModifierFactory,
   IDayModifier,
 } from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';
@@ -18,12 +18,15 @@ describe('DayModifier class tests', () => {
     container.register<IDayModifier>('DayModifier', {
       useClass: DayModifier,
     });
-    container.register<DayModifierFactory>('DayModifierFactory', {
-      useFactory:
-        () =>
-        (modifier: string, cycleLength: number, ...unit: Array<string>) =>
-          new DayModifier(modifier, cycleLength, ...unit),
-    });
+    container.register<UseExistingDataDayModifierFactory>(
+      'DayModifierFactory',
+      {
+        useFactory:
+          () =>
+          (modifier: string, cycleLength: number, ...unit: Array<string>) =>
+            new DayModifier(modifier, cycleLength, ...unit),
+      }
+    );
   });
   test('init test', () => {
     const modifier = container.resolve<IDayModifier>('DayModifier');
@@ -41,7 +44,10 @@ describe('DayModifier class tests', () => {
     );
   });
   test('make DayModifier', () => {
-    const factory = container.resolve<DayModifierFactory>('DayModifierFactory');
+    const factory =
+      container.resolve<UseExistingDataDayModifierFactory>(
+        'DayModifierFactory'
+      );
     const modifier = factory('DAY$N', 11, '0', '1', '2', '3');
     expect(modifier.getModifier()).toBe('DAY$N');
     expect(modifier.getCycleLength()).toBe(11);

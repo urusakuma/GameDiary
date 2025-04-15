@@ -2,7 +2,7 @@ import { DairySettingsConstant } from '@/dairySettingsConstant';
 import { InvalidJsonError } from '@/error';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import {
-  DayModifierFactory,
+  UseExistingDataDayModifierFactory,
   DiaryFactory,
   UseExistingDataDiarySettingsFactory,
   IDiary,
@@ -12,7 +12,7 @@ import {
 
 export function decompressVersion01(
   jsonObj: object,
-  dayModifierFactory: DayModifierFactory,
+  dayModifierFactory: UseExistingDataDayModifierFactory,
   diarySettingsFactory: UseExistingDataDiarySettingsFactory,
   diaryEntryFactory: UseExistingDataDiaryEntryFactory,
   diaryFactory: DiaryFactory

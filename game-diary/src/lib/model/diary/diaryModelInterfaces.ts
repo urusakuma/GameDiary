@@ -82,7 +82,7 @@ export type UseExistingDataDiaryEntryFactory = (
   previous: number | undefined,
   next: number | undefined
 ) => IDiaryEntry;
-
+export type StorageKeyFactory = () => string;
 export interface IDiarySettings {
   /** ゲームデータを識別する一意の文字列 */
   get storageKey(): string;
@@ -133,6 +133,17 @@ export interface IDiarySettings {
    */
   getModifierDay(day: number): string;
 }
+export interface IDiarySettingsFactory {
+  createUseExistingData(
+    dayModifier: IDayModifier,
+    diaryName: string,
+    dayInterval: number,
+    storageKey: string,
+    version: number
+  ): IDiarySettings;
+  createNewDiarySettings(settings?: IDiarySettings): IDiarySettings;
+}
+export type DefaultSettingsFactory = () => IDiarySettings;
 export type UseExistingDataDiarySettingsFactory = (
   dayModifier: IDayModifier,
   diaryName: string,
@@ -142,9 +153,7 @@ export type UseExistingDataDiarySettingsFactory = (
 ) => IDiarySettings;
 
 export type NewDiarySettingsFactory = (
-  dayModifier: IDayModifier,
-  diaryName: string,
-  dayInterval: number
+  settings?: IDiarySettings
 ) => IDiarySettings;
 
 export interface IDayModifier {
@@ -180,8 +189,10 @@ export interface IDayModifier {
   modifyDay(naturalDay: number): string;
 }
 
-export type DayModifierFactory = (
+export type UseExistingDataDayModifierFactory = (
   modifier: string,
   cycleLength: number,
   ...unit: Array<string>
 ) => IDayModifier;
+
+export type NewDayModifierFactory = (dayModifier: IDayModifier) => IDayModifier;

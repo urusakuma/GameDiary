@@ -2,7 +2,7 @@ import { DayModifier } from '@/model/diary/dayModifier';
 import { Diary } from '@/model/diary/diary';
 import { DiaryEntry } from '@/model/diary/diaryEntry';
 import {
-  DayModifierFactory,
+  UseExistingDataDayModifierFactory,
   UseExistingDataDiaryEntryFactory,
   DiaryFactory,
   UseExistingDataDiarySettingsFactory,
@@ -33,12 +33,15 @@ import { compressToEncodedURIComponent } from 'lz-string';
 describe('serialization test', () => {
   beforeEach(() => {
     container.clearInstances();
-    container.register<DayModifierFactory>('DayModifierFactory', {
-      useFactory:
-        () =>
-        (modifier: string, cycleLength: number, ...unit: Array<string>) =>
-          new DayModifier(modifier, cycleLength, ...unit),
-    });
+    container.register<UseExistingDataDayModifierFactory>(
+      'DayModifierFactory',
+      {
+        useFactory:
+          () =>
+          (modifier: string, cycleLength: number, ...unit: Array<string>) =>
+            new DayModifier(modifier, cycleLength, ...unit),
+      }
+    );
     container.register<UseExistingDataDiarySettingsFactory>(
       'UseExistingDataDiarySettingsFactory',
       {

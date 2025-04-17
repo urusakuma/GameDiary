@@ -1,4 +1,4 @@
-import { IDiary } from '@/model/diary/diaryModelInterfaces';
+import { IDiary, IDiaryEntry } from '@/model/diary/diaryModelInterfaces';
 
 /**
  * Diaryを管理し、Diaryへのアクセスを他クラスに提供する。
@@ -30,7 +30,7 @@ export interface IDiaryService {
 export interface IDiaryFactory {
   create(diary?: IDiary): IDiary;
 }
-
+export type NewDiaryEntriesFactory = () => Map<number, IDiaryEntry>;
 /**
  * 日記の名前とユニークな日記のキーを対応させストレージに保存するクラス。
  */

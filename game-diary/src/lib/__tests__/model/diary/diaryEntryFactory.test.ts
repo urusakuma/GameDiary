@@ -3,7 +3,7 @@ import {
   IDiaryEntry,
   IDiarySettings,
 } from '@/model/diary/diaryModelInterfaces';
-import { DiaryEntry } from '@/model/diary/diaryEntry';
+import DiaryEntry from '@/model/diary/diaryEntry';
 
 describe('DiaryEntryFactory', () => {
   describe('createUsePreviousDay', () => {

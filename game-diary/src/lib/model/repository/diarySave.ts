@@ -8,7 +8,7 @@ import type {
 import { IDiarySave } from './diaryRepositoryInterfaces';
 import { inject, injectable } from 'tsyringe';
 @injectable()
-export class DiarySave implements IDiarySave {
+export default class DiarySave implements IDiarySave {
   constructor(
     @inject('IStorageService') private storage: IStorageService,
     @inject('CompressDiary') private compressDiary: CompressDiary,

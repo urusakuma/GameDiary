@@ -1,10 +1,10 @@
 import { inject, injectable } from 'tsyringe';
-import { DairySettingsConstant } from '../../dairySettingsConstant';
+import DairySettingsConstant from '../../dairySettingsConstant';
 import { IDayModifier } from './diaryModelInterfaces';
 
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
 @injectable()
-export class DayModifier implements IDayModifier {
+export default class DayModifier implements IDayModifier {
   private unit: Array<string>;
   /**
    * 日付を修飾する文字列。nサイクル、$N日目$Y年$C$D日(100日目4年春1日)など。

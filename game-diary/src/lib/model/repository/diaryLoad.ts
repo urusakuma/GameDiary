@@ -5,7 +5,7 @@ import type { IStorageService } from '../utils/storageServiceInterface';
 import type { IDiaryLoad, IDiaryService } from './diaryRepositoryInterfaces';
 import { inject, injectable } from 'tsyringe';
 @injectable()
-export class DiaryLoad implements IDiaryLoad {
+export default class DiaryLoad implements IDiaryLoad {
   constructor(
     @inject('IDiaryService') private diaryService: IDiaryService,
     @inject('IStorageService') private storage: IStorageService,

@@ -1,7 +1,7 @@
 /**
  * 定数を管理するためのクラス。
  */
-export class DairySettingsConstant {
+export default class DairySettingsConstant {
   static readonly CURRENT_VERSION: number = 1;
   static readonly DEFAULT_DIARY_NAME: string = '新しい日記';
   static readonly DEFAULT_DAY_INTERVAL: number = 1;

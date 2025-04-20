@@ -4,7 +4,9 @@ import type {
   IUniqueDiaryNameGenerator,
 } from './diaryRepositoryInterfaces';
 
-export class UniqueDiaryNameGenerator implements IUniqueDiaryNameGenerator {
+export default class UniqueDiaryNameGenerator
+  implements IUniqueDiaryNameGenerator
+{
   constructor(
     @inject('IDiaryNameManager') private diaryKeyMapper: IDiaryNameManager
   ) {}

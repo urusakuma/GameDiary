@@ -1,12 +1,12 @@
 import { MockDayModifier } from '@/__tests__/__mocks__/mockDayModifier';
-import { DairySettingsConstant } from '@/dairySettingsConstant';
+import DairySettingsConstant from '@/dairySettingsConstant';
 import {
   IDayModifier,
   IDiarySettings,
   NewDiarySettingsFactory,
   UseExistingDataDiarySettingsFactory,
 } from '@/model/diary/diaryModelInterfaces';
-import { DiarySettings } from '@/model/diary/diarySettings';
+import DiarySettings from '@/model/diary/diarySettings';
 import { container } from 'tsyringe';
 
 describe('DairySettings class tests', () => {
@@ -50,26 +50,14 @@ describe('DairySettings class tests', () => {
             ),
       }
     );
-    container.register<NewDiarySettingsFactory>('NewDiarySettingsFactory', {
-      useFactory:
-        () =>
-        (dayModifier: IDayModifier, diaryName: string, dayInterval: number) =>
-          new DiarySettings(
-            dayModifier,
-            diaryName,
-            dayInterval,
-            container.resolve('STORAGE_KEY'),
-            container.resolve('VERSION')
-          ),
-    });
   });
   test('init test', () => {
     const settings = container.resolve<IDiarySettings>('InitDiarySettings');
-    // TODO: バージョンの確認をしていないので確認を追加
     // デフォルトの確認
     expect(settings.getDiaryName()).toBe(
       DairySettingsConstant.DEFAULT_DIARY_NAME
     );
+    expect(settings.version).toBe(DairySettingsConstant.CURRENT_VERSION);
     expect(settings.getCycleLength()).toBe(
       DairySettingsConstant.DEFAULT_CYCLE_LENGTH
     );
@@ -150,27 +138,9 @@ describe('DairySettings class tests', () => {
       settingsArr[0].storageKey !== settingsArr[1].storageKey
     ).toBeTruthy();
   });
-  // TODO:コンテナに登録したファクトリのテストをする。
+
   test('make to use container', () => {
-    const newSettingsFactory = container.resolve<NewDiarySettingsFactory>(
-      'NewDiarySettingsFactory'
-    );
     const dayModifier = container.resolve<IDayModifier>('IDayModifier');
-    const settingsArr = [
-      newSettingsFactory(dayModifier, 'test data 0', 1),
-      newSettingsFactory(dayModifier, 'test data 1', 1),
-    ];
-    expect(
-      settingsArr[0].storageKey !== settingsArr[1].storageKey
-    ).toBeTruthy();
-    for (let i = 0; i < 2; i++) {
-      expect(settingsArr[i].version).toBe(1);
-      expect(settingsArr[i].getDiaryName()).toBe('test data ' + String(i));
-      expect(settingsArr[i].getDayInterval()).toBe(1);
-      expect(settingsArr[i].getModifier()).toBe(
-        DairySettingsConstant.DEFAULT_DAY_MODIFIER
-      );
-    }
     const useExistingDataFactory =
       container.resolve<UseExistingDataDiarySettingsFactory>(
         'UseExistingDataDiarySettingsFactory'

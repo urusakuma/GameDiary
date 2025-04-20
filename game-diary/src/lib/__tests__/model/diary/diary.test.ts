@@ -1,6 +1,6 @@
 import { MockDiaryEntry } from '@/__tests__/__mocks__/mockDiaryEntry';
 import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
-import { Diary } from '@/model/diary/diary';
+import Diary from '@/model/diary/diary';
 import {
   IDiary,
   IDiaryEntry,
@@ -13,7 +13,7 @@ import { container } from 'tsyringe';
 describe('DairySettings class tests', () => {
   beforeEach(() => {
     container.clearInstances();
-    container.register<number>('FirstDay', {
+    container.register<number>('FIRST_DAY', {
       useValue: 1,
     });
     container.register('MockKey', { useFactory: () => undefined });
@@ -42,10 +42,10 @@ describe('DairySettings class tests', () => {
       useClass: Diary,
     });
     container.register<Map<number, IDiaryEntry>>(
-      'DiaryEntriesContainingFirstDay',
+      'DIARY_ENTRIES_CONTAINING_FIRST_DAY',
       {
         useValue: new Map<number, IDiaryEntry>().set(
-          container.resolve('FirstDay'),
+          container.resolve('FIRST_DAY'),
           container.resolve('IDiaryEntry')
         ),
       }

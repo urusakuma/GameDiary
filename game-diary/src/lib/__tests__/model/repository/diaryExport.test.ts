@@ -4,7 +4,7 @@ import { container } from 'tsyringe';
 import { MockDiary } from '@/__tests__/__mocks__/mockDiary';
 import { CompressDiary } from '@/model/serialization/serializationInterface';
 import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
-import { DiaryExport } from '@/model/repository/diaryExport';
+import DiaryExport from '@/model/repository/diaryExport';
 import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 
 describe('DiaryExport', () => {

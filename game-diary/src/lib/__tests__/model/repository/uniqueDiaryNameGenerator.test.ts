@@ -1,5 +1,5 @@
 import { IDiaryNameManager } from '@/model/repository/diaryRepositoryInterfaces';
-import { UniqueDiaryNameGenerator } from '@/model/repository/uniqueDiaryNameGenerator';
+import UniqueDiaryNameGenerator from '@/model/repository/uniqueDiaryNameGenerator';
 
 describe('UniqueDiaryNameGenerator', () => {
   let nameManager: jest.Mocked<IDiaryNameManager>;

@@ -3,10 +3,8 @@ import type {
   ICreateDiary,
   ICurrentDiaryAccessor,
 } from './controlDiaryInterface';
-import type {
-  IDiaryFactory,
-  IDiaryService,
-} from '@/model/repository/diaryRepositoryInterfaces';
+import type { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
+import type { IDiaryFactory } from '@/model/diary/diaryModelInterfaces';
 @injectable()
 export default class CreateDiary implements ICreateDiary {
   constructor(
@@ -20,7 +18,7 @@ export default class CreateDiary implements ICreateDiary {
 
   create(): void {
     const oldDiary = this.diaryAccessor.getCurrentDiary();
-    const newDiary = this.diaryFactory.create(oldDiary);
+    const newDiary = this.diaryFactory.createNewDiary(oldDiary);
     this.diaryService.addDiary(newDiary);
     this.diaryAccessor.setCurrentDiary(newDiary.getSettings().storageKey);
   }

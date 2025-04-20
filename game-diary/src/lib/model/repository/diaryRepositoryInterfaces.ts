@@ -1,4 +1,4 @@
-import { IDiary } from '@/model/diary/diaryModelInterfaces';
+import { IDiary, IDiaryEntry } from '@/model/diary/diaryModelInterfaces';
 
 /**
  * Diaryを管理し、Diaryへのアクセスを他クラスに提供する。
@@ -21,16 +21,6 @@ export interface IDiaryService {
    */
   deleteDiary(key: string): void;
 }
-/**
- * 新しいDiaryを作成する関数。
- * Diaryを受け取った場合、DiaryのSettingsをストレージキー以外をコピーする。
- * @param {IDiary?} diary 新しいDiaryのSettingsの基となるDiary
- * @returns {IDiary} 作成したDiary
- */
-export interface IDiaryFactory {
-  create(diary?: IDiary): IDiary;
-}
-
 /**
  * 日記の名前とユニークな日記のキーを対応させストレージに保存するクラス。
  */

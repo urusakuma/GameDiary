@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { DiaryService } from '@/model/repository/diaryService';
+import DiaryService from '@/model/repository/diaryService';
 import type {
   IsStorageAvailableFunc,
   IStorageService,

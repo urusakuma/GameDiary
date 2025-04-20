@@ -10,7 +10,7 @@ import type { IDiaryService } from './diaryRepositoryInterfaces';
  */
 @singleton()
 @injectable()
-export class DiaryService implements IDiaryService {
+export default class DiaryService implements IDiaryService {
   private diaries: Map<string, IDiary> = new Map();
   constructor(
     @inject('IStorageService')

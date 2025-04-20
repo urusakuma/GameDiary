@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { CurrentDiaryManager } from '@/model/repository/currentDiaryManager';
+import CurrentDiaryManager from '@/model/repository/currentDiaryManager';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
-import { DairySettingsConstant } from '@/dairySettingsConstant';
+import DairySettingsConstant from '@/dairySettingsConstant';
 
 describe('CurrentDiaryManager', () => {
   let storageServiceMock: jest.Mocked<IStorageService>;

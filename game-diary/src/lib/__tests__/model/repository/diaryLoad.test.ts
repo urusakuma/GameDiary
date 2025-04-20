@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import { MockDiary } from '@/__tests__/__mocks__/mockDiary';
 import { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
 import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
-import { DiaryLoad } from '@/model/repository/diaryLoad';
+import DiaryLoad from '@/model/repository/diaryLoad';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { KeyNotFoundError } from '@/error';
 

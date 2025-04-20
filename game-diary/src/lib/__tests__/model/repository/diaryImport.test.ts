@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { container } from 'tsyringe';
 import { MockDiary } from '@/__tests__/__mocks__/mockDiary';
 import { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
-import { DiaryImport } from '@/model/repository/diaryImport';
+import DiaryImport from '@/model/repository/diaryImport';
 import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 
 describe('DiaryImport', () => {

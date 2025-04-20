@@ -1,17 +1,19 @@
 import 'reflect-metadata';
-import { DeleteDiary } from '@/control/controlDiary/deleteDiary';
-import { CurrentDiaryManager } from '@/model/repository/currentDiaryManager';
-import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
+import DeleteDiary from '@/control/controlDiary/deleteDiary';
+import {
+  ICurrentDiaryManager,
+  IDiaryService,
+} from '@/model/repository/diaryRepositoryInterfaces';
 
 describe('DeleteDiary', () => {
   let deleteDiary: DeleteDiary;
-  let mockCurrentDiaryManager: jest.Mocked<CurrentDiaryManager>;
+  let mockCurrentDiaryManager: jest.Mocked<ICurrentDiaryManager>;
   let mockDiaryService: jest.Mocked<IDiaryService>;
 
   beforeEach(() => {
     mockCurrentDiaryManager = {
       getCurrentDiaryKey: jest.fn(),
-    } as unknown as jest.Mocked<CurrentDiaryManager>;
+    } as unknown as jest.Mocked<ICurrentDiaryManager>;
 
     mockDiaryService = {
       deleteDiary: jest.fn(),

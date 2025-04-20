@@ -1,4 +1,4 @@
-import { DairySettingsConstant } from '@/dairySettingsConstant';
+import DairySettingsConstant from '@/dairySettingsConstant';
 import { IDiarySettings } from '@/model/diary/diaryModelInterfaces';
 import { inject, injectable } from 'tsyringe';
 

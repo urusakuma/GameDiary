@@ -6,9 +6,9 @@ import type {
   DefaultSettingsFactory,
   StorageKeyFactory,
 } from './diaryModelInterfaces';
-import { DiarySettings } from './diarySettings';
-import { UniqueDiaryNameGenerator } from '../repository/uniqueDiaryNameGenerator';
+import DiarySettings from './diarySettings';
 import { inject, injectable } from 'tsyringe';
+import type { IUniqueDiaryNameGenerator } from '../repository/diaryRepositoryInterfaces';
 
 @injectable()
 export default class DiarySettingsFactory implements IDiarySettingsFactory {
@@ -18,8 +18,8 @@ export default class DiarySettingsFactory implements IDiarySettingsFactory {
     @inject('UseExistingDataDayModifierFactory')
     private modifierFactory: UseExistingDataDayModifierFactory,
     @inject('StorageKeyFactory') private StorageKeyFactory: StorageKeyFactory,
-    @inject('UniqueDiaryNameGenerator')
-    private nameGenerator: UniqueDiaryNameGenerator,
+    @inject('IUniqueDiaryNameGenerator')
+    private nameGenerator: IUniqueDiaryNameGenerator,
     @inject('DefaultDiaryName') private defaultName: string,
     @inject('Version') private version: number
   ) {}

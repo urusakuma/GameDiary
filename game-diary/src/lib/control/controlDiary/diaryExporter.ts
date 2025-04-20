@@ -3,7 +3,7 @@ import type {
   ICurrentDiaryAccessor,
   IDiaryExporter,
 } from './controlDiaryInterface';
-import { DiaryExport } from '@/model/repository/diaryExport';
+import DiaryExport from '@/model/repository/diaryExport';
 
 @injectable()
 export default class DiaryExporter implements IDiaryExporter {

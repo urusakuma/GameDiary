@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
 import DiarySettingsFactory from '@/model/diary/diarySettingsFactory';
-import { DiarySettings } from '@/model/diary/diarySettings';
+import DiarySettings from '@/model/diary/diarySettings';
 import type {
   IDiarySettings,
   NewDayModifierFactory,
@@ -47,7 +47,7 @@ describe('DiarySettingsFactory - createUseExistingData', () => {
     container.register('StorageKeyFactory', {
       useValue: mockStorageKeyFactory,
     });
-    container.register('UniqueDiaryNameGenerator', {
+    container.register('IUniqueDiaryNameGenerator', {
       useValue: mockNameGenerator,
     });
     container.register('DefaultDiaryName', { useValue: diaryName });

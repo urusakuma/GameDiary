@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import DiaryFactory from './diaryFactory';
-import { Diary } from '../diary/diary';
+import DiaryFactory from '@/model/repository/diaryFactory';
+import Diary from '@/model/diary/diary';
 import type {
   IDiary,
   IDiaryEntry,
   IDiarySettings,
   NewDiarySettingsFactory,
   UsePreviousDayDiaryEntryFactory,
-} from '../diary/diaryModelInterfaces';
+} from '@/model/diary/diaryModelInterfaces';
 
 describe('DiaryFactory', () => {
   let mockNewEntriesFactory: jest.Mock<() => Map<number, IDiaryEntry>>;
@@ -28,7 +28,7 @@ describe('DiaryFactory', () => {
     mockSettingsFactory = jest.fn().mockReturnValue(mockSettings);
     mockBuilder = jest.fn().mockReturnValue(mockEntry);
 
-    container.register('DiaryEntriesContainingFirstDayFactory', {
+    container.register('DIARY_ENTRIES_CONTAINING_FIRST_DAYFactory', {
       useValue: mockNewEntriesFactory,
     });
     container.register('NewDiarySettingsFactory', {
@@ -42,7 +42,7 @@ describe('DiaryFactory', () => {
   });
 
   it('should create a new Diary when no diary is provided', () => {
-    const result = diaryFactory.create();
+    const result = diaryFactory.createNewDiary();
 
     expect(mockNewEntriesFactory).toHaveBeenCalledTimes(1);
     expect(mockSettingsFactory).toHaveBeenCalledTimes(1);
@@ -57,7 +57,7 @@ describe('DiaryFactory', () => {
       getSettings: jest.fn().mockReturnValue(mockSettings),
     } as unknown as IDiary;
 
-    const result = diaryFactory.create(mockDiary);
+    const result = diaryFactory.createNewDiary(mockDiary);
 
     expect(mockNewEntriesFactory).toHaveBeenCalledTimes(1);
     expect(mockDiary.getSettings).toHaveBeenCalledTimes(1);

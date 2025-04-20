@@ -1,10 +1,10 @@
-import { DayModifier } from '@/model/diary/dayModifier';
-import { Diary } from '@/model/diary/diary';
-import { DiaryEntry } from '@/model/diary/diaryEntry';
+import DayModifier from '@/model/diary/dayModifier';
+import Diary from '@/model/diary/diary';
+import DiaryEntry from '@/model/diary/diaryEntry';
 import {
   UseExistingDataDayModifierFactory,
   UseExistingDataDiaryEntryFactory,
-  DiaryFactory,
+  UseExistingDataDiaryFactory,
   UseExistingDataDiarySettingsFactory,
   IDayModifier,
   IDiaryEntry,
@@ -12,7 +12,7 @@ import {
   IDiary,
   UsePreviousDayDiaryEntryFactory,
 } from '@/model/diary/diaryModelInterfaces';
-import { DiarySettings } from '@/model/diary/diarySettings';
+import DiarySettings from '@/model/diary/diarySettings';
 import {
   compressDiary,
   DiaryDecompressor,
@@ -34,7 +34,7 @@ describe('serialization test', () => {
   beforeEach(() => {
     container.clearInstances();
     container.register<UseExistingDataDayModifierFactory>(
-      'DayModifierFactory',
+      'UseExistingDataDayModifierFactory',
       {
         useFactory:
           () =>
@@ -78,35 +78,38 @@ describe('serialization test', () => {
             new DiaryEntry(day, title, content, previous, next),
       }
     );
-    container.register<DiaryFactory>('DiaryFactory', {
-      useFactory:
-        () =>
-        (
-          diaryEntries: Map<number, IDiaryEntry>,
-          settings: IDiarySettings,
-          lastDay: number
-        ) =>
-          new Diary(
-            container.resolve('UseExistingDataDiaryEntryFactory'),
-            diaryEntries,
-            settings,
-            lastDay
-          ),
-    });
+    container.register<UseExistingDataDiaryFactory>(
+      'UseExistingDataDiaryFactory',
+      {
+        useFactory:
+          () =>
+          (
+            diaryEntries: Map<number, IDiaryEntry>,
+            settings: IDiarySettings,
+            lastDay: number
+          ) =>
+            new Diary(
+              container.resolve('UseExistingDataDiaryEntryFactory'),
+              diaryEntries,
+              settings,
+              lastDay
+            ),
+      }
+    );
     container.register<IDiaryDecompressor>('IDiaryDecompressor', {
       useClass: DiaryDecompressor,
     });
-    container.register<number>('FirstDay', {
+    container.register<number>('FIRST_DAY', {
       useValue: 1,
     });
     container.register<IDiaryEntry>('IDiaryEntry', {
       useClass: MockDiaryEntry,
     });
     container.register<Map<number, IDiaryEntry>>(
-      'DiaryEntriesContainingFirstDay',
+      'DIARY_ENTRIES_CONTAINING_FIRST_DAY',
       {
         useValue: new Map<number, IDiaryEntry>().set(
-          container.resolve('FirstDay'),
+          container.resolve('FIRST_DAY'),
           container.resolve('IDiaryEntry')
         ),
       }

@@ -2,7 +2,7 @@ import type { IDiaryDecompressor } from '../serialization/serializationInterface
 import type { IDiaryImport, IDiaryService } from './diaryRepositoryInterfaces';
 import { inject, injectable } from 'tsyringe';
 @injectable()
-export class DiaryImport implements IDiaryImport {
+export default class DiaryImport implements IDiaryImport {
   constructor(
     @inject('IDiaryService') private diaryService: IDiaryService,
     @inject('IDiaryDecompressor') private diaryDecompressor: IDiaryDecompressor

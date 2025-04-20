@@ -12,7 +12,7 @@ import { decompressVersion00 } from './decompressVersion00';
 import { decompressVersion01 } from './decompressVersion01';
 import type {
   UseExistingDataDayModifierFactory,
-  DiaryFactory,
+  UseExistingDataDiaryFactory,
   UseExistingDataDiarySettingsFactory,
   IDiary,
   UseExistingDataDiaryEntryFactory,
@@ -32,13 +32,14 @@ export function compressDiary(reports: IDiary): string {
 @injectable()
 export class DiaryDecompressor {
   constructor(
-    @inject('DayModifierFactory')
+    @inject('UseExistingDataDayModifierFactory')
     private dayModifierFactory: UseExistingDataDayModifierFactory,
     @inject('UseExistingDataDiarySettingsFactory')
     private diarySettingsFactory: UseExistingDataDiarySettingsFactory,
     @inject('UseExistingDataDiaryEntryFactory')
     private diaryEntryFactory: UseExistingDataDiaryEntryFactory,
-    @inject('DiaryFactory') private diaryFactory: DiaryFactory
+    @inject('UseExistingDataDiaryFactory')
+    private diaryFactory: UseExistingDataDiaryFactory
   ) {}
   /**
    * 圧縮されたJSONをIDiaryに変換して返却する。

@@ -4,9 +4,9 @@ import type {
   IStorageService,
 } from '../utils/storageServiceInterface';
 import { ICurrentDiaryManager } from './diaryRepositoryInterfaces';
-import { DairySettingsConstant } from '@/dairySettingsConstant';
+import DairySettingsConstant from '@/dairySettingsConstant';
 
-export class CurrentDiaryManager implements ICurrentDiaryManager {
+export default class CurrentDiaryManager implements ICurrentDiaryManager {
   private currentDiaryKey: string = '';
   constructor(
     @inject('IStorageService') private storage: IStorageService,

@@ -1,3 +1,9 @@
+/** 前日のエントリーと設定クラスから新しいエントリーを組み立てる */
+export type UsePreviousDayDiaryEntryFactory = (
+  source: IDiaryEntry,
+  settings: IDiarySettings
+) => IDiaryEntry;
+
 /**ひとつの日記を管理するクラス*/
 export interface IDiary {
   /** 設定クラスへの直接アクセス。インスタンスそのものを変更できないようにはしている */
@@ -22,13 +28,26 @@ export interface IDiary {
    */
   deleteEntry(day: number): boolean;
 }
+/**
+ * 新しいDiaryを作成する関数。
+ * Diaryを受け取った場合、DiaryのSettingsをストレージキー以外をコピーする。
+ * @param {IDiary?} diary 新しいDiaryのSettingsの基となるDiary
+ * @returns {IDiary} 作成したDiary
+ */
+export interface IDiaryFactory {
+  createUseExistingData(
+    diaryEntries: Map<number, IDiaryEntry>,
+    settings: IDiarySettings,
+    lastDay: number
+  ): IDiary;
+  createNewDiary(diary?: IDiary): IDiary;
+}
 
-export type DiaryFactory = (
+export type UseExistingDataDiaryFactory = (
   diaryEntries: Map<number, IDiaryEntry>,
   settings: IDiarySettings,
   lastDay: number
 ) => IDiary;
-export type NewDiaryFactory = (settings?: IDiarySettings) => IDiary;
 
 export interface IDiaryEntry {
   /** エントリーの日付 */
@@ -68,11 +87,7 @@ export interface IDiaryEntryFactory {
     next: number | undefined
   ): IDiaryEntry;
 }
-/** 前日のエントリーと設定クラスから新しいエントリーを組み立てる */
-export type UsePreviousDayDiaryEntryFactory = (
-  source: IDiaryEntry,
-  settings: IDiarySettings
-) => IDiaryEntry;
+export type NewDiaryEntriesFactory = () => Map<number, IDiaryEntry>;
 
 /** 既存の情報から新しいエントリーを組み立てる */
 export type UseExistingDataDiaryEntryFactory = (
@@ -82,7 +97,9 @@ export type UseExistingDataDiaryEntryFactory = (
   previous: number | undefined,
   next: number | undefined
 ) => IDiaryEntry;
+
 export type StorageKeyFactory = () => string;
+
 export interface IDiarySettings {
   /** ゲームデータを識別する一意の文字列 */
   get storageKey(): string;
@@ -133,6 +150,7 @@ export interface IDiarySettings {
    */
   getModifierDay(day: number): string;
 }
+
 export interface IDiarySettingsFactory {
   createUseExistingData(
     dayModifier: IDayModifier,
@@ -144,16 +162,16 @@ export interface IDiarySettingsFactory {
   createNewDiarySettings(settings?: IDiarySettings): IDiarySettings;
 }
 export type DefaultSettingsFactory = () => IDiarySettings;
+export type NewDiarySettingsFactory = (
+  settings?: IDiarySettings
+) => IDiarySettings;
+
 export type UseExistingDataDiarySettingsFactory = (
   dayModifier: IDayModifier,
   diaryName: string,
   dayInterval: number,
   storageKey: string,
   version: number
-) => IDiarySettings;
-
-export type NewDiarySettingsFactory = (
-  settings?: IDiarySettings
 ) => IDiarySettings;
 
 export interface IDayModifier {
@@ -189,10 +207,10 @@ export interface IDayModifier {
   modifyDay(naturalDay: number): string;
 }
 
+export type NewDayModifierFactory = (dayModifier: IDayModifier) => IDayModifier;
+
 export type UseExistingDataDayModifierFactory = (
   modifier: string,
   cycleLength: number,
   ...unit: Array<string>
 ) => IDayModifier;
-
-export type NewDayModifierFactory = (dayModifier: IDayModifier) => IDayModifier;

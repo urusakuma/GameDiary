@@ -1,9 +1,9 @@
-import { DairySettingsConstant } from '@/dairySettingsConstant';
+import DairySettingsConstant from '@/dairySettingsConstant';
 import { InvalidJsonError } from '@/error';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import {
   UseExistingDataDayModifierFactory,
-  DiaryFactory,
+  UseExistingDataDiaryFactory,
   UseExistingDataDiarySettingsFactory,
   IDiary,
   IDiaryEntry,
@@ -15,7 +15,7 @@ export function decompressVersion01(
   dayModifierFactory: UseExistingDataDayModifierFactory,
   diarySettingsFactory: UseExistingDataDiarySettingsFactory,
   diaryEntryFactory: UseExistingDataDiaryEntryFactory,
-  diaryFactory: DiaryFactory
+  diaryFactory: UseExistingDataDiaryFactory
 ): IDiary {
   if (!hasField(jsonObj, 'lastDay', 'number')) {
     throw new InvalidJsonError('Reports class is broken');

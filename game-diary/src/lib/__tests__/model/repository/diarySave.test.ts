@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { DiarySave } from '@/model/repository/diarySave';
+import DiarySave from '@/model/repository/diarySave';
 import { IDiary } from '@/model/diary/diaryModelInterfaces';
 import {
   IsStorageAvailableFunc,

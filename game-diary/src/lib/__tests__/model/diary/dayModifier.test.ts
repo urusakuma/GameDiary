@@ -1,5 +1,5 @@
-import { DairySettingsConstant } from '@/dairySettingsConstant';
-import { DayModifier } from '@/model/diary/dayModifier';
+import DairySettingsConstant from '@/dairySettingsConstant';
+import DayModifier from '@/model/diary/dayModifier';
 import {
   UseExistingDataDayModifierFactory,
   IDayModifier,
@@ -19,7 +19,7 @@ describe('DayModifier class tests', () => {
       useClass: DayModifier,
     });
     container.register<UseExistingDataDayModifierFactory>(
-      'DayModifierFactory',
+      'UseExistingDataDayModifierFactory',
       {
         useFactory:
           () =>
@@ -44,10 +44,9 @@ describe('DayModifier class tests', () => {
     );
   });
   test('make DayModifier', () => {
-    const factory =
-      container.resolve<UseExistingDataDayModifierFactory>(
-        'DayModifierFactory'
-      );
+    const factory = container.resolve<UseExistingDataDayModifierFactory>(
+      'UseExistingDataDayModifierFactory'
+    );
     const modifier = factory('DAY$N', 11, '0', '1', '2', '3');
     expect(modifier.getModifier()).toBe('DAY$N');
     expect(modifier.getCycleLength()).toBe(11);

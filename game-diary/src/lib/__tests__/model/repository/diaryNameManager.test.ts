@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import { DiaryNameManager } from '@/model/repository/diaryNameManager';
+import DiaryNameManager from '@/model/repository/diaryNameManager';
 import { IDiaryNameManager } from '@/model/repository/diaryRepositoryInterfaces';
 import {
   IsStorageAvailableFunc,

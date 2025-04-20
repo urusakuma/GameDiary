@@ -1,11 +1,9 @@
 import 'reflect-metadata';
 import CreateDiary from '@/control/controlDiary/createDiary';
 import type { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
-import type {
-  IDiaryFactory,
-  IDiaryService,
-} from '@/model/repository/diaryRepositoryInterfaces';
+import type { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 import { MockDiary } from '../__mocks__/mockDiary';
+import { IDiaryFactory } from '@/model/diary/diaryModelInterfaces';
 
 describe('CreateDiary', () => {
   let mockDiaryAccessor: jest.Mocked<ICurrentDiaryAccessor>;
@@ -20,8 +18,8 @@ describe('CreateDiary', () => {
     };
 
     mockDiaryFactory = {
-      create: jest.fn(),
-    };
+      createNewDiary: jest.fn(),
+    } as unknown as jest.Mocked<IDiaryFactory>;
 
     mockDiaryService = {
       addDiary: jest.fn(),
@@ -41,12 +39,12 @@ describe('CreateDiary', () => {
     const newDiary = new MockDiary('new-diary-key');
 
     mockDiaryAccessor.getCurrentDiary.mockReturnValue(oldDiary);
-    mockDiaryFactory.create.mockReturnValue(newDiary);
+    mockDiaryFactory.createNewDiary.mockReturnValue(newDiary);
 
     createDiary.create();
 
     expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalled();
-    expect(mockDiaryFactory.create).toHaveBeenCalledWith(oldDiary);
+    expect(mockDiaryFactory.createNewDiary).toHaveBeenCalledWith(oldDiary);
     expect(mockDiaryService.addDiary).toHaveBeenCalledWith(newDiary);
     expect(mockDiaryAccessor.setCurrentDiary).toHaveBeenCalledWith(
       'new-diary-key'

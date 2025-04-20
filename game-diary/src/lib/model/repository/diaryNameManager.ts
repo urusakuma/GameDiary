@@ -1,4 +1,4 @@
-import { DairySettingsConstant } from '@/dairySettingsConstant';
+import DairySettingsConstant from '@/dairySettingsConstant';
 import { isTypeMatch } from '@/model/utils/checkTypeMatch';
 import type {
   IsStorageAvailableFunc,
@@ -8,7 +8,7 @@ import { inject, injectable } from 'tsyringe';
 import { IDiaryNameManager } from './diaryRepositoryInterfaces';
 import { InvalidJsonError } from '@/error';
 @injectable()
-export class DiaryNameManager implements IDiaryNameManager {
+export default class DiaryNameManager implements IDiaryNameManager {
   /** ストレージキーと名前の連想配列。ストレージキーがkey、ゲームデータ名がval。 */
   private diaryNameMap: Map<string, string> = new Map<string, string>();
   private diaryNames: Record<string, string> = {};

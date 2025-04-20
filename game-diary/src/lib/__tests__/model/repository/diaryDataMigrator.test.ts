@@ -1,6 +1,6 @@
-import { DiaryDataMigrator } from '@/model/repository/diaryDataMigrator';
+import DiaryDataMigrator from '@/model/repository/diaryDataMigrator';
 import { MockV0StorageService } from '../../__mocks__/mockV0StorageService';
-import { DairySettingsConstant } from '@/dairySettingsConstant';
+import DairySettingsConstant from '@/dairySettingsConstant';
 import {
   hasField,
   isArrayType,

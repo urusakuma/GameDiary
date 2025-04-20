@@ -1,4 +1,4 @@
-import { DiaryEntry } from './diaryEntry';
+import DiaryEntry from './diaryEntry';
 import {
   IDiaryEntryFactory,
   IDiaryEntry,

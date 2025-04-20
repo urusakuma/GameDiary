@@ -8,7 +8,7 @@ import type {
 import { NotFoundError } from '@/error';
 
 @injectable()
-export class CurrentDiaryAccessor implements ICurrentDiaryAccessor {
+export default class CurrentDiaryAccessor implements ICurrentDiaryAccessor {
   constructor(
     @inject('ICurrentDiaryManager')
     private currentDiaryManager: ICurrentDiaryManager,

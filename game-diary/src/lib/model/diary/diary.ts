@@ -10,7 +10,7 @@ import { inject, injectable } from 'tsyringe';
 
 /**日記の管理を行うクラス。*/
 @injectable()
-export class Diary implements IDiary {
+export default class Diary implements IDiary {
   /**
    * @param {Map<number,IDiaryEntry>} diaryEntries エントリーの連想配列
    * @param {IDiarySettings} settings 設定クラス
@@ -19,11 +19,11 @@ export class Diary implements IDiary {
   constructor(
     @inject('UsePreviousDayDiaryEntryFactory')
     private builder: UsePreviousDayDiaryEntryFactory,
-    @inject('DiaryEntriesContainingFirstDay')
+    @inject('DIARY_ENTRIES_CONTAINING_FIRST_DAY')
     private diaryEntries: Map<number, IDiaryEntry>,
     @inject('IDiarySettings')
     private settings: IDiarySettings,
-    @inject('FirstDay')
+    @inject('FIRST_DAY')
     private lastDay: number = 1
   ) {
     assert(diaryEntries.size !== 0, `not exists any entry`);

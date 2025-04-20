@@ -1,4 +1,4 @@
-import { DairySettingsConstant } from '@/dairySettingsConstant';
+import DairySettingsConstant from '@/dairySettingsConstant';
 import { MockStorageService } from './mockStorageService';
 import { injectable, singleton } from 'tsyringe';
 @singleton()

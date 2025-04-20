@@ -1,12 +1,12 @@
 import { MockDayModifier } from '@/__tests__/__mocks__/mockDayModifier';
-import { DairySettingsConstant } from '@/dairySettingsConstant';
+import DairySettingsConstant from '@/dairySettingsConstant';
 import {
   IDayModifier,
   IDiarySettings,
   NewDiarySettingsFactory,
   UseExistingDataDiarySettingsFactory,
 } from '@/model/diary/diaryModelInterfaces';
-import { DiarySettings } from '@/model/diary/diarySettings';
+import DiarySettings from '@/model/diary/diarySettings';
 import { container } from 'tsyringe';
 
 describe('DairySettings class tests', () => {

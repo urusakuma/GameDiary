@@ -22,16 +22,6 @@ export interface IDiaryService {
   deleteDiary(key: string): void;
 }
 /**
- * 新しいDiaryを作成する関数。
- * Diaryを受け取った場合、DiaryのSettingsをストレージキー以外をコピーする。
- * @param {IDiary?} diary 新しいDiaryのSettingsの基となるDiary
- * @returns {IDiary} 作成したDiary
- */
-export interface IDiaryFactory {
-  create(diary?: IDiary): IDiary;
-}
-export type NewDiaryEntriesFactory = () => Map<number, IDiaryEntry>;
-/**
  * 日記の名前とユニークな日記のキーを対応させストレージに保存するクラス。
  */
 export interface IDiaryNameManager {

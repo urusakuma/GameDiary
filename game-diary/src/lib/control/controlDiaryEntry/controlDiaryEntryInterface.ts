@@ -1,4 +1,4 @@
-import { IDiaryEntry } from '../../model/diary/diaryModelInterfaces';
+import { IDiaryEntry } from '@/model/diary/diaryModelInterfaces';
 
 /** カレントの日記のエントリへのアクセスを提供するクラス */
 export interface ICurrentDiaryEntryAccessor {

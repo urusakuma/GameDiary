@@ -1,8 +1,10 @@
-import { DairySettingsConstant } from '@/dairySettingsConstant';
+import DairySettingsConstant from '@/dairySettingsConstant';
 import { IDiaryEntry, IDiarySettings } from './diaryModelInterfaces';
+import { inject, injectable } from 'tsyringe';
 
 /** 日ごとの日記*/
-export class DiaryEntry implements IDiaryEntry {
+@injectable()
+export default class DiaryEntry implements IDiaryEntry {
   /**
    * @constructor
    * @param {number} _day 日付
@@ -12,10 +14,14 @@ export class DiaryEntry implements IDiaryEntry {
    * @param {?number} _next 翌日のエントリーの日付
    */
   constructor(
-    private _day: number = 1,
+    @inject('FIRST_DAY') private _day: number = 1,
+    @inject('DEFAULT_TITLE')
     private title: string = '1' + DairySettingsConstant.DEFAULT_DAY_MODIFIER,
+    @inject('EMPTY_STRING')
     private content: string = '',
+    @inject('UNDEFINED')
     private _previous: number | undefined = undefined,
+    @inject('UNDEFINED')
     private _next: number | undefined = undefined
   ) {}
 

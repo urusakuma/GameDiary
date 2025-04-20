@@ -2,7 +2,7 @@ import type { IDayModifier, IDiarySettings } from './diaryModelInterfaces';
 import { inject, injectable } from 'tsyringe';
 /** 設定を保存しておくクラス。 */
 @injectable()
-export class DiarySettings implements IDiarySettings {
+export default class DiarySettings implements IDiarySettings {
   /**
    * @param {string} storageKey ローカルストレージに保存したときのKey。
    * @param {number} version セーブデータを作成したシステムのバージョン。

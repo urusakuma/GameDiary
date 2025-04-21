@@ -2,7 +2,11 @@ import 'reflect-metadata';
 import ChangeCurrentDiaryEntry from '@/control/controlDiaryEntry/changeCurrentDiaryEntry';
 import { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
 import { ICurrentDiaryEntryAccessor } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
-import { IDiary, IDiaryEntry } from '@/model/diary/diaryModelInterfaces';
+import {
+  IDiary,
+  IDiaryEntry,
+  IDiarySettings,
+} from '@/model/diary/diaryModelInterfaces';
 
 describe('ChangeCurrentDiaryEntry', () => {
   let changeCurrentDiaryEntry: ChangeCurrentDiaryEntry;
@@ -25,7 +29,7 @@ describe('ChangeCurrentDiaryEntry', () => {
     );
   });
 
-  it('should set the current diary entry by date when moveByDate is called', () => {
+  it('should move to diary entry of given date', () => {
     const date = 1;
     changeCurrentDiaryEntry.moveByDate(date);
     expect(mockDiaryEntryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(
@@ -33,7 +37,7 @@ describe('ChangeCurrentDiaryEntry', () => {
     );
   });
 
-  it('should move to the next diary entry if it exists when moveToNext is called', () => {
+  it('should move to next entry if it exists and not create a new one', () => {
     const currentEntry = { next: 2 } as unknown as jest.Mocked<IDiaryEntry>;
     mockDiaryEntryAccessor.getCurrentDiaryEntry.mockReturnValue(currentEntry);
     const diary = {
@@ -49,7 +53,7 @@ describe('ChangeCurrentDiaryEntry', () => {
     expect(mockDiaryAccessor.getCurrentDiary).not.toHaveBeenCalled();
   });
 
-  it('should create a new diary entry if no next entry exists when moveToNext is called', () => {
+  it('should create and move to new entry if next entry does not exist', () => {
     const currentEntry = {
       next: undefined,
     } as unknown as jest.Mocked<IDiaryEntry>;
@@ -67,9 +71,16 @@ describe('ChangeCurrentDiaryEntry', () => {
     );
   });
 
-  it('should move to the previous diary entry if it exists when moveToPrevious is called', () => {
-    const currentEntry = { previous: 1 } as unknown as jest.Mocked<IDiaryEntry>;
+  it('should move to previous entry if it exists and check if current is edited', () => {
+    const currentEntry = {
+      previous: 1,
+      isEdited: jest.fn().mockReturnValue(true),
+    } as unknown as jest.Mocked<IDiaryEntry>;
+    const diary = {
+      getSettings: jest.fn().mockReturnValue({} as unknown as IDiarySettings),
+    } as unknown as jest.Mocked<IDiary>;
     mockDiaryEntryAccessor.getCurrentDiaryEntry.mockReturnValue(currentEntry);
+    mockDiaryAccessor.getCurrentDiary.mockReturnValue(diary);
 
     changeCurrentDiaryEntry.moveToPrevious();
 
@@ -77,9 +88,32 @@ describe('ChangeCurrentDiaryEntry', () => {
     expect(mockDiaryEntryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(
       currentEntry.previous
     );
+    expect(currentEntry.isEdited).toHaveBeenCalled();
   });
 
-  it('should do nothing if no previous diary entry exists when moveToPrevious is called', () => {
+  it('should move to previous entry and delete current if not edited', () => {
+    const currentEntry = {
+      previous: 1,
+      isEdited: jest.fn().mockReturnValue(false),
+    } as unknown as jest.Mocked<IDiaryEntry>;
+    const diary = {
+      getSettings: jest.fn().mockReturnValue({} as unknown as IDiarySettings),
+      deleteEntry: jest.fn(),
+    } as unknown as jest.Mocked<IDiary>;
+    mockDiaryEntryAccessor.getCurrentDiaryEntry.mockReturnValue(currentEntry);
+    mockDiaryAccessor.getCurrentDiary.mockReturnValue(diary);
+
+    changeCurrentDiaryEntry.moveToPrevious();
+
+    expect(mockDiaryEntryAccessor.getCurrentDiaryEntry).toHaveBeenCalled();
+    expect(mockDiaryEntryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(
+      currentEntry.previous
+    );
+    expect(currentEntry.isEdited).toHaveBeenCalled();
+    expect(diary.deleteEntry).toHaveBeenCalled();
+  });
+
+  it('should do nothing if there is no previous entry', () => {
     const currentEntry = {
       previous: undefined,
     } as unknown as jest.Mocked<IDiaryEntry>;

@@ -6,6 +6,7 @@ import useSettingOpen from 'src/hooks/useSettingsOpen';
 import DiaryEntriesList from 'src/components/diaryEntriesList';
 import { useState } from 'react';
 import ExportModal from 'src/components/exportModal';
+import ImportModal from 'src/components/importModal';
 enum modal {
   Home,
   Export,
@@ -70,9 +71,13 @@ const DiaryLayout = () => {
           </button>
           <button
             className={`overflow-y-clip overflow-x-clip ${isDarkMode ? darkButton : lightButton}`}
+            onClick={() => setShowModal(modal.Import)}
           >
             インポート
           </button>
+          {showModal === modal.Import && (
+            <ImportModal onClose={goHome} isDarkMode={isDarkMode} />
+          )}
         </div>
       </div>
 

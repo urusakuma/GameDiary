@@ -32,5 +32,10 @@ export default class ChangeCurrentDiaryEntry
       return;
     }
     this.diaryEntryAccessor.setCurrentDiaryEntry(today.previous);
+    const settings = this.diaryAccessor.getCurrentDiary().getSettings();
+    if (today.isEdited(settings)) {
+      return;
+    }
+    this.diaryAccessor.getCurrentDiary().deleteEntry(today.day);
   }
 }

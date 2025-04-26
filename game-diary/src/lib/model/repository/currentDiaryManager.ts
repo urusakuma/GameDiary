@@ -14,8 +14,9 @@ export default class CurrentDiaryManager implements ICurrentDiaryManager {
     private isStorageAvailable: IsStorageAvailableFunc
   ) {
     const key = this.storage.getItem(DairySettingsConstant.CURRENT_DIARY_KEY);
-    if (key) {
+    if (key !== null) {
       this.currentDiaryKey = key;
+      return;
     }
   }
   getCurrentDiaryKey(): string {

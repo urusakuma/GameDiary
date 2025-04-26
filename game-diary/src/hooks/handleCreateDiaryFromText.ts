@@ -2,7 +2,7 @@ import { IDiaryImporter } from '@/control/controlDiary/controlDiaryInterface';
 import toast from 'react-hot-toast';
 import { container } from 'tsyringe';
 
-const handleCreateDiaryFromTest = (val: string) => {
+const handleCreateDiaryFromText = (val: string) => {
   if (val === '') {
     return;
   }
@@ -12,4 +12,4 @@ const handleCreateDiaryFromTest = (val: string) => {
     toast.error('テキストの読み込みに失敗しました');
   }
 };
-export default handleCreateDiaryFromTest;
+export default handleCreateDiaryFromText;

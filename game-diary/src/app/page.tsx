@@ -7,13 +7,9 @@ import DiaryEntriesList from 'src/components/diaryEntriesList';
 import { useState } from 'react';
 import ExportModal from 'src/components/exportModal';
 import ImportModal from 'src/components/importModal';
-enum modal {
-  Home,
-  Export,
-  Import,
-  Load,
-  Delete,
-}
+import LoadModal from 'src/components/loadModal';
+import { modal } from 'src/components/modalProps';
+import ContextProvider from 'src/components/context/contexts';
 const DiaryLayout = () => {
   const { isOpen, setIsOpen } = useSettingOpen();
   const { isDarkMode, setDarkMode } = useDarkMode();
@@ -61,11 +57,9 @@ const DiaryLayout = () => {
           >
             エクスポート
           </button>
-          {showModal === modal.Export && (
-            <ExportModal onClose={goHome} isDarkMode={isDarkMode} />
-          )}
           <button
             className={`overflow-y-clip overflow-x-clip ${isDarkMode ? darkButton : lightButton}`}
+            onClick={() => setShowModal(modal.Load)}
           >
             ロード
           </button>
@@ -75,9 +69,17 @@ const DiaryLayout = () => {
           >
             インポート
           </button>
-          {showModal === modal.Import && (
-            <ImportModal onClose={goHome} isDarkMode={isDarkMode} />
-          )}
+          <ContextProvider>
+            {showModal === modal.Export && (
+              <ExportModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
+            )}
+            {showModal === modal.Load && (
+              <LoadModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
+            )}
+            {showModal === modal.Import && (
+              <ImportModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
+            )}
+          </ContextProvider>
         </div>
       </div>
 

@@ -6,18 +6,14 @@ import { Toaster } from 'react-hot-toast';
 import handleCopy from 'src/hooks/handleCopy';
 import handleDownload from 'src/hooks/handleDownload';
 import { container } from 'tsyringe';
-interface ExportModalProps {
-  onClose: () => void;
-  isDarkMode: boolean;
-}
-
-const ExportModal = ({ onClose, isDarkMode }: ExportModalProps) => {
+import { modal, ModalProps } from './modalProps';
+const ExportModal = ({ onNavigate, isDarkMode }: ModalProps) => {
   // const exportText = container
   //   .resolve<IDiaryExporter>('IDiaryExporter')
   //   .exportText();
   const exportText = 'exported data';
   return (
-    <Overlay onClose={onClose} isDarkMode={isDarkMode}>
+    <Overlay onClose={() => onNavigate(modal.Home)} isDarkMode={isDarkMode}>
       <Toaster position="bottom-center" reverseOrder={false} />
       <h2 className="text-xl font-bold mb-4">エクスポート</h2>
       <textarea

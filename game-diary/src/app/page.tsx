@@ -10,6 +10,8 @@ import ImportModal from 'src/components/importModal';
 import LoadModal from 'src/components/loadModal';
 import { modal } from 'src/components/modalProps';
 import ContextProvider from 'src/components/context/contexts';
+import handleSave from 'src/hooks/handleSave';
+import { Toaster } from 'react-hot-toast';
 const DiaryLayout = () => {
   const { isOpen, setIsOpen } = useSettingOpen();
   const { isDarkMode, setDarkMode } = useDarkMode();
@@ -48,6 +50,7 @@ const DiaryLayout = () => {
         <div className={`grid grid-cols-2 gap-2`}>
           <button
             className={`overflow-hidden ${isDarkMode ? darkButton : lightButton}`}
+            onClick={() => handleSave()}
           >
             セーブ
           </button>
@@ -69,6 +72,7 @@ const DiaryLayout = () => {
           >
             インポート
           </button>
+          <Toaster position="bottom-center" reverseOrder={false} />
           <ContextProvider>
             {showModal === modal.Export && (
               <ExportModal onNavigate={setShowModal} isDarkMode={isDarkMode} />

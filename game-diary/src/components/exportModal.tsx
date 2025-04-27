@@ -14,7 +14,6 @@ const ExportModal = ({ onNavigate, isDarkMode }: ModalProps) => {
   const exportText = 'exported data';
   return (
     <Overlay onClose={() => onNavigate(modal.Home)} isDarkMode={isDarkMode}>
-      <Toaster position="bottom-center" reverseOrder={false} />
       <h2 className="text-xl font-bold mb-4">エクスポート</h2>
       <textarea
         readOnly

@@ -1,7 +1,6 @@
 'use client';
 
 import Overlay from './overlay';
-import { Toaster } from 'react-hot-toast';
 import { modal, ModalProps } from './modalProps';
 import handleLoad from 'src/hooks/handleLoad';
 import { useState } from 'react';
@@ -12,7 +11,6 @@ const LoadModal = ({ onNavigate, isDarkMode }: ModalProps) => {
   const { diaryNames } = useDiaryNameListContext();
   return (
     <Overlay onClose={() => onNavigate(modal.Home)} isDarkMode={isDarkMode}>
-      <Toaster position="bottom-center" reverseOrder={false} />
       <h2 className="text-xl font-bold mb-4">ロード</h2>
       <select
         className={`w-full p-2 ${isDarkMode ? 'bg-gray-600' : 'bg-gray-300'}`}

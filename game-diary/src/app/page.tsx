@@ -12,6 +12,9 @@ import { modal } from 'src/components/modalProps';
 import ContextProvider from 'src/components/context/contexts';
 import handleSave from 'src/hooks/handleSave';
 import { Toaster } from 'react-hot-toast';
+import handleEditContent from 'src/hooks/handleEditContent';
+import handleEditTitle from 'src/hooks/handleEditTiltle';
+import handleClearDiaryEntry from 'src/hooks/handleClearDiaryEntry';
 const DiaryLayout = () => {
   const { isOpen, setIsOpen } = useSettingOpen();
   const { isDarkMode, setDarkMode } = useDarkMode();
@@ -19,9 +22,6 @@ const DiaryLayout = () => {
     () => () => {}
   );
   const [showModal, setShowModal] = useState(modal.Home);
-  const goHome = () => {
-    setShowModal(modal.Home);
-  };
   return (
     <div
       className={`flex h-screen p-4 overflow-y-clip overflow-x-clip overflow-x-scroll ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}
@@ -96,9 +96,11 @@ const DiaryLayout = () => {
           <input
             type="text"
             className={`p-2 h-16 mb-2 flex-1 ${isDarkMode ? darkInput : lightInput}`}
+            onChange={(e) => handleEditTitle(e.target.value)}
           ></input>
           <button
             className={`p-2 w-10 aspect-square ${isDarkMode ? darkButton : lightButton}`}
+            onClick={() => handleClearDiaryEntry()}
           >
             ×
           </button>
@@ -107,6 +109,7 @@ const DiaryLayout = () => {
         <div className="p-2 flex-1">
           <textarea
             className={`p-2 h-full w-full ${isDarkMode ? darkInput : lightInput}`}
+            onChange={(e) => handleEditContent(e.target.value)}
           ></textarea>
         </div>
         {/* 設定エリア */}

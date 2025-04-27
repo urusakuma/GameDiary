@@ -11,7 +11,6 @@ const ImportModal = ({ onNavigate, isDarkMode }: ModalProps) => {
   const [textData, setTextData] = useState('');
   return (
     <Overlay onClose={() => onNavigate(modal.Home)} isDarkMode={isDarkMode}>
-      <Toaster position="bottom-center" reverseOrder={false} />
       <h2 className="text-xl font-bold mb-4">インポート</h2>
       <textarea
         className={`w-full h-64 font-mono p-2 border border-gray-300 rounded resize-none ${isDarkMode ? 'bg-gray-600 border-gray-200' : 'bg-gray-300 border-gray-600'}`}

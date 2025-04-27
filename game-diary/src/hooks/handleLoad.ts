@@ -4,7 +4,7 @@ import { container } from 'tsyringe';
 
 const handleLoad = async (key: string) => {
   try {
-    container.resolve<IDiaryLoadHandler>('DiaryLoadHandler').load(key);
+    container.resolve<IDiaryLoadHandler>('IDiaryLoadHandler').load(key);
     toast.success('ロードしました');
   } catch (err) {
     toast.error('日記が存在しません');

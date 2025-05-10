@@ -1,10 +1,9 @@
 'use client';
 
 import Overlay from './overlay';
-import { Toaster } from 'react-hot-toast';
-import handleCreateDiaryFromText from 'src/hooks/handleCreateDiaryFromText';
+import handleCreateDiaryFromText from 'src/hooks/import/handleCreateDiaryFromText';
 import { useState } from 'react';
-import handleCreateDiaryFromFile from 'src/hooks/handleCreateDiaryFromFile';
+import handleCreateDiaryFromFile from 'src/hooks/import/handleCreateDiaryFromFile';
 import { modal, ModalProps } from './modalProps';
 
 const ImportModal = ({ onNavigate, isDarkMode }: ModalProps) => {

@@ -1,13 +1,13 @@
 import { IEditDiarySettings } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
 import { useState } from 'react';
 import { container } from 'tsyringe';
-const useDayInterval = (): [
-  number,
-  number,
-  (value: number) => void,
-  (value: number) => void,
-  (value: number) => void,
-] => {
+const useDayInterval = (): {
+  dayInterval: number;
+  dayIntervalStr: number;
+  onChangeDayInterval: (value: number) => void;
+  onBlurDayInterval: (value: number) => void;
+  onChangeDayIntervalStr: (str: string) => void;
+} => {
   const [dayInterval, setDayInterval] = useState(1);
   const [dayIntervalStr, setDayIntervalStr] = useState(1);
   const onBlurDayInterval = (value: number) => {
@@ -22,7 +22,8 @@ const useDayInterval = (): [
     } catch (e) {}
     setDayInterval(value);
   };
-  const onChangeDayIntervalStr = (value: number) => {
+  const onChangeDayIntervalStr = (str: string) => {
+    const value = Number(str);
     if (isNaN(value) || value < 0) {
       return;
     }
@@ -40,12 +41,12 @@ const useDayInterval = (): [
       editDiarySettings.editDayInterval(length);
     } catch (e) {}
   };
-  return [
+  return {
     dayInterval,
     dayIntervalStr,
     onChangeDayInterval,
-    onBlurDayInterval,
     onChangeDayIntervalStr,
-  ];
+    onBlurDayInterval,
+  };
 };
 export default useDayInterval;

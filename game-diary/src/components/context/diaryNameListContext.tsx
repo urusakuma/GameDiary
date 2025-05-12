@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import ContextWrapperProps from './contextWrapperProps';
 
 type KeyNamePairType = { key: string; name: string };
 type DiaryNameListContextType = {
@@ -10,29 +11,24 @@ type DiaryNameListContextType = {
 const DiaryNameListContext = createContext<DiaryNameListContextType | null>(
   null
 );
-interface DiaryNameListProviderProps {
-  children: React.ReactNode;
-}
-export const DiaryNameListProvider = ({
-  children,
-}: DiaryNameListProviderProps) => {
-  const [DiaryNames, setOptions] = useState<KeyNamePairType[]>([]);
+export const DiaryNameListProvider = ({ children }: ContextWrapperProps) => {
+  const [diaryNames, setOptions] = useState<KeyNamePairType[]>([]);
   const addDiaryName = (key: string, name: string) => {
     const pair = { key, name };
-    setOptions([...DiaryNames, pair]);
+    setOptions([...diaryNames, pair]);
   };
   const removeDiaryName = (key: string) => {
-    setOptions(DiaryNames.filter((option) => option.key !== key));
+    setOptions(diaryNames.filter((option) => option.key !== key));
   };
   const updateDiaryName = (key: string, name: string) => {
     setOptions(
-      DiaryNames.map((pair) =>
+      diaryNames.map((pair) =>
         pair.key === key ? { ...pair, name: name } : pair
       )
     );
   };
   const optionsObj: DiaryNameListContextType = {
-    diaryNames: DiaryNames,
+    diaryNames: diaryNames,
     addDiaryName: addDiaryName,
     removeDiaryName: removeDiaryName,
     updateDiaryName: updateDiaryName,

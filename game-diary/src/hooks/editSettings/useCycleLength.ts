@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { IEditDiarySettings } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
 import { container } from 'tsyringe';
 
-const useCycleLength = (): [
-  number,
-  number,
-  (value: number) => void,
-  (value: number) => void,
-  (value: number) => void,
-] => {
+const useCycleLength = (): {
+  cycleLength: number;
+  cycleLengthStr: number;
+  onChangeCycleLength: (value: number) => void;
+  onCycleLengthBlur: (value: number) => void;
+  onChangeCycleLengthStr: (str: string) => void;
+} => {
   const [cycleLength, setCycleLength] = useState(15);
   const [cycleLengthStr, setCycleLengthStr] = useState(15);
   const onCycleLengthBlur = (value: number) => {
@@ -18,7 +18,8 @@ const useCycleLength = (): [
     }
     onChangeCycleLength(value);
   };
-  const onChangeCycleLengthStr = (value: number) => {
+  const onChangeCycleLengthStr = (str: string) => {
+    const value = Number(str);
     if (isNaN(value) || value < 0) {
       return;
     }
@@ -36,13 +37,13 @@ const useCycleLength = (): [
       editDiarySettings.editCycleLength(length);
     } catch (e) {}
   };
-  return [
+  return {
     cycleLength,
     cycleLengthStr,
     onChangeCycleLength,
-    onCycleLengthBlur,
     onChangeCycleLengthStr,
-  ];
+    onCycleLengthBlur,
+  };
 };
 
 export default useCycleLength;

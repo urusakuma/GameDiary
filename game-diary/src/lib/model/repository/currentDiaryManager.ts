@@ -1,13 +1,13 @@
-import { inject } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import type {
   IsStorageAvailableFunc,
   IStorageService,
 } from '../utils/storageServiceInterface';
 import { ICurrentDiaryManager } from './diaryRepositoryInterfaces';
 import DairySettingsConstant from '@/dairySettingsConstant';
-
+@injectable()
 export default class CurrentDiaryManager implements ICurrentDiaryManager {
-  private currentDiaryKey: string = '';
+  private currentDiaryKey: string = 'can not find current diary key';
   constructor(
     @inject('IStorageService') private storage: IStorageService,
     @inject('IsStorageAvailableFunc')

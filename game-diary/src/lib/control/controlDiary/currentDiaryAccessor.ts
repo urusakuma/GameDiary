@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import { IDiary } from '@/model/diary/diaryModelInterfaces';
+import type { IDiary } from '@/model/diary/diaryModelInterfaces';
 import { ICurrentDiaryAccessor } from './controlDiaryInterface';
 import type {
   ICurrentDiaryManager,
@@ -12,14 +12,24 @@ export default class CurrentDiaryAccessor implements ICurrentDiaryAccessor {
   constructor(
     @inject('ICurrentDiaryManager')
     private currentDiaryManager: ICurrentDiaryManager,
-    @inject('IDiaryService') private diaryService: IDiaryService
-  ) {}
+    @inject('IDiaryService') private diaryService: IDiaryService,
+    @inject('IDiary') newDiary: IDiary
+  ) {
+    const key = this.currentDiaryManager.getCurrentDiaryKey();
+    const diary = this.diaryService.getDiary(key);
+    if (diary === undefined) {
+      diaryService.addDiary(newDiary);
+      this.currentDiaryManager.setCurrentDiaryKey(
+        newDiary.getSettings().storageKey
+      );
+    }
+  }
 
   getCurrentDiary(): IDiary {
     const key = this.currentDiaryManager.getCurrentDiaryKey();
     const diary = this.diaryService.getDiary(key);
     if (diary === undefined) {
-      throw new NotFoundError('current diary is not found');
+      throw new NotFoundError(`current diary is not found:key=${key}`);
     }
     return diary;
   }

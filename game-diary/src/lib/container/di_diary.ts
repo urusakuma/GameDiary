@@ -200,7 +200,7 @@ container.register<UseExistingDataDayModifierFactory>(
   }
 );
 // storageServiceInterfaces
-container.register<IStorageService>('IDiaryService', {
+container.register<IStorageService>('IStorageService', {
   useClass: LocalStorageService,
 });
 container.register<IsStorageAvailableFunc>('IsStorageAvailableFunc', {
@@ -279,9 +279,3 @@ container.register<IEditDiarySettings>('IEditDiarySettings', {
 container.register<IEditDiaryEntry>('IEditDiaryEntry', {
   useClass: EditDiaryEntry,
 });
-
-/******************************************
- *                                        *
- *                未整理                  *
- *                                        *
- ******************************************/

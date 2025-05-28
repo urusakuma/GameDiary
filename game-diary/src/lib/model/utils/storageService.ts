@@ -1,8 +1,9 @@
 import { NotSupportedError } from '@/error';
 import { IStorageService } from './storageServiceInterface';
-
+import { inject, injectable } from 'tsyringe';
+@injectable()
 export class LocalStorageService implements IStorageService {
-  private storage = localStorage;
+  constructor(@inject('LocalStorage') private storage: Storage) {}
   getItem(key: string): string | null {
     return this.storage.getItem(key);
   }

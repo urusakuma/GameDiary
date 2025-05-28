@@ -2,9 +2,9 @@ import type {
   IChangeCurrentDiaryEntry,
   ICurrentDiaryEntryAccessor,
 } from './controlDiaryEntryInterface';
-import { inject } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import type { ICurrentDiaryAccessor } from '../controlDiary/controlDiaryInterface';
-
+@injectable()
 export default class ChangeCurrentDiaryEntry
   implements IChangeCurrentDiaryEntry
 {

@@ -15,11 +15,9 @@ const useDayInterval = (): {
       setDayIntervalStr(dayInterval);
       return;
     }
-    try {
-      const editDiarySettings =
-        container.resolve<IEditDiarySettings>('IEditDiarySettings');
-      editDiarySettings.editDayInterval(value);
-    } catch (e) {}
+    const editDiarySettings =
+      container.resolve<IEditDiarySettings>('IEditDiarySettings');
+    editDiarySettings.editDayInterval(value);
     setDayInterval(value);
   };
   const onChangeDayIntervalStr = (str: string) => {
@@ -35,11 +33,9 @@ const useDayInterval = (): {
     }
     setDayInterval(value);
     setDayIntervalStr(value);
-    try {
-      const editDiarySettings =
-        container.resolve<IEditDiarySettings>('IEditDiarySettings');
-      editDiarySettings.editDayInterval(length);
-    } catch (e) {}
+    const editDiarySettings =
+      container.resolve<IEditDiarySettings>('IEditDiarySettings');
+    editDiarySettings.editDayInterval(length);
   };
   return {
     dayInterval,

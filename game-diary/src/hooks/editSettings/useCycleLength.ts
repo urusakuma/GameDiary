@@ -31,11 +31,10 @@ const useCycleLength = (): {
     }
     setCycleLength(value);
     setCycleLengthStr(value);
-    try {
-      const editDiarySettings =
-        container.resolve<IEditDiarySettings>('IEditDiarySettings');
-      editDiarySettings.editCycleLength(length);
-    } catch (e) {}
+
+    const editDiarySettings =
+      container.resolve<IEditDiarySettings>('IEditDiarySettings');
+    editDiarySettings.editCycleLength(length);
   };
   return {
     cycleLength,

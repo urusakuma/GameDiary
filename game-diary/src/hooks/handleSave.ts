@@ -8,6 +8,7 @@ const handleSave = async () => {
     toast.success('セーブしました');
   } catch (err) {
     toast.error('セーブできませんでした');
+    throw err;
   }
 };
 export default handleSave;

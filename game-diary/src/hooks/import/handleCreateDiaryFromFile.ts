@@ -10,6 +10,7 @@ const handleCreateDiaryFromTest = (val: File | undefined) => {
     container.resolve<IDiaryImporter>('IDiaryImporter').importFile(val);
   } catch (err) {
     toast.error('ファイルの読み込みに失敗しました');
+    throw err;
   }
 };
 export default handleCreateDiaryFromTest;

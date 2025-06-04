@@ -11,6 +11,7 @@ const handleCopy = async () => {
     toast.success('クリップボードにコピーしました！');
   } catch (err) {
     toast.error('コピーに失敗しました');
+    throw err;
   }
 };
 export default handleCopy;

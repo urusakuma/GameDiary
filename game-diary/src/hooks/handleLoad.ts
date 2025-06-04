@@ -8,6 +8,7 @@ const handleLoad = async (key: string) => {
     toast.success('ロードしました');
   } catch (err) {
     toast.error('日記が存在しません');
+    throw err;
   }
 };
 export default handleLoad;

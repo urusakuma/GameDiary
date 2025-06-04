@@ -10,6 +10,7 @@ const handleCreateDiaryFromText = (val: string) => {
     container.resolve<IDiaryImporter>('IDiaryImporter').importText(val);
   } catch (err) {
     toast.error('テキストの読み込みに失敗しました');
+    throw err;
   }
 };
 export default handleCreateDiaryFromText;

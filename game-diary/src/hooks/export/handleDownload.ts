@@ -15,6 +15,7 @@ const handleDownload = () => {
     URL.revokeObjectURL(url);
   } catch (err) {
     toast.error('ファイルの出力に失敗しました');
+    throw err;
   }
 };
 export default handleDownload;

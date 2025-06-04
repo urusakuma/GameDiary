@@ -13,5 +13,16 @@
   "plantuml.server": "http://plantuml-server:8080",
   "plantuml.render": "PlantUMLServer",
   "prettier.configPath": "./game-diary/.prettierrc",
-  "cSpell.words": ["enduml", "Hoge", "startuml", "tsyringe"]
+  "cSpell.words": ["enduml", "Hoge", "startuml", "tsyringe"],
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "text": "日本語で記述してください"
+    },
+    {
+      "text": "コミットメッセージは、まずConventional Commitsに沿って記述してください"
+    },
+    {
+      "text": "その後ファイルごとに詳細な変更内容を記述してください"
+    }
+  ]
 }

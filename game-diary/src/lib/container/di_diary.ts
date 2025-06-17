@@ -86,17 +86,16 @@ import EditDiaryEntry from '@/control/controlDiaryEntry/editDiaryEntry';
 container.register<UsePreviousDayDiaryEntryFactory>(
   'UsePreviousDayDiaryEntryFactory',
   {
-    useFactory: () =>
-      container.resolve<IDiaryEntryFactory>('IDiaryEntryFactory')
-        .createUsePreviousDay,
+    useFactory: (c) =>
+      c.resolve<IDiaryEntryFactory>('IDiaryEntryFactory').createUsePreviousDay,
   }
 );
 
 container.register<Map<number, IDiaryEntry>>(
   'DIARY_ENTRIES_CONTAINING_FIRST_DAY',
   {
-    useFactory: () => {
-      const firstEntry = container.resolve<IDiaryEntry>('IDiaryEntry');
+    useFactory: (c) => {
+      const firstEntry = c.resolve<IDiaryEntry>('IDiaryEntry');
       return new Map<number, IDiaryEntry>().set(1, firstEntry);
     },
   }
@@ -111,8 +110,8 @@ container.register<NewDiaryEntriesFactory>('NewDiaryEntriesFactory', {
 container.register<IDiary>('IDiary', { useClass: Diary });
 container.register<IDiaryFactory>('IDiaryFactory', { useClass: DiaryFactory });
 container.register<UseExistingDataDiaryFactory>('UseExistingDataDiaryFactory', {
-  useFactory: () =>
-    container.resolve<IDiaryFactory>('IDiaryFactory').createUseExistingData,
+  useFactory: (c) =>
+    c.resolve<IDiaryFactory>('IDiaryFactory').createUseExistingData,
 });
 container.register<IDiaryEntry>('IDiaryEntry', {
   useClass: DiaryEntry,
@@ -135,13 +134,12 @@ container.register<IDiaryEntryFactory>('IDiaryEntryFactory', {
 container.register<UseExistingDataDiaryEntryFactory>(
   'UseExistingDataDiaryEntryFactory',
   {
-    useFactory: () =>
-      container.resolve<IDiaryEntryFactory>('IDiaryEntryFactory')
-        .createUseExistingData,
+    useFactory: (c) =>
+      c.resolve<IDiaryEntryFactory>('IDiaryEntryFactory').createUseExistingData,
   }
 );
 container.register<StorageKeyFactory>('StorageKeyFactory', {
-  useFactory: () => () => container.resolve<string>('STORAGE_KEY'),
+  useFactory: (c) => () => c.resolve<string>('STORAGE_KEY'),
 });
 
 container.register<IDiarySettings>('IDiarySettings', {
@@ -163,18 +161,18 @@ container.register<IDiarySettingsFactory>('IDiarySettingsFactory', {
   useClass: DiarySettingsFactory,
 });
 container.register<DefaultSettingsFactory>('DefaultSettingsFactory', {
-  useFactory: () => () => container.resolve<IDiarySettings>('IDiarySettings'),
+  useFactory: (c) => () => c.resolve<IDiarySettings>('IDiarySettings'),
 });
 container.register<NewDiarySettingsFactory>('NewDiarySettingsFactory', {
-  useFactory: () =>
-    container.resolve<IDiarySettingsFactory>('IDiarySettingsFactory')
+  useFactory: (c) =>
+    c.resolve<IDiarySettingsFactory>('IDiarySettingsFactory')
       .createNewDiarySettings,
 });
 container.register<UseExistingDataDiarySettingsFactory>(
   'UseExistingDataDiarySettingsFactory',
   {
-    useFactory: () =>
-      container.resolve<IDiarySettingsFactory>('IDiarySettingsFactory')
+    useFactory: (c) =>
+      c.resolve<IDiarySettingsFactory>('IDiarySettingsFactory')
         .createUseExistingData,
   }
 );
@@ -200,82 +198,68 @@ container.register<UseExistingDataDayModifierFactory>(
   }
 );
 // storageServiceInterfaces
-container.register<IStorageService>('IStorageService', {
-  useClass: LocalStorageService,
-});
+container.registerSingleton<IStorageService>(
+  'IStorageService',
+  LocalStorageService
+);
 container.register<IsStorageAvailableFunc>('IsStorageAvailableFunc', {
   useFactory: () => isStorageAvailable,
 });
 // diaryRepositoryInterfaces
-container.register<IDiaryService>('IDiaryService', {
-  useClass: DiaryService,
-});
-container.register<IDiaryNameManager>('IDiaryNameManager', {
-  useClass: DiaryNameManager,
-});
-container.register<IDiaryDataMigrator>('IDiaryDataMigrator', {
-  useClass: DiaryDataMigrator,
-});
-container.register<IUniqueDiaryNameGenerator>('IUniqueDiaryNameGenerator', {
-  useClass: UniqueDiaryNameGenerator,
-});
-container.register<ICurrentDiaryManager>('ICurrentDiaryManager', {
-  useClass: CurrentDiaryManager,
-});
-container.register<IDiaryImport>('IDiaryImport', {
-  useClass: DiaryImport,
-});
-
-container.register<IDiaryExport>('IDiaryExport', {
-  useClass: DiaryExport,
-});
-container.register<IDiarySave>('IDiarySave', {
-  useClass: DiarySave,
-});
-container.register<IDiaryLoad>('IDiaryLoad', {
-  useClass: DiaryLoad,
-});
+container.registerSingleton<IDiaryService>('IDiaryService', DiaryService);
+container.registerSingleton<IDiaryNameManager>(
+  'IDiaryNameManager',
+  DiaryNameManager
+);
+container.registerSingleton<IDiaryDataMigrator>(
+  'IDiaryDataMigrator',
+  DiaryDataMigrator
+);
+container.registerSingleton<IUniqueDiaryNameGenerator>(
+  'IUniqueDiaryNameGenerator',
+  UniqueDiaryNameGenerator
+);
+container.registerSingleton<ICurrentDiaryManager>(
+  'ICurrentDiaryManager',
+  CurrentDiaryManager
+);
+container.registerSingleton<IDiaryImport>('IDiaryImport', DiaryImport);
+container.registerSingleton<IDiaryExport>('IDiaryExport', DiaryExport);
+container.registerSingleton<IDiarySave>('IDiarySave', DiarySave);
+container.registerSingleton<IDiaryLoad>('IDiaryLoad', DiaryLoad);
 // controlDiaryInterfaces
-container.register<ICurrentDiaryAccessor>('ICurrentDiaryAccessor', {
-  useClass: CurrentDiaryAccessor,
-});
-container.register<ICreateDiary>('ICreateDiary', {
-  useClass: CreateDiary,
-});
-container.register<IDeleteDiary>('IDeleteDiary', {
-  useClass: DeleteDiary,
-});
-container.register<IDiaryImporter>('IDiaryImporter', {
-  useClass: DiaryImporter,
-});
-
-container.register<IDiaryExporter>('IDiaryExporter', {
-  useClass: DiaryExporter,
-});
-
-container.register<IDiarySaveHandler>('IDiarySaveHandler', {
-  useClass: DiarySaveHandler,
-});
-
-container.register<IDiaryLoadHandler>('IDiaryLoadHandler', {
-  useClass: DiaryLoadHandler,
-});
+container.registerSingleton<ICurrentDiaryAccessor>(
+  'ICurrentDiaryAccessor',
+  CurrentDiaryAccessor
+);
+container.registerSingleton<ICreateDiary>('ICreateDiary', CreateDiary);
+container.registerSingleton<IDeleteDiary>('IDeleteDiary', DeleteDiary);
+container.registerSingleton<IDiaryImporter>('IDiaryImporter', DiaryImporter);
+container.registerSingleton<IDiaryExporter>('IDiaryExporter', DiaryExporter);
+container.registerSingleton<IDiarySaveHandler>(
+  'IDiarySaveHandler',
+  DiarySaveHandler
+);
+container.registerSingleton<IDiaryLoadHandler>(
+  'IDiaryLoadHandler',
+  DiaryLoadHandler
+);
 
 // controlDiaryEntryInterfaces
-container.register<ICurrentDiaryEntryAccessor>('ICurrentDiaryEntryAccessor', {
-  useClass: CurrentDiaryEntryAccessor,
-});
-container.register<IChangeCurrentDiaryEntry>('IChangeCurrentDiaryEntry', {
-  useClass: ChangeCurrentDiaryEntry,
-});
-container.register<IDeleteDiaryEntry>('IDeleteDiaryEntry', {
-  useClass: DeleteDiaryEntry,
-});
-
-container.register<IEditDiarySettings>('IEditDiarySettings', {
-  useClass: EditDiarySettings,
-});
-
-container.register<IEditDiaryEntry>('IEditDiaryEntry', {
-  useClass: EditDiaryEntry,
-});
+container.registerSingleton<ICurrentDiaryEntryAccessor>(
+  'ICurrentDiaryEntryAccessor',
+  CurrentDiaryEntryAccessor
+);
+container.registerSingleton<IChangeCurrentDiaryEntry>(
+  'IChangeCurrentDiaryEntry',
+  ChangeCurrentDiaryEntry
+);
+container.registerSingleton<IDeleteDiaryEntry>(
+  'IDeleteDiaryEntry',
+  DeleteDiaryEntry
+);
+container.registerSingleton<IEditDiarySettings>(
+  'IEditDiarySettings',
+  EditDiarySettings
+);
+container.registerSingleton<IEditDiaryEntry>('IEditDiaryEntry', EditDiaryEntry);

@@ -12,7 +12,7 @@ export default class DiaryEntryFactory implements IDiaryEntryFactory {
   ): IDiaryEntry {
     const today = settings.getNextDay(source.day);
     const title = settings.getModifierDay(today);
-    const entry = new DiaryEntry(source.day, title, '', source.day, undefined);
+    const entry = new DiaryEntry(today, title, '', source.day, undefined);
     return entry;
   }
 

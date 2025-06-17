@@ -25,12 +25,7 @@ export default class DiaryFactory implements IDiaryFactory {
     settings: IDiarySettings,
     lastDay: number
   ): IDiary {
-    return new Diary(
-      container.resolve('UseExistingDataDiaryEntryFactory'),
-      diaryEntries,
-      settings,
-      lastDay
-    );
+    return new Diary(this.builder, diaryEntries, settings, lastDay);
   }
   createNewDiary(diary?: IDiary): IDiary {
     const newEntries: Map<number, IDiaryEntry> = this.newEntriesFactory();

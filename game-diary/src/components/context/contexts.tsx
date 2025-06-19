@@ -7,11 +7,11 @@ const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <DarkMeadContextProvider>
       <DiaryNameListProvider>
-        <ChangeCurrentEntryProvider>
-          <DiaryEntriesListProvider>
-            <DiaryEntryContentProvider>{children}</DiaryEntryContentProvider>
-          </DiaryEntriesListProvider>
-        </ChangeCurrentEntryProvider>
+        <DiaryEntryContentProvider>
+          <ChangeCurrentEntryProvider>
+            <DiaryEntriesListProvider>{children}</DiaryEntriesListProvider>
+          </ChangeCurrentEntryProvider>
+        </DiaryEntryContentProvider>
       </DiaryNameListProvider>
     </DarkMeadContextProvider>
   );

@@ -20,6 +20,7 @@ export const DiaryEntryContentProvider = ({
   const [currentDiaryEntry, setCurrentDiaryEntryAccessor] =
     useState<ICurrentDiaryEntryAccessor>();
   const [editDiaryEntry, setEditDiaryEntry] = useState<IEditDiaryEntry>();
+  const [isReady, setIsReady] = useState(false);
 
   // コンテナから依存性を取得
   useEffect(() => {
@@ -29,8 +30,15 @@ export const DiaryEntryContentProvider = ({
       )
     );
     setEditDiaryEntry(container.resolve<IEditDiaryEntry>('IEditDiaryEntry'));
+    setIsReady(true);
   }, []);
-
+  const updateContent = (content: string) => {
+    if (editDiaryEntry === undefined || refreshContent === undefined) {
+      return;
+    }
+    editDiaryEntry.editContent(content);
+    refreshContent();
+  };
   const refreshContent = () => {
     if (currentDiaryEntry === undefined) {
       return;
@@ -38,13 +46,9 @@ export const DiaryEntryContentProvider = ({
     const newContent = currentDiaryEntry.getCurrentDiaryEntry().getContent();
     setContent(newContent);
   };
-  const updateContent = (content: string) => {
-    if (editDiaryEntry === undefined) {
-      return;
-    }
-    editDiaryEntry.editContent(content);
-    refreshContent();
-  };
+  if (!isReady || updateContent === undefined || refreshContent === undefined) {
+    return null;
+  }
   const contentObj: DiaryEntryContentContextType = {
     content,
     updateContent,

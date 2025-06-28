@@ -33,7 +33,7 @@ export default class ChangeCurrentDiaryEntry
     }
     this.diaryEntryAccessor.setCurrentDiaryEntry(today.previous);
     const settings = this.diaryAccessor.getCurrentDiary().getSettings();
-    if (today.isEdited(settings)) {
+    if (today.isEdited(settings) || today.next !== undefined) {
       return;
     }
     this.diaryAccessor.getCurrentDiary().deleteEntry(today.day);

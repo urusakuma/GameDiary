@@ -1,17 +1,18 @@
 import { ChangeCurrentEntryProvider } from './changeCurrentEntryContext';
 import { DarkMeadContextProvider } from './darkModeContext';
-import { DiaryEntryContentProvider } from './diaryEntryContent';
 import { DiaryEntriesListProvider } from './diaryEntryListContext';
 import { DiaryNameListProvider } from './diaryNameListContext';
-const ContextProvider = ({ children }: { children: React.ReactNode }) => {
+import { DiaryEntryProvider } from './dairyEntry/diaryEntryContext';
+import ContextWrapperProps from './contextWrapperProps';
+const ContextProvider = ({ children }: ContextWrapperProps) => {
   return (
     <DarkMeadContextProvider>
       <DiaryNameListProvider>
-        <DiaryEntryContentProvider>
+        <DiaryEntryProvider>
           <ChangeCurrentEntryProvider>
             <DiaryEntriesListProvider>{children}</DiaryEntriesListProvider>
           </ChangeCurrentEntryProvider>
-        </DiaryEntryContentProvider>
+        </DiaryEntryProvider>
       </DiaryNameListProvider>
     </DarkMeadContextProvider>
   );

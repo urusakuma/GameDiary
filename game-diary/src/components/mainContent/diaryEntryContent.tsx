@@ -1,6 +1,6 @@
 import { darkInput, lightInput } from '../component_styles';
 import { useDarkModeContext } from '../context/darkModeContext';
-import { useDiaryEntryContentContext } from '../context/diaryEntryContent';
+import { useDiaryEntryContentContext } from '../context/dairyEntry/diaryEntryContext';
 
 const DiaryEntryContent = () => {
   const { isDarkMode } = useDarkModeContext();

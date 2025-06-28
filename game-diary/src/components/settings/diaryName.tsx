@@ -1,6 +1,6 @@
-import handleEditTitle from 'src/hooks/editDiaryEntry/handleEditTitle';
 import { darkInput, lightInput } from '../component_styles';
 import { useDarkModeContext } from '../context/darkModeContext';
+import handleEditDiaryName from 'src/hooks/editSettings/handleEditDiaryName';
 
 const DIaryName = () => {
   const { isDarkMode } = useDarkModeContext();
@@ -11,7 +11,7 @@ const DIaryName = () => {
         type="text"
         className={`border p-2 w-full ${isDarkMode ? darkInput : lightInput}`}
         defaultValue={'日記名'}
-        onChange={(e) => handleEditTitle(e.target.value)}
+        onChange={(e) => handleEditDiaryName(e.target.value)}
       ></input>
     </div>
   );

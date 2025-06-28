@@ -14,12 +14,15 @@ export const ChangeCurrentEntryProvider = ({
   const [changeCurrentDiaryEntry, setChangeCurrentDiaryEntry] =
     useState<IChangeCurrentDiaryEntry | null>(null);
   const { refresh } = useDiaryEntryResetContext();
-
+  // コンポーネントがマウントされたときにIChangeCurrentDiaryEntryのインスタンスを取得
   useEffect(() => {
     const instance = container.resolve<IChangeCurrentDiaryEntry>(
       'IChangeCurrentDiaryEntry'
     );
     setChangeCurrentDiaryEntry(instance);
+  }, []);
+  // キーボードイベントを監視して、Ctrl + ArrowRight/ArrowLeftで日記エントリを移動
+  useEffect(() => {
     if (changeCurrentDiaryEntry === null) {
       return;
     }
@@ -35,7 +38,11 @@ export const ChangeCurrentEntryProvider = ({
     };
     window.addEventListener('keydown', onArrow);
     return () => window.removeEventListener('keydown', onArrow);
-  }, []);
+  }, [changeCurrentDiaryEntry]);
+
+  if (changeCurrentDiaryEntry === null) {
+    return null;
+  }
   const moveByDate = (date: number) => {
     if (changeCurrentDiaryEntry === null) {
       return;

@@ -1,8 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import ContextWrapperProps from './contextWrapperProps';
 import { container } from 'tsyringe';
-import { IChangeCurrentDiaryEntry } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
-import { useDiaryEntryResetContext } from './dairyEntry/diaryEntryContext';
+import {
+  IChangeCurrentDiaryEntry,
+  ICurrentDiaryEntryAccessor,
+} from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
+import { useDiaryEntryResetContext } from './diaryEntryContext';
+import { useDiaryEntriesListContext } from './diaryEntryListContext';
 type ChangeCurrentEntryContextType = {
   moveByDate: (date: number) => void;
 };
@@ -11,43 +15,60 @@ const ChangeCurrentEntryContext =
 export const ChangeCurrentEntryProvider = ({
   children,
 }: ContextWrapperProps) => {
-  const [changeCurrentDiaryEntry, setChangeCurrentDiaryEntry] =
+  const [changeCurrentEntry, setChangeCurrentDiaryEntry] =
     useState<IChangeCurrentDiaryEntry | null>(null);
+  const [entryAccessor, setEntryAccessor] =
+    useState<ICurrentDiaryEntryAccessor | null>(null);
   const { refresh } = useDiaryEntryResetContext();
+  const { addDiaryEntry, detachDiaryEntry } = useDiaryEntriesListContext();
   // コンポーネントがマウントされたときにIChangeCurrentDiaryEntryのインスタンスを取得
   useEffect(() => {
-    const instance = container.resolve<IChangeCurrentDiaryEntry>(
-      'IChangeCurrentDiaryEntry'
+    const changeCurrentEntryInstance =
+      container.resolve<IChangeCurrentDiaryEntry>('IChangeCurrentDiaryEntry');
+    setChangeCurrentDiaryEntry(changeCurrentEntryInstance);
+    const entryAccessorInstance = container.resolve<ICurrentDiaryEntryAccessor>(
+      'ICurrentDiaryEntryAccessor'
     );
-    setChangeCurrentDiaryEntry(instance);
+    setEntryAccessor(entryAccessorInstance);
   }, []);
   // キーボードイベントを監視して、Ctrl + ArrowRight/ArrowLeftで日記エントリを移動
   useEffect(() => {
-    if (changeCurrentDiaryEntry === null) {
+    if (changeCurrentEntry === null || entryAccessor === null) {
       return;
     }
     const onArrow = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' && e.ctrlKey) {
-        changeCurrentDiaryEntry.moveToNext();
+        const isCreated = changeCurrentEntry.moveToNext();
         refresh();
+        if (!isCreated) {
+          return;
+        }
+        const day = entryAccessor.getCurrentDiaryEntry().day;
+        const title = entryAccessor.getCurrentDiaryEntry().getTitle();
+        addDiaryEntry(day, title);
       }
       if (e.key === 'ArrowLeft' && e.ctrlKey) {
-        changeCurrentDiaryEntry.moveToPrevious();
+        const day = entryAccessor.getCurrentDiaryEntry().day;
+        const isDeleted = changeCurrentEntry.moveToPrevious();
         refresh();
+        if (!isDeleted) {
+          return;
+        }
+        detachDiaryEntry(day);
       }
     };
     window.addEventListener('keydown', onArrow);
     return () => window.removeEventListener('keydown', onArrow);
-  }, [changeCurrentDiaryEntry]);
+  }, [changeCurrentEntry]);
 
-  if (changeCurrentDiaryEntry === null) {
+  if (changeCurrentEntry === null) {
     return null;
   }
   const moveByDate = (date: number) => {
-    if (changeCurrentDiaryEntry === null) {
+    if (changeCurrentEntry === null) {
       return;
     }
-    changeCurrentDiaryEntry.moveByDate(date);
+    changeCurrentEntry.moveByDate(date);
     refresh();
   };
   return (

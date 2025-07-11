@@ -9,7 +9,7 @@ import { useDarkModeContext } from '../context/darkModeContext';
 import {
   useDiaryEntryResetContext,
   useDiaryEntryTitleContext,
-} from '../context/dairyEntry/diaryEntryContext';
+} from '../context/diaryEntryContext';
 
 const Header = () => {
   const { isDarkMode } = useDarkModeContext();

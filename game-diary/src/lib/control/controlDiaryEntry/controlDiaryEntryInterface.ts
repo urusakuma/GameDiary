@@ -23,13 +23,15 @@ export interface IChangeCurrentDiaryEntry {
   /**
    * カレントの日記のエントリを次の日付に変更する
    * 次の日付のエントリが存在しない場合は新しく作成する
+   * @returns {boolean} 新しいエントリを作成した場合はtrue、既存のエントリに移動した場合はfalse
    */
-  moveToNext(): void;
+  moveToNext(): boolean;
   /**
    * カレントの日記のエントリを前の日付に変更する
    * 前の日付のエントリが存在しない場合は何もしない
+   * @returns {boolean} 元の日付のエントリが削除された場合はtrue、元のエントリを削除しなければfalse
    */
-  moveToPrevious(): void;
+  moveToPrevious(): boolean;
 }
 /** 日記のエントリを削除するクラス */
 export interface IDeleteDiaryEntry {

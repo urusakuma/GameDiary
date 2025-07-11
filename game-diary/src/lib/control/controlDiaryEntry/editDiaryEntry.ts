@@ -9,7 +9,7 @@ export default class EditDiaryEntry implements IEditDiaryEntry {
   constructor(
     @inject('ICurrentDiaryEntryAccessor')
     private diaryEntryAccessor: ICurrentDiaryEntryAccessor,
-    @inject('ICurrentDiaryEntryAccessor')
+    @inject('ICurrentDiaryAccessor')
     private diaryAccessor: ICurrentDiaryAccessor
   ) {}
   editTitle(title: string): void {

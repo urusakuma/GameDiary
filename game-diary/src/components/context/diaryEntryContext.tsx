@@ -1,8 +1,11 @@
-import { createContext, useContext } from 'react';
-import ContextWrapperProps from '../contextWrapperProps';
+import { createContext, useContext, useEffect, useState } from 'react';
+import ContextWrapperProps from './contextWrapperProps';
 import useDiaryEntryTitle from 'src/hooks/editDiaryEntry/useDiaryEntryTitle';
 import useDiaryEntryContent from 'src/hooks/editDiaryEntry/useDiaryEntryContent';
 import useClearDiaryEntry from 'src/hooks/editDiaryEntry/useClearDiaryEntry';
+import { useDiaryEntriesListContext } from './diaryEntryListContext';
+import { ICurrentDiaryEntryAccessor } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
+import { container } from 'tsyringe';
 
 type DiaryEntryTitleContextType = {
   title: string;
@@ -41,12 +44,31 @@ export const DiaryEntryProvider = ({ children }: ContextWrapperProps) => {
   } = useDiaryEntryContent();
   const { isReady: isReadyClear, clear } = useClearDiaryEntry();
 
-  if (!isReadyTitle || !isReadyContent || !isReadyClear) {
+  const [currentDiaryEntry, setCurrentDiaryEntryAccessor] =
+    useState<ICurrentDiaryEntryAccessor>();
+  useEffect(() => {
+    setCurrentDiaryEntryAccessor(
+      container.resolve<ICurrentDiaryEntryAccessor>(
+        'ICurrentDiaryEntryAccessor'
+      )
+    );
+  }, []);
+  const { updateDiaryEntryTitle } = useDiaryEntriesListContext();
+  if (
+    !isReadyTitle ||
+    !isReadyContent ||
+    !isReadyClear ||
+    currentDiaryEntry === undefined
+  ) {
     return null;
   }
   const titleObj: DiaryEntryTitleContextType = {
     title: title,
-    updateTitle: updateTitle,
+    updateTitle: (title) => {
+      updateTitle(title);
+      const day = currentDiaryEntry.getCurrentDiaryEntry().day;
+      updateDiaryEntryTitle(day, title);
+    },
     refreshTitle: refreshTitle,
   };
   const contentObj: DiaryEntryContentContextType = {

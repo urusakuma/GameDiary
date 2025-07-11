@@ -3,16 +3,17 @@ import { useDiaryEntriesListContext } from '../context/diaryEntryListContext';
 import { useDarkModeContext } from '../context/darkModeContext';
 
 const DiaryEntriesList = () => {
-  const { diaryEntries, removeDiaryEntry } = useDiaryEntriesListContext();
+  const { diaryEntries, deleteDiaryEntry } = useDiaryEntriesListContext();
   const { isDarkMode } = useDarkModeContext();
   return (
     <ol className="max-h-[70vh] overflow-y-clip overflow-y-scroll">
       {diaryEntries.map((entry, index) => (
         <ListItem
-          key={entry.day}
+          key={index}
           text={entry.title}
+          day={entry.day}
           index={index}
-          onRemove={() => removeDiaryEntry(entry.day)}
+          onRemove={() => deleteDiaryEntry(entry.day)}
           isDarkMode={isDarkMode}
         />
       ))}

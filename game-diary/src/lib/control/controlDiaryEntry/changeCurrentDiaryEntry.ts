@@ -17,25 +17,27 @@ export default class ChangeCurrentDiaryEntry
   moveByDate(date: number): void {
     this.diaryEntryAccessor.setCurrentDiaryEntry(date);
   }
-  moveToNext(): void {
+  moveToNext(): boolean {
     const today = this.diaryEntryAccessor.getCurrentDiaryEntry();
     if (today.next !== undefined) {
       this.diaryEntryAccessor.setCurrentDiaryEntry(today.next);
-      return;
+      return false;
     }
     const newDay = this.diaryAccessor.getCurrentDiary().createNewEntry();
     this.diaryEntryAccessor.setCurrentDiaryEntry(newDay);
+    return true;
   }
-  moveToPrevious(): void {
+  moveToPrevious(): boolean {
     const today = this.diaryEntryAccessor.getCurrentDiaryEntry();
     if (today.previous === undefined) {
-      return;
+      return false;
     }
     this.diaryEntryAccessor.setCurrentDiaryEntry(today.previous);
     const settings = this.diaryAccessor.getCurrentDiary().getSettings();
     if (today.isEdited(settings) || today.next !== undefined) {
-      return;
+      return false;
     }
     this.diaryAccessor.getCurrentDiary().deleteEntry(today.day);
+    return true;
   }
 }

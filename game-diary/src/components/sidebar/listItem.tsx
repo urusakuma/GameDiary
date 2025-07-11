@@ -1,23 +1,23 @@
 import React from 'react';
 import { useState } from 'react';
 import classNames from 'classnames';
-import { container } from 'tsyringe';
-import { IChangeCurrentDiaryEntry } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
+import { useChangeCurrentEntryContext } from '../context/changeCurrentEntryContext';
 interface ListItemProps {
   text: string;
+  day: number;
   index: number;
   onRemove: () => void;
   isDarkMode: boolean;
 }
-// const selectDiaryByDate =
-//   container.resolve<IChangeCurrentDiaryEntry>('IChangeCurrentDiaryEntry').moveByDate;
 const ListItem: React.FC<ListItemProps> = ({
   text,
+  day,
   index,
   onRemove,
-  isDarkMode: isDarkMode,
+  isDarkMode,
 }) => {
   const [isWaitingDelete, setIsWaitingDelete] = useState<boolean>(false);
+  const { moveByDate } = useChangeCurrentEntryContext();
   const pendingDeleteListItem = () => {
     if (isWaitingDelete) {
       onRemove();
@@ -28,11 +28,9 @@ const ListItem: React.FC<ListItemProps> = ({
       }, 300);
     }
   };
+
   return (
     <li
-      onClick={() => {
-        // selectDiaryByDate(index);
-      }}
       className={classNames(
         'flex justify-between items-center p-2 border rounded-md shadow-md transition-colors',
         isDarkMode
@@ -44,7 +42,14 @@ const ListItem: React.FC<ListItemProps> = ({
             : 'bg-gray-200 '
       )}
     >
-      <span>{text}</span>
+      <span
+        className="w-full"
+        onClick={() => {
+          moveByDate(day);
+        }}
+      >
+        {text}
+      </span>
       <button
         onClick={() => pendingDeleteListItem()}
         className={classNames(

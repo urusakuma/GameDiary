@@ -81,6 +81,14 @@ import {
 import CurrentDiaryEntryAccessor from '@/control/controlDiaryEntry/currentDiaryEntryAccessor';
 import DeleteDiaryEntry from '@/control/controlDiaryEntry/deleteDiaryEntry';
 import EditDiaryEntry from '@/control/controlDiaryEntry/editDiaryEntry';
+import {
+  CompressDiary,
+  IDiaryDecompressor,
+} from '@/model/serialization/serializationInterface';
+import {
+  compressDiary,
+  DiaryDecompressor,
+} from '@/model/serialization/diarySerializer';
 
 // diaryModelInterfaces
 container.register<UsePreviousDayDiaryEntryFactory>(
@@ -197,14 +205,16 @@ container.register<UseExistingDataDayModifierFactory>(
         new DayModifier(modifier, cycleLength, ...unit),
   }
 );
+
 // storageServiceInterfaces
 container.registerSingleton<IStorageService>(
   'IStorageService',
   LocalStorageService
 );
 container.register<IsStorageAvailableFunc>('IsStorageAvailableFunc', {
-  useFactory: () => isStorageAvailable,
+  useValue: isStorageAvailable,
 });
+
 // diaryRepositoryInterfaces
 container.registerSingleton<IDiaryService>('IDiaryService', DiaryService);
 container.registerSingleton<IDiaryNameManager>(
@@ -227,6 +237,7 @@ container.registerSingleton<IDiaryImport>('IDiaryImport', DiaryImport);
 container.registerSingleton<IDiaryExport>('IDiaryExport', DiaryExport);
 container.registerSingleton<IDiarySave>('IDiarySave', DiarySave);
 container.registerSingleton<IDiaryLoad>('IDiaryLoad', DiaryLoad);
+
 // controlDiaryInterfaces
 container.registerSingleton<ICurrentDiaryAccessor>(
   'ICurrentDiaryAccessor',
@@ -263,3 +274,9 @@ container.registerSingleton<IEditDiarySettings>(
   EditDiarySettings
 );
 container.registerSingleton<IEditDiaryEntry>('IEditDiaryEntry', EditDiaryEntry);
+
+// serializationInterface
+container.register<CompressDiary>('CompressDiary', { useValue: compressDiary });
+container.register<IDiaryDecompressor>('IDiaryDecompressor', {
+  useClass: DiaryDecompressor,
+});

@@ -2,7 +2,7 @@ import { IDiarySaveHandler } from '@/control/controlDiary/controlDiaryInterface'
 import toast from 'react-hot-toast';
 import { container } from 'tsyringe';
 
-const handleSave = async () => {
+const executeSave = async () => {
   try {
     container.resolve<IDiarySaveHandler>('IDiarySaveHandler').save();
     toast.success('セーブしました');
@@ -11,4 +11,4 @@ const handleSave = async () => {
     throw err;
   }
 };
-export default handleSave;
+export default executeSave;

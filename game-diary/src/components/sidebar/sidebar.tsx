@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { darkButton, lightButton } from '../component_styles';
 import DiaryEntriesList from './diaryEntriesList';
-import handleSave from 'src/hooks/handleSave';
+import executeSave from 'src/hooks/executeSave';
 import ExportModal from '../modals/exportModal';
 import ImportModal from '../modals/importModal';
 import LoadModal from '../modals/loadModal';
@@ -32,7 +32,7 @@ const Sidebar = () => {
       <div className={`grid grid-cols-2 gap-2`}>
         <button
           className={`overflow-hidden ${isDarkMode ? darkButton : lightButton}`}
-          onClick={() => handleSave()}
+          onClick={executeSave}
         >
           セーブ
         </button>

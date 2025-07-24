@@ -1,9 +1,9 @@
-import { inject } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import type {
   IDiaryNameManager,
   IUniqueDiaryNameGenerator,
 } from './diaryRepositoryInterfaces';
-
+@injectable()
 export default class UniqueDiaryNameGenerator
   implements IUniqueDiaryNameGenerator
 {

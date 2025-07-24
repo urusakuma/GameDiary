@@ -3,12 +3,12 @@ import type {
   ICurrentDiaryAccessor,
   IDiaryExporter,
 } from './controlDiaryInterface';
-import DiaryExport from '@/model/repository/diaryExport';
+import type { IDiaryExport } from '@/model/repository/diaryRepositoryInterfaces';
 
 @injectable()
 export default class DiaryExporter implements IDiaryExporter {
   constructor(
-    @inject('IDiaryExporter') private diaryExport: DiaryExport,
+    @inject('IDiaryExport') private diaryExport: IDiaryExport,
     @inject('ICurrentDiaryAccessor')
     private diaryAccessor: ICurrentDiaryAccessor
   ) {}

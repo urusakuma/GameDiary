@@ -1,14 +1,13 @@
 'use client';
 
 import Overlay from './overlay';
-import handleCopy from 'src/hooks/export/handleCopy';
-import handleDownload from 'src/hooks/export/handleDownload';
 import { modal, ModalProps } from './modalProps';
+import useExport from 'src/hooks/useExport';
 const ExportModal = ({ onNavigate, isDarkMode }: ModalProps) => {
-  // const exportText = container
-  //   .resolve<IDiaryExporter>('IDiaryExporter')
-  //   .exportText();
-  const exportText = 'exported data';
+  const { exportText, refreshExportText, handleCopy, handleDownload } =
+    useExport();
+  refreshExportText();
+
   return (
     <Overlay onClose={() => onNavigate(modal.Home)} isDarkMode={isDarkMode}>
       <h2 className="text-xl font-bold mb-4">エクスポート</h2>

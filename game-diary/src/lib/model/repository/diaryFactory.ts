@@ -5,17 +5,17 @@ import type {
   IDiaryEntry,
   IDiaryFactory,
   IDiarySettings,
+  IDiarySettingsFactory,
   NewDiaryEntriesFactory,
-  NewDiarySettingsFactory,
   UsePreviousDayDiaryEntryFactory,
 } from '../diary/diaryModelInterfaces';
 @injectable()
 export default class DiaryFactory implements IDiaryFactory {
   constructor(
-    @inject('DIARY_ENTRIES_CONTAINING_FIRST_DAYFactory')
+    @inject('NewDiaryEntriesFactory')
     private newEntriesFactory: NewDiaryEntriesFactory,
-    @inject('NewDiarySettingsFactory')
-    private settingsFactory: NewDiarySettingsFactory,
+    @inject('IDiarySettingsFactory')
+    private settingsFactory: IDiarySettingsFactory,
     @inject('UsePreviousDayDiaryEntryFactory')
     private builder: UsePreviousDayDiaryEntryFactory
   ) {}
@@ -27,13 +27,12 @@ export default class DiaryFactory implements IDiaryFactory {
   ): IDiary {
     return new Diary(this.builder, diaryEntries, settings, lastDay);
   }
-  createNewDiary(diary?: IDiary): IDiary {
+  createNewDiary(diary?: IDiary, name?: string): IDiary {
     const newEntries: Map<number, IDiaryEntry> = this.newEntriesFactory();
-    if (diary === undefined) {
-      const settings = this.settingsFactory();
-      return new Diary(this.builder, newEntries, settings, 1);
-    }
-    const settings = this.settingsFactory(diary.getSettings());
+    const settings = this.settingsFactory.createNewDiarySettings(
+      diary?.getSettings(),
+      name
+    );
     return new Diary(this.builder, newEntries, settings, 1);
   }
 }

@@ -12,10 +12,10 @@ import { decompressVersion00 } from './decompressVersion00';
 import { decompressVersion01 } from './decompressVersion01';
 import type {
   UseExistingDataDayModifierFactory,
-  UseExistingDataDiaryFactory,
-  UseExistingDataDiarySettingsFactory,
   IDiary,
   UseExistingDataDiaryEntryFactory,
+  IDiarySettingsFactory,
+  IDiaryFactory,
 } from '../diary/diaryModelInterfaces';
 import { inject, injectable } from 'tsyringe';
 
@@ -34,12 +34,12 @@ export class DiaryDecompressor {
   constructor(
     @inject('UseExistingDataDayModifierFactory')
     private dayModifierFactory: UseExistingDataDayModifierFactory,
-    @inject('UseExistingDataDiarySettingsFactory')
-    private diarySettingsFactory: UseExistingDataDiarySettingsFactory,
+    @inject('IDiarySettingsFactory')
+    private diarySettingsFactory: IDiarySettingsFactory,
     @inject('UseExistingDataDiaryEntryFactory')
     private diaryEntryFactory: UseExistingDataDiaryEntryFactory,
-    @inject('UseExistingDataDiaryFactory')
-    private diaryFactory: UseExistingDataDiaryFactory
+    @inject('IDiaryFactory')
+    private diaryFactory: IDiaryFactory
   ) {}
   /**
    * 圧縮されたJSONをIDiaryに変換して返却する。
@@ -49,7 +49,7 @@ export class DiaryDecompressor {
   decompressDiary(compressed: string): IDiary {
     const decompress = decompressFromEncodedURIComponent(compressed);
     if (decompress === null) {
-      throw new DecompressionError('Could not decompress');
+      throw new DecompressionError(`Could not decompress: ${compressed}`);
     }
     const jsonObj: unknown = JSON.parse(decompress);
     if (!isTypeMatch(jsonObj, 'object')) {

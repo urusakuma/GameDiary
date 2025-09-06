@@ -28,7 +28,7 @@ describe('DiaryFactory', () => {
     mockSettingsFactory = jest.fn().mockReturnValue(mockSettings);
     mockBuilder = jest.fn().mockReturnValue(mockEntry);
 
-    container.register('DIARY_ENTRIES_CONTAINING_FIRST_DAYFactory', {
+    container.register('NewDiaryEntriesFactory', {
       useValue: mockNewEntriesFactory,
     });
     container.register('NewDiarySettingsFactory', {

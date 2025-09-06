@@ -14,7 +14,7 @@ import {
 const Header = () => {
   const { isDarkMode } = useDarkModeContext();
   const { title, updateTitle } = useDiaryEntryTitleContext();
-  const { clear } = useDiaryEntryResetContext();
+  const { clearEntry: clear } = useDiaryEntryResetContext();
   return (
     <div
       className={`translate-y-1 h-16 mb-2 flex justify-end items-center p-2 gap-2`}

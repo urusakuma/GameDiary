@@ -9,8 +9,7 @@ import { IDiaryNameManager } from './diaryRepositoryInterfaces';
 import { InvalidJsonError } from '@/error';
 @injectable()
 export default class DiaryNameManager implements IDiaryNameManager {
-  /** ストレージキーと名前の連想配列。ストレージキーがkey、ゲームデータ名がval。 */
-  private diaryNameMap: Map<string, string> = new Map<string, string>();
+  private diaryNameSet: Set<string> = new Set<string>();
   private diaryNames: Record<string, string> = {};
 
   constructor(
@@ -37,21 +36,26 @@ export default class DiaryNameManager implements IDiaryNameManager {
       )
       .forEach((v) => {
         this.diaryNames[v[0]] = v[1];
+        this.diaryNameSet.add(v[1]);
       });
   }
   get length(): number {
-    return this.diaryNameMap.size;
+    return this.diaryNameSet.size;
   }
-  collectDiaryNames(): Array<string> {
-    return Object.values(this.diaryNames);
+  collectDiaryNameEntries(): Array<[string, string]> {
+    return Object.entries(this.diaryNames);
+  }
+  getDiaryName(key: string): string {
+    return this.diaryNames[key];
   }
 
   updateDiaryName(key: string, name: string): boolean {
-    // keyかnameが空文字なら変更不可
-    if (key === '' || name === '') {
+    // keyかnameが空文字、もしくはすでに存在する名前なら変更不可
+    if (key === '' || name === '' || this.diaryNameSet.has(name)) {
       return false;
     }
     //ストレージキーと名前を保存してストレージに登録する
+    this.diaryNameSet.add(name);
     this.diaryNames[key] = name;
     if (this.isStorageAvailable(this.storage)) {
       this.storage.setItem(
@@ -67,6 +71,7 @@ export default class DiaryNameManager implements IDiaryNameManager {
     if (removeName === undefined) {
       return;
     }
+    this.diaryNameSet.delete(removeName);
     delete this.diaryNames[key];
     if (this.isStorageAvailable(this.storage)) {
       this.storage.setItem(
@@ -75,7 +80,7 @@ export default class DiaryNameManager implements IDiaryNameManager {
       );
     }
   }
-  isIncludeDiaryName(name: string): boolean {
-    return Object.values(this.diaryNameMap).includes(name);
+  hasDiaryName(name: string): boolean {
+    return this.diaryNameSet.has(name);
   }
 }

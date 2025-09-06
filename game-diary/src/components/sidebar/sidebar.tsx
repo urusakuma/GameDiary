@@ -8,6 +8,8 @@ import LoadModal from '../modals/loadModal';
 import { modal } from '../modals/modalProps';
 import { useState } from 'react';
 import { useDarkModeContext } from '../context/darkModeContext';
+import CreateModal from '../modals/createModal';
+import DeleteModal from '../modals/deleteModal';
 const Sidebar = () => {
   const { isDarkMode, setDarkMode } = useDarkModeContext();
   const [showModal, setShowModal] = useState(modal.Home);
@@ -62,6 +64,12 @@ const Sidebar = () => {
         )}
         {showModal === modal.Import && (
           <ImportModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
+        )}
+        {showModal === modal.Create && (
+          <CreateModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
+        )}
+        {showModal === modal.Delete && (
+          <DeleteModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
         )}
       </div>
     </div>

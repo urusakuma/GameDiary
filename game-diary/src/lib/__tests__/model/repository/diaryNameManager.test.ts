@@ -34,23 +34,31 @@ describe('DiaryNameManager class tests', () => {
     }
   });
   test('DiaryNames init', () => {
-    expect(diaryNameManager.collectDiaryNames()).toMatchObject(diaryNameList);
+    expect(diaryNameManager.collectDiaryNameEntries()).toMatchObject(
+      diaryNameList
+    );
   });
   it('DiaryName add', () => {
     diaryNameManager.updateDiaryName('testKey', 'testName');
     diaryNameList.push('testName');
-    expect(diaryNameManager.collectDiaryNames()).toMatchObject(diaryNameList);
+    expect(diaryNameManager.collectDiaryNameEntries()).toMatchObject(
+      diaryNameList
+    );
   });
   it('DiaryName remove', () => {
     diaryNameManager.removeDiaryName('testKey0');
     diaryNameList.shift();
-    expect(diaryNameManager.collectDiaryNames()).toMatchObject(diaryNameList);
+    expect(diaryNameManager.collectDiaryNameEntries()).toMatchObject(
+      diaryNameList
+    );
   });
   it('DiaryName do not change', () => {
     diaryNameManager.updateDiaryName('', 'testName99');
     diaryNameManager.updateDiaryName('testKey99', '');
     diaryNameManager.updateDiaryName('testKey', '');
-    expect(diaryNameManager.collectDiaryNames()).toMatchObject(diaryNameList);
+    expect(diaryNameManager.collectDiaryNameEntries()).toMatchObject(
+      diaryNameList
+    );
   });
 });
 describe('EmptyStorage DiaryNameManager class tests', () => {
@@ -70,6 +78,6 @@ describe('EmptyStorage DiaryNameManager class tests', () => {
   test('DiaryNames empty', () => {
     const diaryNameManager =
       container.resolve<IDiaryNameManager>('IDiaryNameManager');
-    expect(diaryNameManager.collectDiaryNames()).toMatchObject([]);
+    expect(diaryNameManager.collectDiaryNameEntries()).toMatchObject([]);
   });
 });

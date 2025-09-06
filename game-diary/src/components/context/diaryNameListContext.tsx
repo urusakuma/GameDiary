@@ -1,37 +1,58 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import ContextWrapperProps from './contextWrapperProps';
+import { IDiaryNameService } from '@/control/controlDiary/controlDiaryInterface';
+import { container } from 'tsyringe';
 
-type KeyNamePairType = { key: string; name: string };
 type DiaryNameListContextType = {
-  diaryNames: KeyNamePairType[];
-  addDiaryName: (key: string, name: string) => void;
-  removeDiaryName: (key: string) => void;
+  diaryNames: Array<[string, string]>;
+  refreshDiaryNames: () => void;
+  getDiaryName: (key: string) => string;
   updateDiaryName: (key: string, name: string) => void;
 };
 const DiaryNameListContext = createContext<DiaryNameListContextType | null>(
   null
 );
 export const DiaryNameListProvider = ({ children }: ContextWrapperProps) => {
-  const [diaryNames, setOptions] = useState<KeyNamePairType[]>([]);
-  const addDiaryName = (key: string, name: string) => {
-    const pair = { key, name };
-    setOptions([...diaryNames, pair]);
+  const [diaryNames, setOptions] = useState<Array<[string, string]>>([]);
+  const [nameService, setNameService] = useState<IDiaryNameService>();
+
+  useEffect(() => {
+    const nameServiceInstance =
+      container.resolve<IDiaryNameService>('IDiaryNameService');
+    setNameService(nameServiceInstance);
+  }, []);
+  useEffect(() => {
+    if (nameService === undefined) {
+      return;
+    }
+    const names = nameService.collectDiaryNameEntries();
+    setOptions(names);
+  }, [nameService]);
+  const refreshDiaryNames = () => {
+    if (nameService === undefined) {
+      return;
+    }
+    const names = nameService.collectDiaryNameEntries();
+    setOptions(names);
   };
-  const removeDiaryName = (key: string) => {
-    setOptions(diaryNames.filter((option) => option.key !== key));
+  const getDiaryName = (key: string) => {
+    if (nameService === undefined) {
+      return '';
+    }
+    return nameService.getDiaryName(key);
   };
   const updateDiaryName = (key: string, name: string) => {
-    setOptions(
-      diaryNames.map((pair) =>
-        pair.key === key ? { ...pair, name: name } : pair
-      )
-    );
+    setOptions(diaryNames.map((v) => (v[0] === key ? [v[0], name] : v)));
+    if (nameService === undefined) {
+      return;
+    }
+    nameService.updateDiaryName(key, name);
   };
   const optionsObj: DiaryNameListContextType = {
-    diaryNames: diaryNames,
-    addDiaryName: addDiaryName,
-    removeDiaryName: removeDiaryName,
-    updateDiaryName: updateDiaryName,
+    diaryNames,
+    refreshDiaryNames,
+    getDiaryName,
+    updateDiaryName,
   };
   return (
     <DiaryNameListContext.Provider value={optionsObj}>

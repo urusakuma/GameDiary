@@ -12,12 +12,59 @@ export interface ICurrentDiaryAccessor {
    */
   setCurrentDiary(key: string): void;
 }
+/**
+ * IDiaryNameManagerを使用して日記名を管理するサービス。
+ * 日記名の取得、更新、削除などの操作を提供する。
+ */
+export interface IDiaryNameService {
+  /** 保存された日記の数を返す */
+  get length(): number;
+  /**
+   * 保存されているストレージキーと日記名の配列を返す。
+   * @returns {Array<[string, string]> } [ストレージキー, 日記名]の配列
+   */
+  collectDiaryNameEntries(): Array<[string, string]>;
+  /**
+   * 指定したストレージキーの日記名を返す。
+   * @param key ストレージキー
+   * @returns {string} 指定したストレージキーの日記名
+   */
+  getDiaryName(key: string): string;
+  /**
+   * ストレージキーを指定して日記名を更新する。新規作成もここで行われる。
+   * 名前が既に存在するときは数字を追加して別の名前にする。
+   * @param key 日記名と対応したストレージキー
+   * @param name 新しい日記名
+   * @returns 保存に成功したならtrue、失敗したならfalse
+   */
+  updateDiaryName(key: string, name: string): boolean;
+  /**
+   * 指定したストレージキーに対応した日記名を日記リストから取り除く。
+   * 日記名だけを取り除き、日記そのものを取り除くことはない。
+   * @param key 取り除く日記のストレージキー
+   */
+  removeDiaryName(key: string): void;
+  /**
+   * 指定した名前がすでに存在するか確認する
+   * @param name 存在するか確認する名前
+   * @returns すでに存在するならtrue、存在しないならfalse
+   */
+  hasDiaryName(name: string): boolean;
+}
+/**
+ * Diaryのデータをカプセル化する型
+ */
+export type DiarySummary = {
+  key: string;
+  name: string;
+};
 /** 新しい日記を作成するクラス */
 export interface ICreateDiary {
   /**
    * カレントの日記から新しい日記を作成する
+   * @returns {DiarySummary} 生成したDIaryのDiarySummary
    */
-  create(): void;
+  create(name: string): DiarySummary;
 }
 export interface IDeleteDiary {
   /**
@@ -43,6 +90,13 @@ export interface IDiaryImporter {
    */
   importFile(file: File): Promise<string>;
 }
+/**
+ * 日記のデータをファイルとして出力するのに必要なデータをやり取りするための型
+ */
+export type ExportFile = {
+  data: Blob;
+  fileName: string;
+};
 /** カレントの日記を出力する */
 export interface IDiaryExporter {
   /**
@@ -55,7 +109,7 @@ export interface IDiaryExporter {
    * 文字列ではなくBlobを返すことで、ファイルとして保存できるようにする。
    * @returns {Blob} Diaryを圧縮したBlob
    */
-  exportFile(): [Blob, string];
+  exportFile(): ExportFile;
 }
 /** カレントの日記をストレージに保存するハンドラ */
 export interface IDiarySaveHandler {

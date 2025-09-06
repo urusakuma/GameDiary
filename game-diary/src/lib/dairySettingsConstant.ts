@@ -12,10 +12,12 @@ export default class DairySettingsConstant {
   static readonly CYCLE_PLACEHOLDER: string = '$C';
   static readonly DAY_PLACEHOLDER: string = '$D';
   static readonly TOTAL_DAYS_PLACEHOLDER: string = '$N';
-  /** v0で使用。実際にはストレージキーが入るためv1で修正 */
+  /** v0で使用していたカレントの日記のストレージキーを保存するためのキー。実際にはストレージキーが入るためv1で修正 */
   static readonly CURRENT_GAME_DATA_NAME: string = 'currentGameDataName';
+  /** v1で使用しているカレントの日記のストレージキーを保存するためのキー */
   static readonly CURRENT_DIARY_KEY: string = 'currentDiaryKey';
-  /** v0で使用。名前を変更したためv1で修正 */
+  /** v0で使用していた日記名リストを保存するためのキー。名前を変更したためv1で修正 */
   static readonly GAME_DATA_NAME_LIST: string = 'gameDataNameList';
+  /** v1で使用している日記名リストを保存するためのキー */
   static readonly DIARY_NAME_LIST: string = 'diaryNameList';
 }

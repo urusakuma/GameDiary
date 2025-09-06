@@ -1,12 +1,12 @@
-import DairySettingsConstant from '@/dairySettingsConstant';
 import { InvalidJsonError } from '@/error';
 import {
   UseExistingDataDayModifierFactory,
-  UseExistingDataDiaryFactory,
-  UseExistingDataDiarySettingsFactory,
+  
   IDiary,
   IDiaryEntry,
   UseExistingDataDiaryEntryFactory,
+  IDiarySettingsFactory,
+  IDiaryFactory,
 } from '../diary/diaryModelInterfaces';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 
@@ -19,9 +19,9 @@ import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 export function decompressVersion00(
   jsonObj: object,
   dayModifierFactory: UseExistingDataDayModifierFactory,
-  diarySettingsFactory: UseExistingDataDiarySettingsFactory,
+  diarySettingsFactory: IDiarySettingsFactory,
   diaryEntryFactory: UseExistingDataDiaryEntryFactory,
-  diaryFactory: UseExistingDataDiaryFactory
+  diaryFactory: IDiaryFactory
 ): IDiary {
   if (!hasField(jsonObj, 'lastDay', 'number')) {
     throw new InvalidJsonError('Diary class is broken');
@@ -47,12 +47,11 @@ export function decompressVersion00(
     jsonObj.settings.unitOfDay.unit[3],
     jsonObj.settings.unitOfDay.unit[4]
   );
-  const settings = diarySettingsFactory(
+  const settings = diarySettingsFactory.createUseExistingData(
     dayModifier,
     jsonObj.settings.playGamedataName,
     jsonObj.settings.dayInterval,
-    jsonObj.settings.storageKey,
-    DairySettingsConstant.CURRENT_VERSION
+    jsonObj.settings.storageKey
   );
   if (!hasField(jsonObj, 'dayReports', 'Array')) {
     throw new InvalidJsonError('Array<DayReport> class is broken');
@@ -80,5 +79,5 @@ export function decompressVersion00(
     );
     map.set(diary.day, diary);
   }
-  return diaryFactory(map, settings, jsonObj.lastDay);
+  return diaryFactory.createUseExistingData(map, settings, jsonObj.lastDay);
 }

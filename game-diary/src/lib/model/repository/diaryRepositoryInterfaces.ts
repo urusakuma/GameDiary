@@ -1,7 +1,8 @@
 import { IDiary } from '@/model/diary/diaryModelInterfaces';
 
 /**
- * Diaryを管理し、Diaryへのアクセスを他クラスに提供する。
+ * Diaryをメモリ上に保管し、取得・追加・削除を行うクラス。
+ * このクラスが持たずにストレージ上にあることはあっても、ストレージが持たずにこのクラスが持つことはない。
  */
 export interface IDiaryService {
   /**
@@ -28,10 +29,16 @@ export interface IDiaryNameManager {
   /** 保存された日記の数を返す */
   get length(): number;
   /**
-   * 保存されている日記名の配列を返す。
-   * @returns {Array<string>} 日記名の配列
+   * 保存されているストレージキーと日記名の配列を返す。
+   * @returns {Array<[string, string]> } [ストレージキー, 日記名]の配列
    */
-  collectDiaryNames(): Array<string>;
+  collectDiaryNameEntries(): Array<[string, string]>;
+  /**
+   * 指定したストレージキーの日記名を返す。
+   * @param key ストレージキー
+   * @returns {string} 指定したストレージキーの日記名
+   */
+  getDiaryName(key: string): string;
   /**
    * ストレージキーを指定して日記名を更新する。新規作成もここで行われる。
    * 名前が既に存在するときは数字を追加して別の名前にする。
@@ -51,7 +58,7 @@ export interface IDiaryNameManager {
    * @param name 存在するか確認する名前
    * @returns すでに存在するならtrue、存在しないならfalse
    */
-  isIncludeDiaryName(name: string): boolean;
+  hasDiaryName(name: string): boolean;
 }
 /**
  * ストレージに保存されたカレントの日記・名前とキーのペアを最新のバージョンに適合させるクラス。
@@ -124,4 +131,14 @@ export interface IDiaryLoad {
    * @throws {KeyNotFoundError} 要素がローカルストレージに存在しない。
    */
   load(key: string): IDiary;
+}
+/**
+ * 受け取ったKeyのDiaryをストレージから削除する。
+ */
+export interface IDiaryDelete {
+  /**
+   * 指定したKeyのDiaryをストレージから削除する。
+   * @param {string} key 削除する日記のキー
+   */
+  delete(key: string): void;
 }

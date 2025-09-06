@@ -2,7 +2,6 @@ import { container } from 'tsyringe';
 import {
   IDiary,
   IDiaryFactory,
-  UseExistingDataDiaryFactory,
   IDiaryEntry,
   IDiaryEntryFactory,
   NewDiaryEntriesFactory,
@@ -12,8 +11,6 @@ import {
   IDiarySettings,
   IDiarySettingsFactory,
   DefaultSettingsFactory,
-  NewDiarySettingsFactory,
-  UseExistingDataDiarySettingsFactory,
   IDayModifier,
   UseExistingDataDayModifierFactory,
 } from '@/model/diary/diaryModelInterfaces';
@@ -24,6 +21,7 @@ import {
 import {
   ICurrentDiaryManager,
   IDiaryDataMigrator,
+  IDiaryDelete,
   IDiaryExport,
   IDiaryImport,
   IDiaryLoad,
@@ -60,6 +58,7 @@ import {
   IDiaryExporter,
   IDiaryImporter,
   IDiaryLoadHandler,
+  IDiaryNameService,
   IDiarySaveHandler,
 } from '@/control/controlDiary/controlDiaryInterface';
 import CurrentDiaryAccessor from '@/control/controlDiary/currentDiaryAccessor';
@@ -89,6 +88,8 @@ import {
   compressDiary,
   DiaryDecompressor,
 } from '@/model/serialization/diarySerializer';
+import DiaryNameService from '@/control/controlDiary/diaryNameService';
+import DiaryDelete from '@/model/repository/diaryDelete';
 
 // diaryModelInterfaces
 container.register<UsePreviousDayDiaryEntryFactory>(
@@ -117,10 +118,6 @@ container.register<NewDiaryEntriesFactory>('NewDiaryEntriesFactory', {
 });
 container.register<IDiary>('IDiary', { useClass: Diary });
 container.register<IDiaryFactory>('IDiaryFactory', { useClass: DiaryFactory });
-container.register<UseExistingDataDiaryFactory>('UseExistingDataDiaryFactory', {
-  useFactory: (c) =>
-    c.resolve<IDiaryFactory>('IDiaryFactory').createUseExistingData,
-});
 container.register<IDiaryEntry>('IDiaryEntry', {
   useClass: DiaryEntry,
 });
@@ -171,19 +168,6 @@ container.register<IDiarySettingsFactory>('IDiarySettingsFactory', {
 container.register<DefaultSettingsFactory>('DefaultSettingsFactory', {
   useFactory: (c) => () => c.resolve<IDiarySettings>('IDiarySettings'),
 });
-container.register<NewDiarySettingsFactory>('NewDiarySettingsFactory', {
-  useFactory: (c) =>
-    c.resolve<IDiarySettingsFactory>('IDiarySettingsFactory')
-      .createNewDiarySettings,
-});
-container.register<UseExistingDataDiarySettingsFactory>(
-  'UseExistingDataDiarySettingsFactory',
-  {
-    useFactory: (c) =>
-      c.resolve<IDiarySettingsFactory>('IDiarySettingsFactory')
-        .createUseExistingData,
-  }
-);
 
 container.register<IDayModifier>('IDayModifier', {
   useClass: DayModifier,
@@ -237,11 +221,16 @@ container.registerSingleton<IDiaryImport>('IDiaryImport', DiaryImport);
 container.registerSingleton<IDiaryExport>('IDiaryExport', DiaryExport);
 container.registerSingleton<IDiarySave>('IDiarySave', DiarySave);
 container.registerSingleton<IDiaryLoad>('IDiaryLoad', DiaryLoad);
+container.registerSingleton<IDiaryDelete>('IDiaryDelete', DiaryDelete);
 
 // controlDiaryInterfaces
 container.registerSingleton<ICurrentDiaryAccessor>(
   'ICurrentDiaryAccessor',
   CurrentDiaryAccessor
+);
+container.registerSingleton<IDiaryNameService>(
+  'IDiaryNameService',
+  DiaryNameService
 );
 container.registerSingleton<ICreateDiary>('ICreateDiary', CreateDiary);
 container.registerSingleton<IDeleteDiary>('IDeleteDiary', DeleteDiary);

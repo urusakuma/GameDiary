@@ -8,8 +8,8 @@ export class MockDiaryKeyMapper implements IDiaryNameManager {
     return this.diaryNames.size;
   }
 
-  collectDiaryNames(): Array<string> {
-    return Array.from(this.diaryNames.values());
+  collectDiaryNameEntries(): Array<[string, string]> {
+    return Array.from(this.diaryNames.entries());
   }
 
   updateDiaryName(key: string, name: string): boolean {
@@ -33,7 +33,7 @@ export class MockDiaryKeyMapper implements IDiaryNameManager {
     this.currentDiaryKey = key;
   }
 
-  isIncludeDiaryName(name: string): boolean {
+  hasDiaryName(name: string): boolean {
     return Array.from(this.diaryNames.values()).includes(name);
   }
 }

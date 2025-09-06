@@ -1,4 +1,4 @@
-/** 前日のエントリーと設定クラスから新しいエントリーを組み立てる */
+/** 前日のエントリーと設定クラスから新しいエントリーを生成する */
 export type UsePreviousDayDiaryEntryFactory = (
   source: IDiaryEntry,
   settings: IDiarySettings
@@ -29,8 +29,8 @@ export interface IDiary {
   deleteEntry(day: number): boolean;
 }
 /**
- * 新しいDiaryを作成する関数。
- * Diaryを受け取った場合、DiaryのSettingsをストレージキー以外をコピーする。
+ * 新しい日記を作成する関数。
+ * Diaryを受け取った場合、DiaryのSettingsからストレージキー以外をコピーする。
  * @param {IDiary?} diary 新しいDiaryのSettingsの基となるDiary
  * @returns {IDiary} 作成したDiary
  */
@@ -40,15 +40,11 @@ export interface IDiaryFactory {
     settings: IDiarySettings,
     lastDay: number
   ): IDiary;
-  createNewDiary(diary?: IDiary): IDiary;
+  createNewDiary(diary?: IDiary, name?: string): IDiary;
 }
-
-export type UseExistingDataDiaryFactory = (
-  diaryEntries: Map<number, IDiaryEntry>,
-  settings: IDiarySettings,
-  lastDay: number
-) => IDiary;
-
+/**
+ * 1日分の日記を管理するクラス
+ */
 export interface IDiaryEntry {
   /** エントリーの日付 */
   get day(): number;
@@ -97,23 +93,28 @@ export type UseExistingDataDiaryEntryFactory = (
   previous: number | undefined,
   next: number | undefined
 ) => IDiaryEntry;
-
+/**
+ * ストレージキーを生成するファクトリ関数
+ * @returns ストレージキー
+ */
 export type StorageKeyFactory = () => string;
-
+/**
+ * 日記の設定を管理するクラス
+ */
 export interface IDiarySettings {
-  /** ゲームデータを識別する一意の文字列 */
+  /** 日記データを識別する一意の文字列 */
   get storageKey(): string;
-  /** ゲームデータのバージョン */
+  /** 日記データのバージョン */
   get version(): number;
-  /** ゲームデータ名を保存する */
+  /** 日記名を保存する */
   setDiaryName(val: string): void;
-  /** ゲームデータ名を取得する */
+  /** 日記名を取得する */
   getDiaryName(): string;
   /** 日記を書く間隔 */
   updateDayInterval(val: number): void;
   /** 日記を書く間隔を取得する */
   getDayInterval(): number;
-  /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など)を保存 */
+  /** 日付をどのように修飾するのかという文字列(日目、$Y年春$D日など)を保存 */
   setModifier(val: string): void;
   /** 日付を修飾する文字列を取得する */
   getModifier(): string;
@@ -150,30 +151,41 @@ export interface IDiarySettings {
    */
   getModifierDay(day: number): string;
 }
-
+/** IDiarySettingsを生成するファクトリクラス */
 export interface IDiarySettingsFactory {
+  /**
+   * ストレージなどに保存された設定をから新しい設定を作成する。
+   * @param dayModifier 日付を修飾する文字列
+   * @param diaryName 日記の名前
+   * @param dayInterval 日記を書く間隔
+   * @param storageKey ストレージキー
+   * @returns 複合した設定
+   */
   createUseExistingData(
     dayModifier: IDayModifier,
     diaryName: string,
     dayInterval: number,
-    storageKey: string,
-    version: number
+    storageKey: string
   ): IDiarySettings;
-  createNewDiarySettings(settings?: IDiarySettings): IDiarySettings;
+  /**
+   * 新しい日記のための設定を作成する。
+   * @param settings 引き継ぐ既存の設定。
+   * @param name 日記の名前。省略した場合はデフォルトの名前が使用される。
+   * @returns 新しい設定
+   */
+  createNewDiarySettings(
+    settings?: IDiarySettings,
+    name?: string
+  ): IDiarySettings;
 }
+/**
+ * ベースとなる設定を生成するファクトリ関数
+ */
 export type DefaultSettingsFactory = () => IDiarySettings;
-export type NewDiarySettingsFactory = (
-  settings?: IDiarySettings
-) => IDiarySettings;
 
-export type UseExistingDataDiarySettingsFactory = (
-  dayModifier: IDayModifier,
-  diaryName: string,
-  dayInterval: number,
-  storageKey: string,
-  version: number
-) => IDiarySettings;
-
+/**
+ * 日付を修飾するクラス
+ */
 export interface IDayModifier {
   /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など) */
   setModifier(val: string): void;
@@ -206,9 +218,13 @@ export interface IDayModifier {
    */
   modifyDay(naturalDay: number): string;
 }
-
+/**
+ * 日付を修飾するクラスを生成するファクトリ関数
+ */
 export type NewDayModifierFactory = (dayModifier: IDayModifier) => IDayModifier;
-
+/**
+ * 保存されたデータから日付を修飾するクラスを生成するファクトリ関数
+ */
 export type UseExistingDataDayModifierFactory = (
   modifier: string,
   cycleLength: number,

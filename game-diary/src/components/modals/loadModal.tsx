@@ -3,24 +3,31 @@
 import Overlay from './overlay';
 import { modal, ModalProps } from './modalProps';
 import handleLoad from 'src/hooks/handleLoad';
-import { useState } from 'react';
 import { useDiaryNameListContext } from 'src/components/context/diaryNameListContext';
+import { useSelectedDiaryContext } from 'src/components/context/selectedDiaryContext';
+import { useEffect } from 'react';
 
 const LoadModal = ({ onNavigate, isDarkMode }: ModalProps) => {
-  const [selectedOption, setSelectedOption] = useState<string>('');
-  const { diaryNames } = useDiaryNameListContext();
+  const { diaryNames, refreshDiaryNames } = useDiaryNameListContext();
+  const { selectedOption, setSelectedOption, selectCurrentDiary } =
+    useSelectedDiaryContext();
+  useEffect(() => {
+    refreshDiaryNames();
+    selectCurrentDiary();
+  }, []);
   return (
     <Overlay onClose={() => onNavigate(modal.Home)} isDarkMode={isDarkMode}>
       <h2 className="text-xl font-bold mb-4">ロード</h2>
       <select
         className={`w-full p-2 ${isDarkMode ? 'bg-gray-600' : 'bg-gray-300'}`}
+        value={selectedOption}
         onChange={(e) => {
           setSelectedOption(e.target.value);
         }}
       >
-        {diaryNames.map((keyNamePair) => (
-          <option key={keyNamePair.key} value={keyNamePair.key}>
-            {keyNamePair.name}
+        {diaryNames.map((v) => (
+          <option key={v[0]} value={v[0]}>
+            {v[1]}
           </option>
         ))}
       </select>
@@ -41,7 +48,7 @@ const LoadModal = ({ onNavigate, isDarkMode }: ModalProps) => {
         >
           新規作成
         </button>
-        <div className=" flex-1"></div>
+        <div className=" flex-1">{/** 空白 */}</div>
         <button
           className={`px-4 py-2 rounded shadow-md active:shadow-none ${isDarkMode ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' : 'border-gray-400 bg-gray-100 hover:bg-gray-200'}`}
           onClick={() => {

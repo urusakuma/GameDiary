@@ -50,7 +50,7 @@ describe('DiarySettingsFactory - createUseExistingData', () => {
     container.register('IUniqueDiaryNameGenerator', {
       useValue: mockNameGenerator,
     });
-    container.register('DefaultDiaryName', { useValue: diaryName });
+    container.register('DIARY_NAME', { useValue: diaryName });
     container.register('Version', { useValue: version });
 
     diarySettingsFactory = container.resolve(DiarySettingsFactory);

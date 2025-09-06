@@ -31,8 +31,8 @@ const useExport = () => {
       return;
     }
     try {
-      const [blob, fileName] = diaryExporter.exportFile();
-      const url = URL.createObjectURL(blob);
+      const { data, fileName } = diaryExporter.exportFile();
+      const url = URL.createObjectURL(data);
       const a = document.createElement('a');
       [a.href, a.download] = [url, fileName];
       a.click();

@@ -1,5 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 import type {
+  ExportFile,
   ICurrentDiaryAccessor,
   IDiaryExporter,
 } from './controlDiaryInterface';
@@ -16,10 +17,11 @@ export default class DiaryExporter implements IDiaryExporter {
     const diary = this.diaryAccessor.getCurrentDiary();
     return this.diaryExport.export(diary.getSettings().storageKey);
   }
-  exportFile(): [Blob, string] {
+  exportFile(): ExportFile {
     const diary = this.diaryAccessor.getCurrentDiary();
     const fileName = `${diary.getSettings().getDiaryName()}.txt`;
     const exportStr = this.diaryExport.export(diary.getSettings().storageKey);
-    return [new Blob([exportStr], { type: 'text/plain' }), fileName];
+    const data = new Blob([exportStr], { type: 'text/plain' });
+    return { data, fileName };
   }
 }

@@ -23,8 +23,8 @@ type DiaryEntryContentContextType = {
 const DiaryEntryContentContext =
   createContext<DiaryEntryContentContextType | null>(null);
 type DiaryEntryResetContextType = {
-  refresh: () => void;
-  clear: () => void;
+  refreshEntry: () => void;
+  clearEntry: () => void;
 };
 const DiaryEntryResetContext = createContext<DiaryEntryResetContextType | null>(
   null
@@ -63,25 +63,25 @@ export const DiaryEntryProvider = ({ children }: ContextWrapperProps) => {
     return null;
   }
   const titleObj: DiaryEntryTitleContextType = {
-    title: title,
+    title,
     updateTitle: (title) => {
       updateTitle(title);
       const day = currentDiaryEntry.getCurrentDiaryEntry().day;
       updateDiaryEntryTitle(day, title);
     },
-    refreshTitle: refreshTitle,
+    refreshTitle,
   };
   const contentObj: DiaryEntryContentContextType = {
     content: content,
-    updateContent: updateContent,
-    refreshContent: refreshContent,
+    updateContent,
+    refreshContent,
   };
   const resetObj: DiaryEntryResetContextType = {
-    refresh: () => {
+    refreshEntry: () => {
       refreshTitle();
       refreshContent();
     },
-    clear: () => {
+    clearEntry: () => {
       clear();
       refreshTitle();
       refreshContent();

@@ -11,12 +11,10 @@ describe('UniqueDiaryNameGenerator', () => {
     nameGenerator = new UniqueDiaryNameGenerator(nameManager);
   });
   it('should generate a unique diary name by appending a number if the base name already exists', () => {
-    nameManager.isIncludeDiaryName
-      .mockReturnValueOnce(true)
-      .mockReturnValue(false);
+    nameManager.hasDiaryName.mockReturnValueOnce(true).mockReturnValue(false);
     const result = nameGenerator.generate('diary');
     expect(result).toBe('diary1');
-    expect(nameManager.isIncludeDiaryName).toHaveBeenNthCalledWith(1, 'diary');
-    expect(nameManager.isIncludeDiaryName).toHaveBeenNthCalledWith(2, 'diary1');
+    expect(nameManager.hasDiaryName).toHaveBeenNthCalledWith(1, 'diary');
+    expect(nameManager.hasDiaryName).toHaveBeenNthCalledWith(2, 'diary1');
   });
 });

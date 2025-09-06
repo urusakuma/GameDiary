@@ -1,21 +1,20 @@
-import DairySettingsConstant from '@/dairySettingsConstant';
 import { InvalidJsonError } from '@/error';
 import { hasField, isArrayType, isTypeMatch } from '../utils/checkTypeMatch';
 import {
   UseExistingDataDayModifierFactory,
-  UseExistingDataDiaryFactory,
-  UseExistingDataDiarySettingsFactory,
   IDiary,
   IDiaryEntry,
   UseExistingDataDiaryEntryFactory,
+  IDiarySettingsFactory,
+  IDiaryFactory,
 } from '../diary/diaryModelInterfaces';
 
 export function decompressVersion01(
   jsonObj: object,
   dayModifierFactory: UseExistingDataDayModifierFactory,
-  diarySettingsFactory: UseExistingDataDiarySettingsFactory,
+  diarySettingsFactory: IDiarySettingsFactory,
   diaryEntryFactory: UseExistingDataDiaryEntryFactory,
-  diaryFactory: UseExistingDataDiaryFactory
+  diaryFactory: IDiaryFactory
 ): IDiary {
   if (!hasField(jsonObj, 'lastDay', 'number')) {
     throw new InvalidJsonError('Reports class is broken');
@@ -44,12 +43,11 @@ export function decompressVersion01(
     jsonObj.settings.dayModifier.cycleLength,
     ...jsonObj.settings.dayModifier.unit
   );
-  const settings = diarySettingsFactory(
+  const settings = diarySettingsFactory.createUseExistingData(
     dayModifier,
     jsonObj.settings.diaryName,
     jsonObj.settings.dayInterval,
-    jsonObj.settings._storageKey,
-    DairySettingsConstant.CURRENT_VERSION
+    jsonObj.settings._storageKey
   );
   if (!hasField(jsonObj, 'diaryEntries', 'Array')) {
     throw new InvalidJsonError('Array<DayReport> class is broken');
@@ -81,5 +79,5 @@ export function decompressVersion01(
     );
     map.set(diary.day, diary);
   }
-  return diaryFactory(map, settings, jsonObj.lastDay);
+  return diaryFactory.createUseExistingData(map, settings, jsonObj.lastDay);
 }

@@ -1,5 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 import type {
+  DiarySummary,
   ICreateDiary,
   ICurrentDiaryAccessor,
 } from './controlDiaryInterface';
@@ -16,10 +17,14 @@ export default class CreateDiary implements ICreateDiary {
     private diaryService: IDiaryService
   ) {}
 
-  create(): void {
+  create(name: string): DiarySummary {
     const oldDiary = this.diaryAccessor.getCurrentDiary();
-    const newDiary = this.diaryFactory.createNewDiary(oldDiary);
+    const newDiary = this.diaryFactory.createNewDiary(oldDiary, name);
     this.diaryService.addDiary(newDiary);
-    this.diaryAccessor.setCurrentDiary(newDiary.getSettings().storageKey);
+    const newName = newDiary.getSettings().getDiaryName();
+
+    const key = newDiary.getSettings().storageKey;
+    this.diaryAccessor.setCurrentDiary(key);
+    return { key, name: newName };
   }
 }

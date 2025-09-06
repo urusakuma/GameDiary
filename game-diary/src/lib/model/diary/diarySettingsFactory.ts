@@ -20,26 +20,28 @@ export default class DiarySettingsFactory implements IDiarySettingsFactory {
     @inject('StorageKeyFactory') private StorageKeyFactory: StorageKeyFactory,
     @inject('IUniqueDiaryNameGenerator')
     private nameGenerator: IUniqueDiaryNameGenerator,
-    @inject('DefaultDiaryName') private defaultName: string,
-    @inject('Version') private version: number
+    @inject('VERSION') private version: number
   ) {}
+
   createUseExistingData(
     dayModifier: IDayModifier,
     diaryName: string,
     dayInterval: number,
-    storageKey: string,
-    version: number
+    storageKey: string
   ): IDiarySettings {
     return new DiarySettings(
       dayModifier,
       diaryName,
       dayInterval,
       storageKey,
-      version
+      this.version
     );
   }
 
-  createNewDiarySettings(settings?: IDiarySettings): IDiarySettings {
+  createNewDiarySettings(
+    settings?: IDiarySettings,
+    name?: string
+  ): IDiarySettings {
     if (settings === undefined) {
       settings = this.defaultSettingsFactory();
     }
@@ -47,18 +49,19 @@ export default class DiarySettingsFactory implements IDiarySettingsFactory {
     for (let i = 0; i < modifierUnits.length; i++) {
       modifierUnits[i] = settings.getModifierUnit(i);
     }
-
     const newModifier = this.modifierFactory(
       settings.getModifier(),
       settings.getCycleLength(),
       ...modifierUnits
     );
-    const name = this.nameGenerator.generate(this.defaultName);
+    const newName = this.nameGenerator.generate(
+      name ?? settings.getDiaryName()
+    );
     const interval = settings.getDayInterval();
     const storageKey = this.StorageKeyFactory();
     return new DiarySettings(
       newModifier,
-      name,
+      newName,
       interval,
       storageKey,
       this.version

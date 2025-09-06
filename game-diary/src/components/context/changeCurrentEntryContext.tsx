@@ -19,7 +19,7 @@ export const ChangeCurrentEntryProvider = ({
     useState<IChangeCurrentDiaryEntry | null>(null);
   const [entryAccessor, setEntryAccessor] =
     useState<ICurrentDiaryEntryAccessor | null>(null);
-  const { refresh } = useDiaryEntryResetContext();
+  const { refreshEntry } = useDiaryEntryResetContext();
   const { addDiaryEntry, detachDiaryEntry } = useDiaryEntriesListContext();
   // コンポーネントがマウントされたときにIChangeCurrentDiaryEntryのインスタンスを取得
   useEffect(() => {
@@ -39,7 +39,7 @@ export const ChangeCurrentEntryProvider = ({
     const onArrow = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' && e.ctrlKey) {
         const isCreated = changeCurrentEntry.moveToNext();
-        refresh();
+        refreshEntry();
         if (!isCreated) {
           return;
         }
@@ -50,7 +50,7 @@ export const ChangeCurrentEntryProvider = ({
       if (e.key === 'ArrowLeft' && e.ctrlKey) {
         const day = entryAccessor.getCurrentDiaryEntry().day;
         const isDeleted = changeCurrentEntry.moveToPrevious();
-        refresh();
+        refreshEntry();
         if (!isDeleted) {
           return;
         }
@@ -69,7 +69,7 @@ export const ChangeCurrentEntryProvider = ({
       return;
     }
     changeCurrentEntry.moveByDate(date);
-    refresh();
+    refreshEntry();
   };
   return (
     <ChangeCurrentEntryContext.Provider value={{ moveByDate }}>

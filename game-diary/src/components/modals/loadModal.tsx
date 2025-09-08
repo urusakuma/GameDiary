@@ -2,15 +2,16 @@
 
 import Overlay from './overlay';
 import { modal, ModalProps } from './modalProps';
-import handleLoad from 'src/hooks/handleLoad';
 import { useDiaryNameListContext } from 'src/components/context/diaryNameListContext';
 import { useSelectedDiaryContext } from 'src/components/context/selectedDiaryContext';
 import { useEffect } from 'react';
+import useLoadDiary from 'src/hooks/useLoadDiary';
 
 const LoadModal = ({ onNavigate, isDarkMode }: ModalProps) => {
   const { diaryNames, refreshDiaryNames } = useDiaryNameListContext();
   const { selectedOption, setSelectedOption, selectCurrentDiary } =
     useSelectedDiaryContext();
+  const { load } = useLoadDiary();
   useEffect(() => {
     refreshDiaryNames();
     selectCurrentDiary();
@@ -35,7 +36,7 @@ const LoadModal = ({ onNavigate, isDarkMode }: ModalProps) => {
         <button
           className={`px-4 py-2 rounded shadow-md active:shadow-none ${isDarkMode ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' : 'border-gray-400 bg-gray-100 hover:bg-gray-200'}`}
           onClick={() => {
-            handleLoad(selectedOption);
+            load(selectedOption);
           }}
         >
           ロード

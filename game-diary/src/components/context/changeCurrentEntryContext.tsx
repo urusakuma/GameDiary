@@ -7,8 +7,10 @@ import {
 } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
 import { useDiaryEntryResetContext } from './diaryEntryContext';
 import { useDiaryEntriesListContext } from './diaryEntryListContext';
+import { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
 type ChangeCurrentEntryContextType = {
   moveByDate: (date: number) => void;
+  moveToLatest: () => void;
 };
 const ChangeCurrentEntryContext =
   createContext<ChangeCurrentEntryContextType | null>(null);
@@ -16,11 +18,12 @@ export const ChangeCurrentEntryProvider = ({
   children,
 }: ContextWrapperProps) => {
   const [changeCurrentEntry, setChangeCurrentDiaryEntry] =
-    useState<IChangeCurrentDiaryEntry | null>(null);
+    useState<IChangeCurrentDiaryEntry>();
   const [entryAccessor, setEntryAccessor] =
-    useState<ICurrentDiaryEntryAccessor | null>(null);
+    useState<ICurrentDiaryEntryAccessor>();
+  const [diaryAccessor, setDiaryAccessor] = useState<ICurrentDiaryAccessor>();
   const { refreshEntry } = useDiaryEntryResetContext();
-  const { addDiaryEntry, detachDiaryEntry } = useDiaryEntriesListContext();
+  const { addDiaryEntry, deleteDiaryEntry } = useDiaryEntriesListContext();
   // コンポーネントがマウントされたときにIChangeCurrentDiaryEntryのインスタンスを取得
   useEffect(() => {
     const changeCurrentEntryInstance =
@@ -30,49 +33,60 @@ export const ChangeCurrentEntryProvider = ({
       'ICurrentDiaryEntryAccessor'
     );
     setEntryAccessor(entryAccessorInstance);
+    const diaryAccessorInstance = container.resolve<ICurrentDiaryAccessor>(
+      'ICurrentDiaryAccessor'
+    );
+    setDiaryAccessor(diaryAccessorInstance);
   }, []);
   // キーボードイベントを監視して、Ctrl + ArrowRight/ArrowLeftで日記エントリを移動
   useEffect(() => {
-    if (changeCurrentEntry === null || entryAccessor === null) {
+    if (changeCurrentEntry === undefined || entryAccessor === undefined) {
       return;
     }
-    const onArrow = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' && e.ctrlKey) {
-        const isCreated = changeCurrentEntry.moveToNext();
-        refreshEntry();
-        if (!isCreated) {
-          return;
-        }
-        const day = entryAccessor.getCurrentDiaryEntry().day;
-        const title = entryAccessor.getCurrentDiaryEntry().getTitle();
-        addDiaryEntry(day, title);
-      }
-      if (e.key === 'ArrowLeft' && e.ctrlKey) {
-        const day = entryAccessor.getCurrentDiaryEntry().day;
-        const isDeleted = changeCurrentEntry.moveToPrevious();
-        refreshEntry();
-        if (!isDeleted) {
-          return;
-        }
-        detachDiaryEntry(day);
-      }
-    };
     window.addEventListener('keydown', onArrow);
     return () => window.removeEventListener('keydown', onArrow);
-  }, [changeCurrentEntry]);
+  }, [changeCurrentEntry, entryAccessor]);
 
-  if (changeCurrentEntry === null) {
+  if (
+    changeCurrentEntry === undefined ||
+    entryAccessor === undefined ||
+    diaryAccessor === undefined
+  ) {
     return null;
   }
-  const moveByDate = (date: number) => {
-    if (changeCurrentEntry === null) {
-      return;
+  const onArrow = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowRight' && e.ctrlKey) {
+      const isCreated = changeCurrentEntry.moveToNext();
+      refreshEntry();
+      if (!isCreated) {
+        return;
+      }
+      const day = entryAccessor.getCurrentDiaryEntry().day;
+      const title = entryAccessor.getCurrentDiaryEntry().getTitle();
+      addDiaryEntry(day, title);
     }
+    if (e.key === 'ArrowLeft' && e.ctrlKey) {
+      const day = entryAccessor.getCurrentDiaryEntry().day;
+      const isDeleted = changeCurrentEntry.moveToPrevious();
+      refreshEntry();
+      if (!isDeleted) {
+        return;
+      }
+      deleteDiaryEntry(day);
+    }
+  };
+  const moveByDate = (date: number) => {
     changeCurrentEntry.moveByDate(date);
     refreshEntry();
   };
+  const moveToLatest = () => {
+    const lastDay = diaryAccessor.getCurrentDiary().getLastDay();
+    changeCurrentEntry.moveByDate(lastDay);
+    refreshEntry();
+  };
+  const changeCurrentObj = { moveByDate, moveToLatest };
   return (
-    <ChangeCurrentEntryContext.Provider value={{ moveByDate }}>
+    <ChangeCurrentEntryContext.Provider value={changeCurrentObj}>
       {children}
     </ChangeCurrentEntryContext.Provider>
   );

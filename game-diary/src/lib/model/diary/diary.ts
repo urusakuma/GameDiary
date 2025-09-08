@@ -73,7 +73,10 @@ export default class Diary implements IDiary {
    * @param {number} day 削除するエントリーの日付
    * @returns {boolean} 削除したならtrue、しなかったならfalse。 */
   deleteEntry(day: number): boolean {
-    const entry = this.getEntry(day);
+    const entry = this.diaryEntries.get(day);
+    if (entry === undefined) {
+      return false;
+    }
     const previous =
       entry.previous !== undefined ? this.getEntry(entry.previous) : undefined;
     const next =

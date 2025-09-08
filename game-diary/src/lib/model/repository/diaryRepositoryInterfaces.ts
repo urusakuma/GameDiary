@@ -12,12 +12,12 @@ export interface IDiaryService {
    */
   getDiary(key: string): IDiary | undefined;
   /**
-   * 渡されたDiaryを保管する。
+   * 渡されたDiaryを保管する。ストレージにも保存する。
    * @param {IDiary} diary 保管するDiary
    */
   addDiary(diary: IDiary): void;
   /**
-   * 指定したKeyのDiaryを削除する。
+   * 指定したKeyのDiaryを削除する。ストレージからも取り除く。
    * @param {string} key 削除する日記の名前
    */
   deleteDiary(key: string): void;
@@ -99,6 +99,7 @@ export interface ICurrentDiaryManager {
 export interface IDiaryImport {
   /**
    * 文字列をユーザから直接受け取ってDiaryに復号、複合出来たらそのDiaryのKeyを返却する。
+   * 復号したDiaryはストレージに保存される。
    * @param {string} val ユーザから受け取った文字列。
    * @returns {string} 復号したDiaryのKey
    * @throws {DecompressionError} 圧縮した文字列が破損している。

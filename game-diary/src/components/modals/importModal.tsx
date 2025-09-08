@@ -1,13 +1,13 @@
 'use client';
 
 import Overlay from './overlay';
-import handleCreateDiaryFromText from 'src/hooks/import/handleCreateDiaryFromText';
 import { useState } from 'react';
-import handleCreateDiaryFromFile from 'src/hooks/import/handleCreateDiaryFromFile';
 import { modal, ModalProps } from './modalProps';
+import useImportDiary from 'src/hooks/useImportDIary';
 
 const ImportModal = ({ onNavigate, isDarkMode }: ModalProps) => {
   const [textData, setTextData] = useState('');
+  const { importFromFile, importFromText } = useImportDiary();
   return (
     <Overlay onClose={() => onNavigate(modal.Home)} isDarkMode={isDarkMode}>
       <h2 className="text-xl font-bold mb-4">インポート</h2>
@@ -18,14 +18,14 @@ const ImportModal = ({ onNavigate, isDarkMode }: ModalProps) => {
       <div className="gap-2 flex justify-start mt-4">
         <button
           className={`px-4 py-2 rounded shadow-md active:shadow-none ${isDarkMode ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' : 'border-gray-400 bg-gray-100 hover:bg-gray-200'}`}
-          onClick={() => handleCreateDiaryFromText(textData)}
+          onClick={() => importFromText(textData)}
         >
           インポート
         </button>
         <input
           type="file"
           accept=".txt"
-          onChange={(e) => handleCreateDiaryFromFile(e.target.files?.[0])}
+          onChange={(e) => importFromFile(e.target.files?.[0])}
           className="hidden"
           id="file-input"
         ></input>

@@ -75,7 +75,10 @@ export interface IDeleteDiary {
    */
   delete(key: string): boolean;
 }
-/** 日記のデータをインポートする */
+/**
+ * 日記のデータをインポートする。
+ * インポートした日記をストレージに保存し、カレントに設定する。
+ */
 export interface IDiaryImporter {
   /**
    * 文字列をユーザから直接受け取ってDiaryに復号、複合出来たらそのDiaryのKeyを返却する。

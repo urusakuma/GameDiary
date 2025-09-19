@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import { IDeleteDiary } from './controlDiaryInterface';
+import type { IDeleteDiary, IDiaryNameService } from './controlDiaryInterface';
 import type {
   ICurrentDiaryManager,
   IDiaryService,
@@ -7,9 +7,10 @@ import type {
 @injectable()
 export default class DeleteDiary implements IDeleteDiary {
   constructor(
-    @inject('CurrentDiaryManager')
+    @inject('ICurrentDiaryManager')
     private currentDiaryManager: ICurrentDiaryManager,
-    @inject('IDiaryService') private diaryService: IDiaryService
+    @inject('IDiaryService') private diaryService: IDiaryService,
+    @inject('IDiaryNameService') private diaryNameService: IDiaryNameService
   ) {}
 
   delete(key: string): boolean {
@@ -18,6 +19,7 @@ export default class DeleteDiary implements IDeleteDiary {
       return false;
     }
     this.diaryService.deleteDiary(key);
+    this.diaryNameService.removeDiaryName(key);
     return true;
   }
 }

@@ -7,7 +7,7 @@ import { ICurrentDiaryManager } from './diaryRepositoryInterfaces';
 import DairySettingsConstant from '@/dairySettingsConstant';
 @injectable()
 export default class CurrentDiaryManager implements ICurrentDiaryManager {
-  private currentDiaryKey: string = 'can not find current diary key';
+  private currentDiaryKey: string = '';
   constructor(
     @inject('IStorageService') private storage: IStorageService,
     @inject('IsStorageAvailableFunc')

@@ -20,6 +20,7 @@ const DiaryLayout = () => {
     window.addEventListener('keydown', onSaveShortcut);
     return () => window.removeEventListener('keydown', onSaveShortcut);
   }, []);
+
   return (
     <ContextProvider>
       <Toaster position="bottom-center" reverseOrder={false} />

@@ -47,12 +47,15 @@ export const DiaryEntryProvider = ({ children }: ContextWrapperProps) => {
   const [currentDiaryEntry, setCurrentDiaryEntryAccessor] =
     useState<ICurrentDiaryEntryAccessor>();
   useEffect(() => {
-    setCurrentDiaryEntryAccessor(
-      container.resolve<ICurrentDiaryEntryAccessor>(
-        'ICurrentDiaryEntryAccessor'
-      )
+    const accessor = container.resolve<ICurrentDiaryEntryAccessor>(
+      'ICurrentDiaryEntryAccessor'
     );
+    setCurrentDiaryEntryAccessor(accessor);
   }, []);
+  useEffect(() => {
+    refreshTitle();
+    refreshContent();
+  }, [isReadyClear]);
   const { updateDiaryEntryTitle } = useDiaryEntriesListContext();
   if (
     !isReadyTitle ||

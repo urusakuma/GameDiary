@@ -133,13 +133,3 @@ export interface IDiaryLoad {
    */
   load(key: string): IDiary;
 }
-/**
- * 受け取ったKeyのDiaryをストレージから削除する。
- */
-export interface IDiaryDelete {
-  /**
-   * 指定したKeyのDiaryをストレージから削除する。
-   * @param {string} key 削除する日記のキー
-   */
-  delete(key: string): void;
-}

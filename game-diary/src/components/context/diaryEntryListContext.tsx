@@ -46,10 +46,6 @@ export const DiaryEntriesListProvider = ({ children }: ContextWrapperProps) => {
   const refreshDiaryEntries = () => {
     const list = [];
     let day: number | undefined = diaryAccessor.getCurrentDiary().getLastDay();
-    console.log(
-      'current diary name is ',
-      diaryAccessor.getCurrentDiary().getSettings().getDiaryName()
-    );
     while (day !== undefined) {
       const entry = diaryAccessor.getCurrentDiary().getEntry(day);
       list.unshift({ day, title: entry.getTitle() });

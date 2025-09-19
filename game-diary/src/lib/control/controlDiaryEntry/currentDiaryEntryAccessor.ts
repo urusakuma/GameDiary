@@ -6,16 +6,17 @@ import { inject, injectable } from 'tsyringe';
 export default class CurrentDiaryEntryAccessor
   implements ICurrentDiaryEntryAccessor
 {
-  private entry: IDiaryEntry;
+  private entry: IDiaryEntry | undefined;
   constructor(
     @inject('ICurrentDiaryAccessor')
     private diaryAccessor: ICurrentDiaryAccessor
-  ) {
-    const diary = this.diaryAccessor.getCurrentDiary();
-    const lastDay = diary.getLastDay();
-    this.entry = diary.getEntry(lastDay);
-  }
+  ) {}
   getCurrentDiaryEntry(): IDiaryEntry {
+    if (this.entry === undefined) {
+      const diary = this.diaryAccessor.getCurrentDiary();
+      const lastDay = diary.getLastDay();
+      this.entry = diary.getEntry(lastDay);
+    }
     return this.entry;
   }
   setCurrentDiaryEntry(day: number): void {

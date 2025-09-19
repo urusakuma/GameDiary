@@ -1,25 +1,19 @@
-import { IDiaryNameService } from '@/control/controlDiary/controlDiaryInterface';
-import { IDiaryDelete } from '@/model/repository/diaryRepositoryInterfaces';
+import { IDeleteDiary } from '@/control/controlDiary/controlDiaryInterface';
 import { useEffect, useState } from 'react';
 import { container } from 'tsyringe';
 
 const useDiaryDelete = () => {
-  const [dairyDelete, setDiaryDelete] = useState<IDiaryDelete>();
-  const [nameService, setNameService] = useState<IDiaryNameService>();
+  const [dairyDelete, setDiaryDelete] = useState<IDeleteDiary>();
 
   useEffect(() => {
-    const diaryDeleteInstance = container.resolve<IDiaryDelete>('IDiaryDelete');
+    const diaryDeleteInstance = container.resolve<IDeleteDiary>('IDeleteDiary');
     setDiaryDelete(diaryDeleteInstance);
-    const nameServiceInstance =
-      container.resolve<IDiaryNameService>('IDiaryNameService');
-    setNameService(nameServiceInstance);
   }, []);
   const deleteDiary = (key: string) => {
-    if (dairyDelete === undefined || nameService === undefined) {
+    if (dairyDelete === undefined) {
       return;
     }
     dairyDelete.delete(key);
-    nameService.removeDiaryName(key);
   };
   return { deleteDiary };
 };

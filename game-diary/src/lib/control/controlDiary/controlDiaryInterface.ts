@@ -65,6 +65,7 @@ export interface ICreateDiary {
    * @returns {DiarySummary} 生成したDIaryのDiarySummary
    */
   create(name: string): DiarySummary;
+  createDefaultDiary(): DiarySummary;
 }
 export interface IDeleteDiary {
   /**

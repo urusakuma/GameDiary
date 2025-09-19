@@ -21,7 +21,6 @@ import {
 import {
   ICurrentDiaryManager,
   IDiaryDataMigrator,
-  IDiaryDelete,
   IDiaryExport,
   IDiaryImport,
   IDiaryLoad,
@@ -89,7 +88,6 @@ import {
   DiaryDecompressor,
 } from '@/model/serialization/diarySerializer';
 import DiaryNameService from '@/control/controlDiary/diaryNameService';
-import DiaryDelete from '@/model/repository/diaryDelete';
 
 // diaryModelInterfaces
 container.register<UsePreviousDayDiaryEntryFactory>(
@@ -221,7 +219,6 @@ container.registerSingleton<IDiaryImport>('IDiaryImport', DiaryImport);
 container.registerSingleton<IDiaryExport>('IDiaryExport', DiaryExport);
 container.registerSingleton<IDiarySave>('IDiarySave', DiarySave);
 container.registerSingleton<IDiaryLoad>('IDiaryLoad', DiaryLoad);
-container.registerSingleton<IDiaryDelete>('IDiaryDelete', DiaryDelete);
 
 // controlDiaryInterfaces
 container.registerSingleton<ICurrentDiaryAccessor>(

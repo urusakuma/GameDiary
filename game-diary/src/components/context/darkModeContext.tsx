@@ -1,3 +1,4 @@
+'use client';
 import { createContext, useContext, useLayoutEffect, useState } from 'react';
 import ContextWrapperProps from './contextWrapperProps';
 type DarkModeContextType = {

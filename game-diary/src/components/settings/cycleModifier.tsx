@@ -1,3 +1,4 @@
+'use client';
 import useCycleLength from 'src/hooks/editSettings/useCycleLength';
 import { useDarkModeContext } from '../context/darkModeContext';
 import { darkInput, lightInput } from '../component_styles';

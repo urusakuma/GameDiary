@@ -1,3 +1,4 @@
+'use client';
 import { darkInput, lightInput } from '../component_styles';
 import { useDarkModeContext } from '../context/darkModeContext';
 import handleEditDiaryName from 'src/hooks/editSettings/handleEditDiaryName';

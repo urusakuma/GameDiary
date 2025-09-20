@@ -1,6 +1,4 @@
-// Overlay.tsx
 'use client';
-
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 

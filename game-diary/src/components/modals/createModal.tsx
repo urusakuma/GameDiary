@@ -1,3 +1,4 @@
+'use client';
 import useCreateNewDiary from 'src/hooks/useCreateNewDiary';
 import { darkInput, lightInput } from '../component_styles';
 import { modal, ModalProps } from './modalProps';

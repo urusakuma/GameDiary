@@ -1,3 +1,4 @@
+'use client';
 import handleEditModifier from 'src/hooks/editSettings/handleEditModifier';
 import { darkInput, lightInput } from '../component_styles';
 import { useDarkModeContext } from '../context/darkModeContext';

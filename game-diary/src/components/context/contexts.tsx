@@ -1,3 +1,4 @@
+'use client';
 import { ChangeCurrentEntryProvider } from './changeCurrentEntryContext';
 import { DarkMeadContextProvider } from './darkModeContext';
 import { DiaryEntriesListProvider } from './diaryEntryListContext';

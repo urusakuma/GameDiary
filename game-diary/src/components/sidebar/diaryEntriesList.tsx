@@ -1,3 +1,4 @@
+'use client';
 import ListItem from './listItem';
 import { useDiaryEntriesListContext } from '../context/diaryEntryListContext';
 import { useDarkModeContext } from '../context/darkModeContext';

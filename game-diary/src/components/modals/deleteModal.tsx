@@ -1,3 +1,4 @@
+'use client';
 import useDiaryDelete from 'src/hooks/useDIaryDelete';
 import { useSelectedDiaryContext } from '../context/selectedDiaryContext';
 import { modal, ModalProps } from './modalProps';

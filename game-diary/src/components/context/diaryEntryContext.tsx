@@ -1,3 +1,4 @@
+'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
 import ContextWrapperProps from './contextWrapperProps';
 import useDiaryEntryTitle from 'src/hooks/editDiaryEntry/useDiaryEntryTitle';
@@ -63,7 +64,7 @@ export const DiaryEntryProvider = ({ children }: ContextWrapperProps) => {
     !isReadyClear ||
     currentDiaryEntry === undefined
   ) {
-    return null;
+    return <div>Loading...</div>;
   }
   const titleObj: DiaryEntryTitleContextType = {
     title,

@@ -41,7 +41,7 @@ export const DiaryEntriesListProvider = ({ children }: ContextWrapperProps) => {
     refreshDiaryEntries();
   }, [isReady]);
   if (diaryAccessor === null || entryAccessor === null) {
-    return null;
+    return <div>Loading...</div>;
   }
   const refreshDiaryEntries = () => {
     const list = [];

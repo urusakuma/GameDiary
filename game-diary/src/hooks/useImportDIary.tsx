@@ -1,3 +1,4 @@
+'use client';
 import { IDiaryImporter } from '@/control/controlDiary/controlDiaryInterface';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';

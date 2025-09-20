@@ -1,3 +1,4 @@
+'use client';
 import useSettingOpen from 'src/hooks/useSettingsOpen';
 import DiaryName from './diaryName';
 import Modifier from './modifier';

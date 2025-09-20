@@ -1,5 +1,4 @@
 'use client';
-
 import Overlay from './overlay';
 import { modal, ModalProps } from './modalProps';
 import useExport from 'src/hooks/useExport';

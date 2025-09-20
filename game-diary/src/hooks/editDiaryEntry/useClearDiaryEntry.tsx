@@ -1,3 +1,4 @@
+'use client';
 import { IEditDiaryEntry } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
 import { useCallback, useEffect, useState } from 'react';
 import { container } from 'tsyringe';

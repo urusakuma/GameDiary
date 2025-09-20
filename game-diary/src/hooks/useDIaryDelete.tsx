@@ -1,3 +1,4 @@
+'use client';
 import { IDeleteDiary } from '@/control/controlDiary/controlDiaryInterface';
 import { useEffect, useState } from 'react';
 import { container } from 'tsyringe';

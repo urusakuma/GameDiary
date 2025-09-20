@@ -1,3 +1,4 @@
+'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
 import ContextWrapperProps from './contextWrapperProps';
 import { container } from 'tsyringe';
@@ -52,7 +53,7 @@ export const ChangeCurrentEntryProvider = ({
     entryAccessor === undefined ||
     diaryAccessor === undefined
   ) {
-    return null;
+    return <div>Loading...</div>;
   }
   const onArrow = (e: KeyboardEvent) => {
     if (e.key === 'ArrowRight' && e.ctrlKey) {

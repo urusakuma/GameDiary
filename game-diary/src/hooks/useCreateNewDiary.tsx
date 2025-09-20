@@ -1,7 +1,5 @@
-import {
-  ICreateDiary,
-  IDiaryNameService,
-} from '@/control/controlDiary/controlDiaryInterface';
+'use client';
+import { ICreateDiary } from '@/control/controlDiary/controlDiaryInterface';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useDiaryEntryResetContext } from 'src/components/context/diaryEntryContext';

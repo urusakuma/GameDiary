@@ -1,5 +1,4 @@
 'use client';
-
 import Overlay from './overlay';
 import { useState } from 'react';
 import { modal, ModalProps } from './modalProps';

@@ -1,3 +1,4 @@
+'use client';
 import useDayInterval from 'src/hooks/editSettings/useDayInterval';
 import { useDarkModeContext } from '../context/darkModeContext';
 import { darkInput, lightInput } from '../component_styles';

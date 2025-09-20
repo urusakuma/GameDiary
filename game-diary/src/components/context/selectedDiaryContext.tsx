@@ -1,3 +1,4 @@
+'use client';
 import { ICurrentDiaryManager } from '@/model/repository/diaryRepositoryInterfaces';
 import { createContext, useEffect, useState, useContext } from 'react';
 import { container } from 'tsyringe';

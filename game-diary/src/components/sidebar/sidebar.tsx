@@ -1,3 +1,4 @@
+'use client';
 import classNames from 'classnames';
 import { darkButton, lightButton } from '../component_styles';
 import DiaryEntriesList from './diaryEntriesList';

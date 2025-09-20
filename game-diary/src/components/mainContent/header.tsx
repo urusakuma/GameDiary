@@ -1,4 +1,4 @@
-import useClearDiaryEntry from 'src/hooks/editDiaryEntry/useClearDiaryEntry';
+'use client';
 import {
   darkInput,
   lightInput,

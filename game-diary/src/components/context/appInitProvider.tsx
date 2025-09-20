@@ -13,9 +13,6 @@ import { ICreateDiary } from '@/control/controlDiary/controlDiaryInterface';
 const AppInitProvider = ({ children }: ContextWrapperProps) => {
   const [isReady, setIsReady] = useState(false);
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
     container.register<Storage>('LocalStorage', {
       useValue: window.localStorage,
     });
@@ -29,7 +26,7 @@ const AppInitProvider = ({ children }: ContextWrapperProps) => {
     setIsReady(true);
   }, []);
   if (!isReady) {
-    return <div></div>;
+    return <div>Loading...</div>;
   }
   return <>{children}</>;
 };

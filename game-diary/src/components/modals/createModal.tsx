@@ -22,7 +22,10 @@ const createModal = ({ onNavigate, isDarkMode }: ModalProps) => {
         <div className="gap-2 flex justify-start mt-4 w-full">
           <button
             className={`p-4 pxa-4 py-2 rounded shadow-md active:shadow-none ${isDarkMode ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' : 'border-gray-400 bg-gray-100 hover:bg-gray-200'}`}
-            onClick={createNewDiary}
+            onClick={() => {
+              createNewDiary();
+              onNavigate(modal.Load);
+            }}
           >
             作成
           </button>

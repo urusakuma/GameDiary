@@ -17,14 +17,20 @@ const ImportModal = ({ onNavigate, isDarkMode }: ModalProps) => {
       <div className="gap-2 flex justify-start mt-4">
         <button
           className={`px-4 py-2 rounded shadow-md active:shadow-none ${isDarkMode ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' : 'border-gray-400 bg-gray-100 hover:bg-gray-200'}`}
-          onClick={() => importFromText(textData)}
+          onClick={() => {
+            importFromText(textData);
+            onNavigate(modal.Home);
+          }}
         >
           インポート
         </button>
         <input
           type="file"
           accept=".txt"
-          onChange={(e) => importFromFile(e.target.files?.[0])}
+          onChange={(e) => {
+            importFromFile(e.target.files?.[0]);
+            onNavigate(modal.Home);
+          }}
           className="hidden"
           id="file-input"
         ></input>

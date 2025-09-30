@@ -1,14 +1,33 @@
 'use client';
 import Overlay from './overlay';
-import { modal, ModalProps } from './modalProps';
 import useExport from 'src/hooks/useExport';
-const ExportModal = ({ onNavigate, isDarkMode }: ModalProps) => {
+import { useDarkModeContext } from '../context/darkModeContext';
+import { useEffect } from 'react';
+import { useModalContext } from '../context/modalContext';
+const ExportModal = () => {
   const { exportText, refreshExportText, handleCopy, handleDownload } =
     useExport();
+  const { isDarkMode } = useDarkModeContext();
+  const { shortcutRegister } = useModalContext();
   refreshExportText();
-
+  useEffect(() => {
+    const unregister = shortcutRegister((e) => {
+      if (!e.ctrlKey) {
+        return;
+      }
+      if (e.key === 'c') {
+        e.preventDefault();
+        handleCopy();
+      }
+      if (e.key === 'e') {
+        e.preventDefault();
+        handleDownload();
+      }
+    });
+    return unregister;
+  }, [exportText]);
   return (
-    <Overlay onClose={() => onNavigate(modal.Home)} isDarkMode={isDarkMode}>
+    <Overlay>
       <h2 className="text-xl font-bold mb-4">エクスポート</h2>
       <textarea
         readOnly

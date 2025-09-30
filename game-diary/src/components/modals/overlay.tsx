@@ -1,25 +1,30 @@
 'use client';
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
+import { useDarkModeContext } from '../context/darkModeContext';
+import { useModalContext } from '../context/modalContext';
 
-interface OverlayProps {
-  children: React.ReactNode;
-  onClose: () => void;
-  isDarkMode: boolean;
-}
-
-const Overlay = ({ children, onClose, isDarkMode }: OverlayProps) => {
+type OverlayProps = {
+  children: ReactNode;
+};
+const Overlay = ({ children }: OverlayProps) => {
+  const { isDarkMode } = useDarkModeContext();
+  const { go, shortcutRegister } = useModalContext();
   useEffect(() => {
-    const onEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onEsc);
-    return () => window.removeEventListener('keydown', onEsc);
-  }, [onClose]);
+    if (go === undefined || shortcutRegister === undefined) {
+      return;
+    }
+    const unregister = shortcutRegister((e) => {
+      if (e.key === 'Escape') {
+        go.home();
+      }
+    });
+    return unregister;
+  }, [go, shortcutRegister]);
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
-      onClick={onClose}
+      onClick={go.home}
     >
       <motion.div
         className={`p-6 rounded-lg shadow-lg max-w-lg w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-200'} `}

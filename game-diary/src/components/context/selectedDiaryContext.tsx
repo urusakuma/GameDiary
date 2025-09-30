@@ -1,6 +1,13 @@
 'use client';
 import { ICurrentDiaryManager } from '@/model/repository/diaryRepositoryInterfaces';
-import { createContext, useEffect, useState, useContext } from 'react';
+import {
+  createContext,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  useMemo,
+} from 'react';
 import { container } from 'tsyringe';
 import ContextWrapperProps from './contextWrapperProps';
 
@@ -14,7 +21,7 @@ const SelectedDiaryContext = createContext<SelectedDiaryContextType | null>(
 );
 export const SelectedDiaryProvider = ({ children }: ContextWrapperProps) => {
   const [currentDiaryManager, setCurrentDiaryManager] =
-    useState<ICurrentDiaryManager | null>(null);
+    useState<ICurrentDiaryManager>();
   const [selectedOption, setSelectedOption] = useState<string>('');
   useEffect(() => {
     const currentDiaryManager = container.resolve<ICurrentDiaryManager>(
@@ -22,17 +29,20 @@ export const SelectedDiaryProvider = ({ children }: ContextWrapperProps) => {
     );
     setCurrentDiaryManager(currentDiaryManager);
   }, []);
-  const selectCurrentDiary = () => {
-    if (currentDiaryManager === null) {
+
+  const selectCurrentDiary = useCallback(() => {
+    if (currentDiaryManager === undefined) {
       return;
     }
     setSelectedOption(currentDiaryManager.getCurrentDiaryKey());
-  };
-  const selectedDiaryContextObj = {
-    selectedOption,
-    setSelectedOption,
-    selectCurrentDiary,
-  };
+  }, [currentDiaryManager]);
+
+  const selectedDiaryContextObj = useMemo(() => {
+    return { selectedOption, setSelectedOption, selectCurrentDiary };
+  }, [selectedOption, setSelectedOption, selectCurrentDiary]);
+  if (selectedDiaryContextObj === undefined) {
+    return <div>Loading...</div>;
+  }
   return (
     <SelectedDiaryContext.Provider value={selectedDiaryContextObj}>
       {children}

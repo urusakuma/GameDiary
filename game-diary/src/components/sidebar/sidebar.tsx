@@ -3,17 +3,11 @@ import classNames from 'classnames';
 import { darkButton, lightButton } from '../component_styles';
 import DiaryEntriesList from './diaryEntriesList';
 import executeSave from 'src/hooks/executeSave';
-import ExportModal from '../modals/exportModal';
-import ImportModal from '../modals/importModal';
-import LoadModal from '../modals/loadModal';
-import { modal } from '../modals/modalProps';
-import { useState } from 'react';
 import { useDarkModeContext } from '../context/darkModeContext';
-import CreateModal from '../modals/createModal';
-import DeleteModal from '../modals/deleteModal';
+import { useModalContext } from '../context/modalContext';
 const Sidebar = () => {
   const { isDarkMode, setDarkMode } = useDarkModeContext();
-  const [showModal, setShowModal] = useState(modal.Home);
+  const { go } = useModalContext();
   return (
     <div
       className={`w-1/8 p-2 overflow-hidden flex flex-col ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}
@@ -41,37 +35,22 @@ const Sidebar = () => {
         </button>
         <button
           className={`overflow-y-clip overflow-x-clip ${isDarkMode ? darkButton : lightButton}`}
-          onClick={() => setShowModal(modal.Export)}
+          onClick={go.export}
         >
           エクスポート
         </button>
         <button
           className={`overflow-y-clip overflow-x-clip ${isDarkMode ? darkButton : lightButton}`}
-          onClick={() => setShowModal(modal.Load)}
+          onClick={go.load}
         >
           ロード
         </button>
         <button
           className={`overflow-y-clip overflow-x-clip ${isDarkMode ? darkButton : lightButton}`}
-          onClick={() => setShowModal(modal.Import)}
+          onClick={go.import}
         >
           インポート
         </button>
-        {showModal === modal.Export && (
-          <ExportModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
-        )}
-        {showModal === modal.Load && (
-          <LoadModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
-        )}
-        {showModal === modal.Import && (
-          <ImportModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
-        )}
-        {showModal === modal.Create && (
-          <CreateModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
-        )}
-        {showModal === modal.Delete && (
-          <DeleteModal onNavigate={setShowModal} isDarkMode={isDarkMode} />
-        )}
       </div>
     </div>
   );

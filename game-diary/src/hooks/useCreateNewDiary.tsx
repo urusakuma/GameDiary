@@ -23,6 +23,10 @@ const useCreateNewDiary = () => {
     toast.success(summary.name + 'を新規作成しました');
     setNewDiaryName('');
   };
-  return { newDiaryName, setNewDiaryName, createNewDiary };
+  return {
+    newDiaryName,
+    setNewDiaryName,
+    createNewDiary,
+  };
 };
 export default useCreateNewDiary;

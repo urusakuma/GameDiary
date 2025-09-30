@@ -1,5 +1,12 @@
 'use client';
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import ContextWrapperProps from './contextWrapperProps';
 import { container } from 'tsyringe';
 import {
@@ -9,9 +16,11 @@ import {
 import { useDiaryEntryResetContext } from './diaryEntryContext';
 import { useDiaryEntriesListContext } from './diaryEntryListContext';
 import { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
+import { KeyboardEventHandler } from './modalContext';
 type ChangeCurrentEntryContextType = {
   moveByDate: (date: number) => void;
   moveToLatest: () => void;
+  onArrowMoveEntry: KeyboardEventHandler;
 };
 const ChangeCurrentEntryContext =
   createContext<ChangeCurrentEntryContextType | null>(null);
@@ -25,8 +34,8 @@ export const ChangeCurrentEntryProvider = ({
   const [diaryAccessor, setDiaryAccessor] = useState<ICurrentDiaryAccessor>();
   const { refreshEntry } = useDiaryEntryResetContext();
   const { addDiaryEntry, deleteDiaryEntry } = useDiaryEntriesListContext();
-  // コンポーネントがマウントされたときにIChangeCurrentDiaryEntryのインスタンスを取得
   useEffect(() => {
+    // 初期化処理
     const changeCurrentEntryInstance =
       container.resolve<IChangeCurrentDiaryEntry>('IChangeCurrentDiaryEntry');
     setChangeCurrentDiaryEntry(changeCurrentEntryInstance);
@@ -39,53 +48,71 @@ export const ChangeCurrentEntryProvider = ({
     );
     setDiaryAccessor(diaryAccessorInstance);
   }, []);
-  // キーボードイベントを監視して、Ctrl + ArrowRight/ArrowLeftで日記エントリを移動
-  useEffect(() => {
-    if (changeCurrentEntry === undefined || entryAccessor === undefined) {
+
+  const onArrowMoveEntry: KeyboardEventHandler = useCallback(
+    (e, isModal) => {
+      if (changeCurrentEntry === undefined || entryAccessor === undefined) {
+        return;
+      }
+      if (e.ctrlKey === false || !isModal.home()) {
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        const isCreated = changeCurrentEntry.moveToNext();
+        refreshEntry();
+        if (!isCreated) {
+          return;
+        }
+        const day = entryAccessor.getCurrentDiaryEntry().day;
+        const title = entryAccessor.getCurrentDiaryEntry().getTitle();
+        addDiaryEntry(day, title);
+      }
+      if (e.key === 'ArrowLeft') {
+        const day = entryAccessor.getCurrentDiaryEntry().day;
+        const isDeleted = changeCurrentEntry.moveToPrevious();
+        refreshEntry();
+        if (!isDeleted) {
+          return;
+        }
+        deleteDiaryEntry(day);
+      }
+    },
+    [
+      changeCurrentEntry,
+      entryAccessor,
+      refreshEntry,
+      addDiaryEntry,
+      deleteDiaryEntry,
+    ]
+  );
+  const moveByDate = useCallback(
+    (date: number) => {
+      if (changeCurrentEntry === undefined) {
+        return;
+      }
+      changeCurrentEntry.moveByDate(date);
+      refreshEntry();
+    },
+    [changeCurrentEntry, refreshEntry]
+  );
+  const moveToLatest = useCallback(() => {
+    if (changeCurrentEntry === undefined || diaryAccessor === undefined) {
       return;
     }
-    window.addEventListener('keydown', onArrow);
-    return () => window.removeEventListener('keydown', onArrow);
-  }, [changeCurrentEntry, entryAccessor]);
-
-  if (
-    changeCurrentEntry === undefined ||
-    entryAccessor === undefined ||
-    diaryAccessor === undefined
-  ) {
-    return <div>Loading...</div>;
-  }
-  const onArrow = (e: KeyboardEvent) => {
-    if (e.key === 'ArrowRight' && e.ctrlKey) {
-      const isCreated = changeCurrentEntry.moveToNext();
-      refreshEntry();
-      if (!isCreated) {
-        return;
-      }
-      const day = entryAccessor.getCurrentDiaryEntry().day;
-      const title = entryAccessor.getCurrentDiaryEntry().getTitle();
-      addDiaryEntry(day, title);
-    }
-    if (e.key === 'ArrowLeft' && e.ctrlKey) {
-      const day = entryAccessor.getCurrentDiaryEntry().day;
-      const isDeleted = changeCurrentEntry.moveToPrevious();
-      refreshEntry();
-      if (!isDeleted) {
-        return;
-      }
-      deleteDiaryEntry(day);
-    }
-  };
-  const moveByDate = (date: number) => {
-    changeCurrentEntry.moveByDate(date);
-    refreshEntry();
-  };
-  const moveToLatest = () => {
     const lastDay = diaryAccessor.getCurrentDiary().getLastDay();
     changeCurrentEntry.moveByDate(lastDay);
     refreshEntry();
-  };
-  const changeCurrentObj = { moveByDate, moveToLatest };
+  }, [changeCurrentEntry, diaryAccessor, refreshEntry]);
+  const changeCurrentObj = useMemo(() => {
+    return { moveByDate, moveToLatest, onArrowMoveEntry };
+  }, [moveByDate, moveToLatest, onArrowMoveEntry]);
+  if (
+    moveByDate === undefined ||
+    moveToLatest === undefined ||
+    onArrowMoveEntry === undefined
+  ) {
+    return <div>Loading...</div>;
+  }
   return (
     <ChangeCurrentEntryContext.Provider value={changeCurrentObj}>
       {children}

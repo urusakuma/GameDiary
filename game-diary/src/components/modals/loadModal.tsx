@@ -1,24 +1,45 @@
 'use client';
 import Overlay from './overlay';
-import { modal, ModalProps } from './modalProps';
 import { useDiaryNameListContext } from 'src/components/context/diaryNameListContext';
 import { useSelectedDiaryContext } from 'src/components/context/selectedDiaryContext';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import useLoadDiary from 'src/hooks/useLoadDiary';
+import { useDarkModeContext } from '../context/darkModeContext';
+import { useModalContext } from '../context/modalContext';
 
-const LoadModal = ({ onNavigate, isDarkMode }: ModalProps) => {
+const LoadModal = () => {
   const { diaryNames, refreshDiaryNames } = useDiaryNameListContext();
   const { selectedOption, setSelectedOption, selectCurrentDiary } =
     useSelectedDiaryContext();
   const { load } = useLoadDiary();
+  const { isDarkMode } = useDarkModeContext();
+  const { go, shortcutRegister } = useModalContext();
+  const pulldownMenu = useRef<HTMLSelectElement>(null);
   useEffect(() => {
-    refreshDiaryNames();
     selectCurrentDiary();
+    refreshDiaryNames();
+    setTimeout(() => pulldownMenu.current?.focus(), 0);
   }, []);
+  useEffect(() => {
+    const unregister = shortcutRegister((e) => {
+      if (
+        e.key === 'Enter' &&
+        pulldownMenu.current === document.activeElement
+      ) {
+        load(selectedOption);
+      }
+      if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        go.delete();
+      }
+    });
+    return unregister;
+  }, [selectedOption, load, go, shortcutRegister]);
   return (
-    <Overlay onClose={() => onNavigate(modal.Home)} isDarkMode={isDarkMode}>
+    <Overlay>
       <h2 className="text-xl font-bold mb-4">ロード</h2>
       <select
+        ref={pulldownMenu}
         className={`w-full p-2 ${isDarkMode ? 'bg-gray-600' : 'bg-gray-300'}`}
         value={selectedOption}
         onChange={(e) => {
@@ -42,18 +63,14 @@ const LoadModal = ({ onNavigate, isDarkMode }: ModalProps) => {
         </button>
         <button
           className={`px-4 py-2 rounded shadow-md active:shadow-none ${isDarkMode ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' : 'border-gray-400 bg-gray-100 hover:bg-gray-200'}`}
-          onClick={() => {
-            onNavigate(modal.Create);
-          }}
+          onClick={go.create}
         >
           新規作成
         </button>
         <div className=" flex-1">{/** 空白 */}</div>
         <button
           className={`px-4 py-2 rounded shadow-md active:shadow-none ${isDarkMode ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' : 'border-gray-400 bg-gray-100 hover:bg-gray-200'}`}
-          onClick={() => {
-            onNavigate(modal.Delete);
-          }}
+          onClick={go.delete}
         >
           削除
         </button>

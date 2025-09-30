@@ -1,6 +1,6 @@
 'use client';
 import { IDeleteDiary } from '@/control/controlDiary/controlDiaryInterface';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { container } from 'tsyringe';
 
 const useDiaryDelete = () => {
@@ -10,12 +10,15 @@ const useDiaryDelete = () => {
     const diaryDeleteInstance = container.resolve<IDeleteDiary>('IDeleteDiary');
     setDiaryDelete(diaryDeleteInstance);
   }, []);
-  const deleteDiary = (key: string) => {
-    if (dairyDelete === undefined) {
-      return;
-    }
-    dairyDelete.delete(key);
-  };
+  const deleteDiary = useCallback(
+    (key: string) => {
+      if (dairyDelete === undefined) {
+        return;
+      }
+      dairyDelete.delete(key);
+    },
+    [dairyDelete]
+  );
   return { deleteDiary };
 };
 export default useDiaryDelete;

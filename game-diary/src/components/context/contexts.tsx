@@ -7,6 +7,7 @@ import { DiaryEntryProvider } from './diaryEntryContext';
 import ContextWrapperProps from './contextWrapperProps';
 import { SelectedDiaryProvider } from './selectedDiaryContext';
 import AppInitProvider from './appInitProvider';
+import { ModalProvider } from './modalContext';
 const ContextProvider = ({ children }: ContextWrapperProps) => {
   return (
     <AppInitProvider>
@@ -16,7 +17,7 @@ const ContextProvider = ({ children }: ContextWrapperProps) => {
             <DiaryEntriesListProvider>
               <DiaryEntryProvider>
                 <ChangeCurrentEntryProvider>
-                  {children}
+                  <ModalProvider>{children}</ModalProvider>
                 </ChangeCurrentEntryProvider>
               </DiaryEntryProvider>
             </DiaryEntriesListProvider>

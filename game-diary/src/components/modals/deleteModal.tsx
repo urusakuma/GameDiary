@@ -19,7 +19,10 @@ const deleteModal = () => {
   }, [deleteDiary, selectedOption]);
   useEffect(() => {
     const unregister = shortcutRegister((e) => {
-      if (e.key === 'Enter' && document.activeElement === document.body) {
+      if (
+        (e.key === 'Enter' || e.key === 'Delete') &&
+        document.activeElement === document.body
+      ) {
         handleDelete();
       }
       if (e.key === 'Backspace') {

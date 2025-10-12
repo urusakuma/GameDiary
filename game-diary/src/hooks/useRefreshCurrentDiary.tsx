@@ -1,14 +1,11 @@
 import { useChangeCurrentEntryContext } from 'src/components/context/changeCurrentEntryContext';
-import { useDiaryEntryResetContext } from 'src/components/context/diaryEntryContext';
-import { useDiaryEntriesListContext } from 'src/components/context/diaryEntryListContext';
+import { useRefreshContext } from 'src/components/context/useRefreshContest';
 
 const useRefreshCurrentDiary = () => {
-  const { refreshDiaryEntries } = useDiaryEntriesListContext();
-  const { refreshEntry } = useDiaryEntryResetContext();
+  const { refreshAll } = useRefreshContext();
   const { moveToLatest } = useChangeCurrentEntryContext();
   const refreshCurrentDiary = () => {
-    refreshEntry();
-    refreshDiaryEntries();
+    refreshAll();
     moveToLatest();
   };
   return { refreshCurrentDiary };

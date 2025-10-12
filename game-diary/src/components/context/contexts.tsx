@@ -8,22 +8,25 @@ import ContextWrapperProps from './contextWrapperProps';
 import { SelectedDiaryProvider } from './selectedDiaryContext';
 import AppInitProvider from './appInitProvider';
 import { ModalProvider } from './modalContext';
+import { RefreshProvider } from './useRefreshContest';
 const ContextProvider = ({ children }: ContextWrapperProps) => {
   return (
     <AppInitProvider>
-      <DarkMeadContextProvider>
-        <DiaryNameListProvider>
-          <SelectedDiaryProvider>
-            <DiaryEntriesListProvider>
-              <DiaryEntryProvider>
-                <ChangeCurrentEntryProvider>
-                  <ModalProvider>{children}</ModalProvider>
-                </ChangeCurrentEntryProvider>
-              </DiaryEntryProvider>
-            </DiaryEntriesListProvider>
-          </SelectedDiaryProvider>
-        </DiaryNameListProvider>
-      </DarkMeadContextProvider>
+      <RefreshProvider>
+        <DarkMeadContextProvider>
+          <DiaryNameListProvider>
+            <SelectedDiaryProvider>
+              <DiaryEntriesListProvider>
+                <DiaryEntryProvider>
+                  <ChangeCurrentEntryProvider>
+                    <ModalProvider>{children}</ModalProvider>
+                  </ChangeCurrentEntryProvider>
+                </DiaryEntryProvider>
+              </DiaryEntriesListProvider>
+            </SelectedDiaryProvider>
+          </DiaryNameListProvider>
+        </DarkMeadContextProvider>
+      </RefreshProvider>
     </AppInitProvider>
   );
 };

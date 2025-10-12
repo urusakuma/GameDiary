@@ -54,6 +54,8 @@ export default class DiaryNameManager implements IDiaryNameManager {
     if (key === '' || name === '' || this.diaryNameSet.has(name)) {
       return false;
     }
+    //前の文字をsetから取り除く
+    this.diaryNameSet.delete(this.diaryNames[key]);
     //ストレージキーと名前を保存してストレージに登録する
     this.diaryNameSet.add(name);
     this.diaryNames[key] = name;

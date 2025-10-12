@@ -10,42 +10,43 @@ import {
 import ContextWrapperProps from './contextWrapperProps';
 import { IDiaryNameService } from '@/control/controlDiary/controlDiaryInterface';
 import { container } from 'tsyringe';
+import { useRefreshContext } from './useRefreshContest';
 
 type DiaryNameListContextType = {
   diaryNames: Array<[string, string]>;
-  refreshDiaryNames: () => void;
   getDiaryName: (key: string) => string;
-  updateDiaryName: (key: string, name: string) => void;
 };
 const DiaryNameListContext = createContext<DiaryNameListContextType | null>(
   null
 );
 export const DiaryNameListProvider = ({ children }: ContextWrapperProps) => {
-  const [diaryNames, setOptions] = useState<Array<[string, string]>>([]);
+  const [diaryNames, setDiaryNames] = useState<Array<[string, string]>>([]);
   const [nameService, setNameService] = useState<IDiaryNameService>();
+  const { diaryRefresherRegister } = useRefreshContext();
   useEffect(() => {
     const nameServiceInstance =
       container.resolve<IDiaryNameService>('IDiaryNameService');
     setNameService(nameServiceInstance);
-  }, []);
+
+    const refresh = () => {
+      if (nameServiceInstance === undefined) {
+        return;
+      }
+      const names = nameServiceInstance.collectDiaryNameEntries();
+      setDiaryNames(names);
+    };
+    refresh();
+    const unregister = diaryRefresherRegister(refresh);
+    return unregister;
+  }, [diaryRefresherRegister]);
   useEffect(() => {
     if (nameService === undefined) {
       return;
     }
     const names = nameService.collectDiaryNameEntries();
-    setOptions(names);
-  }, [nameService]);
+    setDiaryNames(names);
+  }, [nameService, setDiaryNames]);
 
-  const updateDiaryName = useCallback(
-    (key: string, name: string) => {
-      if (nameService === undefined) {
-        return;
-      }
-      setOptions((prev) => prev.map((v) => (v[0] === key ? [v[0], name] : v)));
-      nameService.updateDiaryName(key, name);
-    },
-    [nameService]
-  );
   const getDiaryName = useCallback(
     (key: string) => {
       if (nameService === undefined) {
@@ -55,22 +56,13 @@ export const DiaryNameListProvider = ({ children }: ContextWrapperProps) => {
     },
     [nameService]
   );
-  const refreshDiaryNames = useCallback(() => {
-    if (nameService === undefined) {
-      return;
-    }
-    const names = nameService.collectDiaryNameEntries();
-    setOptions(names);
-  }, [nameService]);
 
   const optionsObj: DiaryNameListContextType = useMemo(() => {
     return {
       diaryNames,
-      refreshDiaryNames,
       getDiaryName,
-      updateDiaryName,
     };
-  }, [diaryNames, refreshDiaryNames, getDiaryName, updateDiaryName]);
+  }, [diaryNames, getDiaryName]);
   if (optionsObj === undefined) {
     return <div>Loading...</div>;
   }

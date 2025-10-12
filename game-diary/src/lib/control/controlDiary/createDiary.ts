@@ -37,10 +37,16 @@ export default class CreateDiary implements ICreateDiary {
    */
   private finalizeDiary(newDiary: IDiary): DiarySummary {
     this.diaryService.addDiary(newDiary);
-    const newName = newDiary.getSettings().getDiaryName();
-    const key = newDiary.getSettings().storageKey;
-    this.diaryNameService.updateDiaryName(key, newName);
+    const newSettings = newDiary.getSettings();
+
+    const lastDay = newDiary.getLastDay();
+    const newEntryName = newSettings.getModifierDay(lastDay);
+    newDiary.getEntry(lastDay).setTitle(newEntryName);
+
+    const newDiaryName = newSettings.getDiaryName();
+    const key = newSettings.storageKey;
+    this.diaryNameService.updateDiaryName(key, newDiaryName);
     this.diaryAccessor.setCurrentDiary(key);
-    return { key, name: newName };
+    return { key, name: newDiaryName };
   }
 }

@@ -2,13 +2,13 @@
 import { ICreateDiary } from '@/control/controlDiary/controlDiaryInterface';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useDiaryEntryResetContext } from 'src/components/context/diaryEntryContext';
 import { container } from 'tsyringe';
+import useRefreshCurrentDiary from './useRefreshCurrentDiary';
 
 const useCreateNewDiary = () => {
   const [createDiary, setCreateDiary] = useState<ICreateDiary>();
   const [newDiaryName, setNewDiaryName] = useState('');
-  const { refreshEntry } = useDiaryEntryResetContext();
+  const { refreshCurrentDiary } = useRefreshCurrentDiary();
 
   useEffect(() => {
     const createDiaryInstance = container.resolve<ICreateDiary>('ICreateDiary');
@@ -19,7 +19,7 @@ const useCreateNewDiary = () => {
       return;
     }
     const summary = createDiary.create(newDiaryName);
-    refreshEntry();
+    refreshCurrentDiary();
     toast.success(summary.name + 'を新規作成しました');
     setNewDiaryName('');
   };

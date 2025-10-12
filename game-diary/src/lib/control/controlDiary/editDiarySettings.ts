@@ -1,14 +1,24 @@
 import { inject, injectable } from 'tsyringe';
 import { IEditDiarySettings } from '../controlDiaryEntry/controlDiaryEntryInterface';
-import type { ICurrentDiaryAccessor } from './controlDiaryInterface';
+import type {
+  ICurrentDiaryAccessor,
+  IDiaryNameService,
+} from './controlDiaryInterface';
 @injectable()
 export default class EditDiarySettings implements IEditDiarySettings {
   constructor(
     @inject('ICurrentDiaryAccessor')
-    private diaryAccessor: ICurrentDiaryAccessor
+    private diaryAccessor: ICurrentDiaryAccessor,
+    @inject('IDiaryNameService')
+    private diaryNameService: IDiaryNameService
   ) {}
-  editDiaryName(name: string): void {
+  editDiaryName(name: string): boolean {
     this.getSettings().setDiaryName(name);
+    const isEdited = this.diaryNameService.updateDiaryName(
+      this.getSettings().storageKey,
+      name
+    );
+    return isEdited;
   }
   editDayInterval(interval: number): void {
     this.getSettings().updateDayInterval(interval);

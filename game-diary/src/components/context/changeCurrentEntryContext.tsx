@@ -13,10 +13,10 @@ import {
   IChangeCurrentDiaryEntry,
   ICurrentDiaryEntryAccessor,
 } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
-import { useDiaryEntryResetContext } from './diaryEntryContext';
 import { useDiaryEntriesListContext } from './diaryEntryListContext';
 import { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
 import { KeyboardEventHandler } from './modalContext';
+import { useRefreshContext } from './useRefreshContest';
 type ChangeCurrentEntryContextType = {
   moveByDate: (date: number) => void;
   moveToLatest: () => void;
@@ -32,7 +32,7 @@ export const ChangeCurrentEntryProvider = ({
   const [entryAccessor, setEntryAccessor] =
     useState<ICurrentDiaryEntryAccessor>();
   const [diaryAccessor, setDiaryAccessor] = useState<ICurrentDiaryAccessor>();
-  const { refreshEntry } = useDiaryEntryResetContext();
+  const { refreshEntry } = useRefreshContext();
   const { addDiaryEntry, deleteDiaryEntry } = useDiaryEntriesListContext();
   useEffect(() => {
     // 初期化処理

@@ -27,6 +27,7 @@ const DayInterval = () => {
         className={`border p-2 text-center w-full ${isDarkMode ? 'bg-gray-700 border-gray-500' : 'bg-gray-200 border-gray-400 text-black'}`}
       ></input>
       <datalist id="dayIntervalTickMarks">
+        {/*1から15まで1刻み、15から100まで5刻みの目盛りを作成*/}
         {Array.from({ length: 15 }, (_, i) => (
           <option key={i} value={i + 1} label={`${i + 1}`} />
         ))}

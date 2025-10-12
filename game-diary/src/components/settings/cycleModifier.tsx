@@ -1,11 +1,12 @@
 'use client';
 import useCycleLength from 'src/hooks/editSettings/useCycleLength';
+import useModifierCycle from 'src/hooks/editSettings/usetModifierCycle';
 import { useDarkModeContext } from '../context/darkModeContext';
 import { darkInput, lightInput } from '../component_styles';
-import handleEditModifierCycle from 'src/hooks/editSettings/handleEditModifierCycle';
 
 const CycleModifier = () => {
   const { isDarkMode } = useDarkModeContext();
+  const { modifierUnits, editModifierCycle } = useModifierCycle();
   const {
     cycleLength,
     cycleLengthStr,
@@ -29,9 +30,9 @@ const CycleModifier = () => {
               type="text"
               key={`label-${i}`}
               className={`border p-1 text-right w-4/5 ${isDarkMode ? darkInput : lightInput}`}
-              defaultValue={``}
+              value={modifierUnits[i]}
               onChange={(e) => {
-                handleEditModifierCycle(i, e.target.value);
+                editModifierCycle(i, e.target.value);
               }}
             ></input>
           </div>
@@ -49,6 +50,7 @@ const CycleModifier = () => {
           }}
         ></input>
         <datalist id="cycleLengthTickMarks">
+          {/*1から10まで1刻み、10から50まで5刻みの目盛りを作成*/}
           {Array.from({ length: 10 }, (_, i) => (
             <option key={i} value={i + 1} label={`${i + 1}`} />
           ))}

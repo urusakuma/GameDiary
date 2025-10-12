@@ -6,29 +6,32 @@ import { useEffect, useRef } from 'react';
 import useLoadDiary from 'src/hooks/useLoadDiary';
 import { useDarkModeContext } from '../context/darkModeContext';
 import { useModalContext } from '../context/modalContext';
+import { useRefreshContext } from '../context/useRefreshContest';
 
 const LoadModal = () => {
-  const { diaryNames, refreshDiaryNames } = useDiaryNameListContext();
+  const { diaryNames } = useDiaryNameListContext();
   const { selectedOption, setSelectedOption, selectCurrentDiary } =
     useSelectedDiaryContext();
+  const { refreshDiary } = useRefreshContext();
   const { load } = useLoadDiary();
   const { isDarkMode } = useDarkModeContext();
   const { go, shortcutRegister } = useModalContext();
   const pulldownMenu = useRef<HTMLSelectElement>(null);
   useEffect(() => {
-    selectCurrentDiary();
-    refreshDiaryNames();
+    setTimeout(() => selectCurrentDiary(), 0);
+    setTimeout(() => refreshDiary(), 0);
     setTimeout(() => pulldownMenu.current?.focus(), 0);
-  }, []);
+  }, [selectCurrentDiary, refreshDiary, pulldownMenu]);
   useEffect(() => {
     const unregister = shortcutRegister((e) => {
       if (
         e.key === 'Enter' &&
-        pulldownMenu.current === document.activeElement
+        (document.activeElement === pulldownMenu.current ||
+          document.activeElement === document.body)
       ) {
         load(selectedOption);
       }
-      if (e.ctrlKey && e.key === 'd') {
+      if ((e.ctrlKey && e.key === 'd') || e.key === 'Delete') {
         e.preventDefault();
         go.delete();
       }

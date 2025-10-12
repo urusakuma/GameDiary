@@ -1,6 +1,6 @@
 'use client';
 import Overlay from './overlay';
-import { ChangeEvent, useEffect, useState, useCallback } from 'react';
+import { ChangeEvent, useEffect, useState, useCallback, useRef } from 'react';
 import useImportDiary from 'src/hooks/useImportDIary';
 import { useDarkModeContext } from '../context/darkModeContext';
 import { useModalContext } from '../context/modalContext';
@@ -10,16 +10,28 @@ const ImportModal = () => {
   const { importFromFile, importFromText } = useImportDiary();
   const { isDarkMode } = useDarkModeContext();
   const { go, shortcutRegister } = useModalContext();
+  const importArea = useRef<HTMLTextAreaElement>(null);
+
   const handleImportText = useCallback(async () => {
     await importFromText(textData);
     go.home();
   }, [importFromText, go]);
+
+  const handleImportFile = async (e: ChangeEvent<HTMLInputElement>) => {
+    await importFromFile(e.target.files?.[0]);
+    go.home();
+  };
+
   useEffect(() => {
     const unregister = shortcutRegister(async (e) => {
-      if (e.ctrlKey && e.key === 'v') {
+      if (
+        e.ctrlKey &&
+        e.key === 'v' &&
+        document.activeElement !== importArea.current
+      ) {
         e.preventDefault();
-        const criptext = await navigator.clipboard.readText();
-        setTextData(criptext);
+        const clipText = await navigator.clipboard.readText();
+        setTextData(clipText);
       }
       if (e.key === 'Enter') {
         handleImportText();
@@ -27,14 +39,12 @@ const ImportModal = () => {
     });
     return unregister;
   }, [setTextData, handleImportText, shortcutRegister]);
-  const handleImportFile = async (e: ChangeEvent<HTMLInputElement>) => {
-    await importFromFile(e.target.files?.[0]);
-    go.home();
-  };
+
   return (
     <Overlay>
       <h2 className="text-xl font-bold mb-4">インポート</h2>
       <textarea
+        ref={importArea}
         className={`w-full h-64 font-mono p-2 border border-gray-300 rounded resize-none ${isDarkMode ? 'bg-gray-600 border-gray-200' : 'bg-gray-300 border-gray-600'}`}
         onChange={(e) => setTextData(e.target.value)}
         value={textData}

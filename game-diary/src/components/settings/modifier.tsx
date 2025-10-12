@@ -1,19 +1,21 @@
 'use client';
-import handleEditModifier from 'src/hooks/editSettings/handleEditModifier';
 import { darkInput, lightInput } from '../component_styles';
 import { useDarkModeContext } from '../context/darkModeContext';
+import useEditModifier from 'src/hooks/editSettings/useEditModifier';
 
 const Modifier = () => {
   const { isDarkMode } = useDarkModeContext();
+  const { modifier, editModifier } = useEditModifier();
+
   return (
     <div>
       <h3 className="text-center">日付の単位</h3>
       <input
         type="text"
         className={`border w-full p-2 ${isDarkMode ? darkInput : lightInput}`}
-        defaultValue={'$N日目'}
+        value={modifier}
         onChange={(e) => {
-          handleEditModifier(e.target.value);
+          editModifier(e.target.value);
         }}
       ></input>
     </div>

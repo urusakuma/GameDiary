@@ -127,6 +127,9 @@ container.register<string>('DEFAULT_TITLE', {
     String(container.resolve<number>('FIRST_DAY')) +
     DairySettingsConstant.DEFAULT_DAY_MODIFIER,
 });
+container.register<string>('HOW_TO_TEXT_URL', {
+  useValue: DairySettingsConstant.HOW_TO_TEXT_URL,
+});
 container.register<string>('EMPTY_STRING', { useValue: '' });
 container.register<undefined>('UNDEFINED', { useFactory: () => undefined });
 

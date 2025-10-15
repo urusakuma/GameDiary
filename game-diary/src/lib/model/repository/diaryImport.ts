@@ -10,6 +10,7 @@ export default class DiaryImport implements IDiaryImport {
     @inject('IDiaryNameService') private diaryNameService: IDiaryNameService
   ) {}
   import(val: string): string {
+    console.log('pass DiaryImport');
     const diary = this.diaryDecompressor.decompressDiary(val);
     this.diaryService.addDiary(diary);
     this.diaryNameService.updateDiaryName(

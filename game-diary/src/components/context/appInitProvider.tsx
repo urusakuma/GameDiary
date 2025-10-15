@@ -8,7 +8,11 @@ import '@/container/di_diary';
 import { container } from 'tsyringe';
 import { useEffect, useState } from 'react';
 import ContextWrapperProps from './contextWrapperProps';
-import { ICreateDiary } from '@/control/controlDiary/controlDiaryInterface';
+import {
+  ICreateDiary,
+  IDiaryImporter,
+  IDiaryLoadHandler,
+} from '@/control/controlDiary/controlDiaryInterface';
 
 const AppInitProvider = ({ children }: ContextWrapperProps) => {
   const [isReady, setIsReady] = useState(false);
@@ -17,13 +21,30 @@ const AppInitProvider = ({ children }: ContextWrapperProps) => {
       useValue: window.localStorage,
     });
     container.resolve<IDiaryDataMigrator>('IDiaryDataMigrator').migrate();
-    const currentKey = container
-      .resolve<ICurrentDiaryManager>('ICurrentDiaryManager')
-      .getCurrentDiaryKey();
-    if (currentKey === '') {
-      container.resolve<ICreateDiary>('ICreateDiary').createDefaultDiary();
+    const currentKeyManager = container.resolve<ICurrentDiaryManager>(
+      'ICurrentDiaryManager'
+    );
+    const currentKey = currentKeyManager.getCurrentDiaryKey();
+    if (currentKey !== '') {
+      setIsReady(true);
+      return;
     }
-    setIsReady(true);
+    const path = container.resolve<string>('HOW_TO_TEXT_URL');
+    fetch(path)
+      .then((res) => {
+        if (!res.ok) {
+          const createDiary = container.resolve<ICreateDiary>('ICreateDiary');
+          createDiary.createDefaultDiary();
+          setIsReady(true);
+          throw new Error('使い方.txtの読み込みに失敗しました:' + path);
+        }
+        return res.text();
+      })
+      .then((data) => {
+        const importer = container.resolve<IDiaryImporter>('IDiaryImporter');
+        importer.importText(data);
+      })
+      .then(() => setIsReady(true));
   }, []);
   if (!isReady) {
     return <div>Loading...</div>;

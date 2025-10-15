@@ -22,4 +22,6 @@ export default class DairySettingsConstant {
   static readonly GAME_DATA_NAME_LIST: string = 'gameDataNameList';
   /** v1で使用している日記名リストを保存するためのキー */
   static readonly DIARY_NAME_LIST: string = 'diaryNameList';
+
+  static readonly HOW_TO_TEXT_URL: string = './使い方.txt';
 }

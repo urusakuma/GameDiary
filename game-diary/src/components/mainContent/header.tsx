@@ -21,7 +21,7 @@ const Header = () => {
     >
       <input
         type="text"
-        className={`p-2 h-16 mb-2 flex-1 ${isDarkMode ? darkInput : lightInput}`}
+        className={`p-2 h-16 mb-2 flex-1 min-h-0 ${isDarkMode ? darkInput : lightInput}`}
         value={title}
         onChange={(e) => updateTitle(e.target.value)}
       ></input>

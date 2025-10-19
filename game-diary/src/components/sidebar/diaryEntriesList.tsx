@@ -7,7 +7,7 @@ const DiaryEntriesList = () => {
   const { diaryEntries, deleteDiaryEntry } = useDiaryEntriesListContext();
   const { isDarkMode } = useDarkModeContext();
   return (
-    <ol className="max-h-[70vh] overflow-y-clip overflow-y-scroll">
+    <ol className="h-full overflow-auto box-border m-0 pb-0">
       {diaryEntries.map((entry, index) => (
         <ListItem
           key={index}

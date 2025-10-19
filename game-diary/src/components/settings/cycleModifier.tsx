@@ -24,7 +24,7 @@ const CycleModifier = () => {
       </div>
       <div className={`p-4 grid grid-cols-4 gap-2`}>
         {[...Array(4)].map((_, i) => (
-          <div key={i} className={' flex items-left gap-2'}>
+          <div key={i} className={'flex items-left gap-2'}>
             <p key={`${i}`}>{i + 1}.</p>
             <input
               type="text"
@@ -70,7 +70,7 @@ const CycleModifier = () => {
               onCycleLengthBlur(Number(e.target.value));
             }}
           ></input>
-          <p className="p-2">周期</p>
+          <p className="p-2 whitespace-nowrap">周期</p>
         </div>
       </div>
     </div>

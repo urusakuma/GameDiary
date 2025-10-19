@@ -46,7 +46,7 @@ const deleteModal = () => {
           >
             削除
           </button>
-          <div className=" flex-1">{/** 空白 */}</div>
+          <div className="flex-1 min-h-0">{/** 空白 */}</div>
           <button
             className={`p-4 pxa-4 py-2 rounded shadow-md active:shadow-none ${isDarkMode ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' : 'border-gray-400 bg-gray-100 hover:bg-gray-200'}`}
             onClick={go.load}

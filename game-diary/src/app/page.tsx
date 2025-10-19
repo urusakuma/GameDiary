@@ -15,7 +15,7 @@ const DiaryLayout = () => {
         {/* 左サイドバー */}
         <Sidebar />
         {/* メインエリア */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-h-0">
           {/* ヘッダー */}
           <Header />
           {/* コンテンツエリア */}

@@ -1,5 +1,4 @@
 'use client';
-import classNames from 'classnames';
 import { darkButton, lightButton } from '../component_styles';
 import DiaryEntriesList from './diaryEntriesList';
 import executeSave from 'src/hooks/executeSave';
@@ -10,23 +9,21 @@ const Sidebar = () => {
   const { go } = useModalContext();
   return (
     <div
-      className={`w-1/8 p-2 overflow-hidden flex flex-col ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}
+      className={`w-[12.5%] p-2 overflow-hidden flex flex-col h-[100%] min-w-[260px] ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}
     >
-      <div className="flex gap-2 mb-4 overflow-hidden">
+      <div className="flex gap-2 mb-4 overflow-hidden min-h-0">
         <button
-          className={classNames(
-            'border p-2 whitespace-nowrap',
-            isDarkMode ? darkButton : lightButton
-          )}
+          className={`border p-2 whitespace-nowrap ${isDarkMode ? darkButton : lightButton}`}
           onClick={() => setDarkMode(!isDarkMode)}
         >
           {isDarkMode ? 'ライトモード' : 'ダークモード'}
         </button>
       </div>
-      <div className="flex-1 max-h-[72.5vh]">
+      <div className="min-h-0 h-[70%] overflow-hidden">
         <DiaryEntriesList></DiaryEntriesList>
       </div>
-      <div className={`grid grid-cols-2 gap-2`}>
+      <div className="flex-1"></div>
+      <div className={`grid grid-cols-2 gap-2 flex-none min-h-0`}>
         <button
           className={`overflow-hidden ${isDarkMode ? darkButton : lightButton}`}
           onClick={executeSave}

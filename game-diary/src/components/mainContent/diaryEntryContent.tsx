@@ -23,7 +23,7 @@ const DiaryEntryContent = () => {
     return unregister;
   }, [onArrowMoveEntry]);
   return (
-    <div className="p-2 flex-1">
+    <div className="p-2 flex-1 min-h-0">
       <textarea
         className={`p-2 h-full w-full ${isDarkMode ? darkInput : lightInput}`}
         value={content}

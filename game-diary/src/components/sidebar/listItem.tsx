@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import { useState } from 'react';
-import classNames from 'classnames';
 import { useChangeCurrentEntryContext } from '../context/changeCurrentEntryContext';
 interface ListItemProps {
   text: string;
@@ -32,36 +31,37 @@ const ListItem: React.FC<ListItemProps> = ({
 
   return (
     <li
-      className={classNames(
-        'flex justify-between items-center p-2 border rounded-md shadow-md transition-colors',
-        isDarkMode
-          ? index % 2 === 0
-            ? 'bg-gray-700'
-            : 'bg-gray-800 '
-          : index % 2 === 0
-            ? 'bg-gray-100 '
-            : 'bg-gray-200 '
-      )}
+      className={`flex justify-between items-center p-2 border rounded-md shadow-md transition-colors
+         ${
+           isDarkMode
+             ? index % 2 === 0
+               ? 'bg-gray-700'
+               : 'bg-gray-800'
+             : index % 2 === 0
+               ? 'bg-gray-100'
+               : 'bg-gray-200'
+         }`}
+      onClick={() => {
+        moveByDate(day);
+      }}
     >
-      <span
-        className="w-full"
-        onClick={() => {
-          moveByDate(day);
-        }}
-      >
+      <span className="w-full block truncate" title={text}>
         {text}
       </span>
       <button
-        onClick={() => pendingDeleteListItem()}
-        className={classNames(
-          'ml-2 p-1 w-6 h-6 flex items-center justify-center border rounded-full',
-
-          isWaitingDelete
-            ? 'bg-red-500 hover:bg-red-600'
-            : isDarkMode
-              ? 'bg-gray-300 hover:bg-gray-500 text-black'
-              : 'bg-gray-400 hover:bg-gray-300'
-        )}
+        onClick={(e) => {
+          e.stopPropagation();
+          pendingDeleteListItem();
+        }}
+        className={`
+          'ml-2 p-1 w-6 h-6 flex items-center justify-center border rounded-full min-h-0
+          ${
+            isWaitingDelete
+              ? 'bg-red-500 hover:bg-red-600'
+              : isDarkMode
+                ? 'bg-gray-300 hover:bg-gray-500 text-black'
+                : 'bg-gray-400 hover:bg-gray-300'
+          }`}
       >
         ×
       </button>

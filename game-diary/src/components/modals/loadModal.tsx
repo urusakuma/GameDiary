@@ -18,10 +18,11 @@ const LoadModal = () => {
   const { go, shortcutRegister } = useModalContext();
   const pulldownMenu = useRef<HTMLSelectElement>(null);
   useEffect(() => {
-    setTimeout(() => selectCurrentDiary(), 0);
-    setTimeout(() => refreshDiary(), 0);
-    setTimeout(() => pulldownMenu.current?.focus(), 0);
+    selectCurrentDiary();
+    refreshDiary();
+    pulldownMenu.current?.focus();
   }, [selectCurrentDiary, refreshDiary, pulldownMenu]);
+
   useEffect(() => {
     const unregister = shortcutRegister((e) => {
       if (

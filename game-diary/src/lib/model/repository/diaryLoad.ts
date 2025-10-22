@@ -18,7 +18,7 @@ export default class DiaryLoad implements IDiaryLoad {
     }
     const diaryStr = this.storage.getItem(key);
     if (diaryStr === null) {
-      throw new KeyNotFoundError(`Key ${key} not found`);
+      throw new KeyNotFoundError(`Key "${key}" not found`);
     }
     const decompressedDiary = this.diaryDecompressor.decompressDiary(diaryStr);
     this.diaryService.addDiary(decompressedDiary);

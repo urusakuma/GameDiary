@@ -23,5 +23,9 @@ export default class DairySettingsConstant {
   /** v1で使用している日記名リストを保存するためのキー */
   static readonly DIARY_NAME_LIST: string = 'diaryNameList';
 
-  static readonly HOW_TO_TEXT_URL: string = './使い方.txt';
+  /** 使い方の日記データが保存されているテキストファイルのURL */
+  static readonly HOW_TO_USE_TEXT_URL: string = './使い方.txt';
+  /** 使い方の日記データを読み取るためのストレージキー */
+  static readonly HOW_TO_USE_KEY: string =
+    '862c89fc-908c-439d-8443-db7d29ab25c5';
 }

@@ -10,7 +10,7 @@ import DayInterval from './dayInterval';
 const Settings = () => {
   const { isDarkMode } = useDarkModeContext();
   const { isOpen, setIsOpen } = useSettingOpen();
-  const windowWidth = 1350;
+  const windowWidth = 1600;
   const settingsHights = [300, 150];
   const [settingsHeight, setSettingsHight] = useState<number>(
     settingsHights[0]

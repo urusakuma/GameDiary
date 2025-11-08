@@ -12,13 +12,12 @@ export default class EditDiarySettings implements IEditDiarySettings {
     @inject('IDiaryNameService')
     private diaryNameService: IDiaryNameService
   ) {}
-  editDiaryName(name: string): boolean {
-    this.getSettings().setDiaryName(name);
-    const isEdited = this.diaryNameService.updateDiaryName(
+  editDiaryName(name: string): void {
+    const uniqueName = this.diaryNameService.updateDiaryName(
       this.getSettings().storageKey,
       name
     );
-    return isEdited;
+    this.getSettings().setDiaryName(uniqueName);
   }
   editDayInterval(interval: number): void {
     this.getSettings().updateDayInterval(interval);

@@ -1,18 +1,24 @@
 import { inject, injectable } from 'tsyringe';
-import { IUniqueDiaryNameGenerator } from './diaryRepositoryInterfaces';
-import type { IDiaryNameService } from '@/control/controlDiary/controlDiaryInterface';
+import type {
+  IDiaryNameManager,
+  IUniqueDiaryNameGenerator,
+} from './diaryRepositoryInterfaces';
 @injectable()
 export default class UniqueDiaryNameGenerator
   implements IUniqueDiaryNameGenerator
 {
   constructor(
-    @inject('IDiaryNameService') private diaryNameService: IDiaryNameService
+    @inject('IDiaryNameManager') private diaryNameManager: IDiaryNameManager
   ) {}
-  generate(name: string): string {
+  generate(name: string, key?: string): string {
+    // すでに登録されているkeyの場合、名前が同名であるならそのkeyが占有している名前であると判断する。
+    if (key !== undefined && this.diaryNameManager.getDiaryName(key) === name) {
+      return name;
+    }
     // 日記名に重複がないか調べる。重複している場合は数字を付加して重複を避ける。
     let newName: string = name;
     let i: number = 1;
-    while (this.diaryNameService.hasDiaryName(newName)) {
+    while (this.diaryNameManager.hasDiaryName(newName)) {
       newName = name + String(i);
       i++;
     }

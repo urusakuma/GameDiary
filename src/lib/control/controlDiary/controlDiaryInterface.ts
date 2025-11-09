@@ -31,13 +31,21 @@ export interface IDiaryNameService {
    */
   getDiaryName(key: string): string;
   /**
-   * ストレージキーを指定して日記名を更新する。新規作成もここで行われる。
+   * ストレージキーを指定して日記名を追加する。updateDiaryNameと同様の動作をする。
    * 名前が既に存在するときは数字を追加して別の名前にする。
    * @param key 日記名と対応したストレージキー
    * @param name 新しい日記名
-   * @returns 保存に成功したならtrue、失敗したならfalse
+   * @returns 一意であることが保証された新しい日記名
    */
-  updateDiaryName(key: string, name: string): boolean;
+  addDiaryName(key: string, name: string): string;
+  /**
+   * ストレージキーを指定して日記名を更新する。
+   * 名前が既に存在するときは数字を追加して別の名前にする。
+   * @param key 日記名と対応したストレージキー
+   * @param name 新しい日記名
+   * @returns 一意であることが保証された新しい日記名
+   */
+  updateDiaryName(key: string, name: string): string;
   /**
    * 指定したストレージキーに対応した日記名を日記リストから取り除く。
    * 日記名だけを取り除き、日記そのものを取り除くことはない。

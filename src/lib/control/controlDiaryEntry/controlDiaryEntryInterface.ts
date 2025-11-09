@@ -47,7 +47,7 @@ export interface IEditDiarySettings {
    * 日記の名前を変更する
    * @param name 日記の名前
    */
-  editDiaryName(name: string): boolean;
+  editDiaryName(name: string): void;
   /**
    * 日記の間隔を変更する
    * @param interval 日記の間隔

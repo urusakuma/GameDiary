@@ -4,12 +4,14 @@ import type { IDiaryDecompressor } from '../serialization/serializationInterface
 import type { IStorageService } from '../utils/storageServiceInterface';
 import type { IDiaryLoad, IDiaryService } from './diaryRepositoryInterfaces';
 import { inject, injectable } from 'tsyringe';
+import type { IDiaryNameService } from '@/control/controlDiary/controlDiaryInterface';
 @injectable()
 export default class DiaryLoad implements IDiaryLoad {
   constructor(
     @inject('IDiaryService') private diaryService: IDiaryService,
     @inject('IStorageService') private storage: IStorageService,
-    @inject('IDiaryDecompressor') private diaryDecompressor: IDiaryDecompressor
+    @inject('IDiaryDecompressor') private diaryDecompressor: IDiaryDecompressor,
+    @inject('IDiaryNameService') private diaryNameService: IDiaryNameService
   ) {}
   load(key: string): IDiary {
     const diary = this.diaryService.getDiary(key);
@@ -21,6 +23,11 @@ export default class DiaryLoad implements IDiaryLoad {
       throw new KeyNotFoundError(`Key "${key}" not found`);
     }
     const decompressedDiary = this.diaryDecompressor.decompressDiary(diaryStr);
+    const uniqueName = this.diaryNameService.updateDiaryName(
+      decompressedDiary.getSettings().storageKey,
+      decompressedDiary.getSettings().getDiaryName()
+    );
+    decompressedDiary.getSettings().setDiaryName(uniqueName);
     this.diaryService.addDiary(decompressedDiary);
     return decompressedDiary;
   }

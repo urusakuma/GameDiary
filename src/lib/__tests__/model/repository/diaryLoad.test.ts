@@ -1,65 +1,96 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
-import { MockDiary } from '@/__tests__/__mocks__/mockDiary';
 import { IDiaryDecompressor } from '@/model/serialization/serializationInterface';
 import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 import DiaryLoad from '@/model/repository/diaryLoad';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { KeyNotFoundError } from '@/error';
+import { IDiaryNameService } from '@/control/controlDiary/controlDiaryInterface';
+import { IDiary, IDiarySettings } from '@/model/diary/diaryModelInterfaces';
 
 describe('DiaryLoad', () => {
-  let diaryLoad: DiaryLoad;
   let mockDiaryService: jest.Mocked<IDiaryService>;
   let mockStorageService: jest.Mocked<IStorageService>;
   let mockDiaryDecompressor: jest.Mocked<IDiaryDecompressor>;
-  const mockDiary = new MockDiary();
+  let mockDIaryNameService: jest.Mocked<IDiaryNameService>;
+  let mockDiary: jest.Mocked<IDiary>;
+  const dairyKey = 'diaryKey';
   const diaryServiceDate = 'diaryDate in DiaryService';
   const storageServiceDate = 'diaryDate in StorageService';
   beforeEach(() => {
     mockDiaryService = {
+      getDiary: jest.fn(),
       addDiary: jest.fn(),
-      getDiary: jest.fn().mockReturnValueOnce(diaryServiceDate),
-      deleteDiary: jest.fn(),
-    };
+    } as unknown as jest.Mocked<IDiaryService>;
     mockStorageService = {
-      setItem: jest.fn(),
-      getItem: jest
-        .fn()
-        .mockReturnValueOnce(storageServiceDate)
-        .mockReturnValue(null),
-      removeItem: jest.fn(),
-      length: 0,
-    };
+      getItem: jest.fn(),
+    } as unknown as jest.Mocked<IStorageService>;
     mockDiaryDecompressor = {
-      decompressDiary: jest.fn().mockReturnValue(mockDiary),
+      decompressDiary: jest.fn(),
     };
-
-    container.registerInstance('IDiaryService', mockDiaryService);
-    container.registerInstance('IStorageService', mockStorageService);
-    container.register<IDiaryDecompressor>('IDiaryDecompressor', {
-      useValue: mockDiaryDecompressor,
-    });
-    container.register(DiaryLoad, DiaryLoad);
-    diaryLoad = container.resolve(DiaryLoad);
+    mockDIaryNameService = {
+      updateDiaryName: jest.fn(),
+    } as unknown as jest.Mocked<IDiaryNameService>;
+    mockDiary = {
+      getSettings: jest.fn().mockReturnValue({
+        getDiaryName: jest.fn().mockReturnValue('Original Diary Name'),
+        setDiaryName: jest.fn(),
+        storageKey: dairyKey,
+      } as unknown as jest.Mocked<IDiarySettings>),
+    } as unknown as jest.Mocked<IDiary>;
   });
-
-  it('should load the diary using diary service, storage service and decompressDiary function', () => {
-    const dairyKey = 'diaryKey';
+  it('should read from IDiaryService if data exists', () => {
     // DiaryServiceにデータがある場合、そちらを読み込んで返却する
-    let loadResult = diaryLoad.load(dairyKey);
-    expect(loadResult).toBe(diaryServiceDate);
+    mockDiaryService.getDiary.mockReturnValue(mockDiary);
+    const diaryLoad = new DiaryLoad(
+      mockDiaryService,
+      mockStorageService,
+      mockDiaryDecompressor,
+      mockDIaryNameService
+    );
+    const loadResult = diaryLoad.load(dairyKey);
+    expect(loadResult).toBe(mockDiary);
     expect(mockDiaryService.getDiary).toHaveBeenCalledWith(dairyKey);
+  });
+  it('should return a KeyNotFoundError if the data does not exist in either IDiaryService or IStorageService', () => {
+    // DiaryServiceにもストレージにもデータがない場合、エラーをスローする
+    mockDiaryService.getDiary.mockReturnValue(undefined);
+    mockStorageService.getItem.mockReturnValue(null);
+    const diaryLoad = new DiaryLoad(
+      mockDiaryService,
+      mockStorageService,
+      mockDiaryDecompressor,
+      mockDIaryNameService
+    );
+    expect(() => diaryLoad.load(dairyKey)).toThrow(
+      new KeyNotFoundError(`Key "${dairyKey}" not found`)
+    );
+  });
+  it('should load and return diary from IStorageService when not found in IDiaryService', () => {
+    mockDiaryService.getDiary.mockReturnValue(undefined);
+    mockStorageService.getItem.mockReturnValue('compressedDiaryData');
+    mockDiaryDecompressor.decompressDiary.mockReturnValue(mockDiary);
+    mockDIaryNameService.updateDiaryName.mockReturnValue('Unique Diary Name');
 
-    // DiaryServiceにデータがない場合、ストレージからデータを復号して返却する
-    // その際にDiaryServiceにデータを追加する
-    loadResult = diaryLoad.load(dairyKey);
+    const diaryLoad = new DiaryLoad(
+      mockDiaryService,
+      mockStorageService,
+      mockDiaryDecompressor,
+      mockDIaryNameService
+    );
+    const loadResult = diaryLoad.load(dairyKey);
+
     expect(loadResult).toBe(mockDiary);
     expect(mockStorageService.getItem).toHaveBeenCalledWith(dairyKey);
-    expect(mockDiaryService.addDiary).toHaveBeenCalledWith(mockDiary);
-
-    // DiaryServiceにもストレージにもデータがない場合、エラーをスローする
-    expect(() => diaryLoad.load(dairyKey)).toThrow(
-      new KeyNotFoundError(`Key ${dairyKey} not found`)
+    expect(mockDiaryDecompressor.decompressDiary).toHaveBeenCalledWith(
+      'compressedDiaryData'
     );
+    expect(mockDIaryNameService.updateDiaryName).toHaveBeenCalledWith(
+      dairyKey,
+      mockDiary.getSettings().getDiaryName()
+    );
+    expect(mockDiary.getSettings().setDiaryName).toHaveBeenCalledWith(
+      'Unique Diary Name'
+    );
+    expect(mockDiaryService.addDiary).toHaveBeenCalledWith(mockDiary);
   });
 });

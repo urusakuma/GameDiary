@@ -8,7 +8,6 @@ import type {
 } from './diaryModelInterfaces';
 import DiarySettings from './diarySettings';
 import { inject, injectable } from 'tsyringe';
-import type { IUniqueDiaryNameGenerator } from '../repository/diaryRepositoryInterfaces';
 
 @injectable()
 export default class DiarySettingsFactory implements IDiarySettingsFactory {
@@ -18,8 +17,6 @@ export default class DiarySettingsFactory implements IDiarySettingsFactory {
     @inject('UseExistingDataDayModifierFactory')
     private modifierFactory: UseExistingDataDayModifierFactory,
     @inject('StorageKeyFactory') private StorageKeyFactory: StorageKeyFactory,
-    @inject('IUniqueDiaryNameGenerator')
-    private nameGenerator: IUniqueDiaryNameGenerator,
     @inject('VERSION') private version: number
   ) {}
 
@@ -54,14 +51,11 @@ export default class DiarySettingsFactory implements IDiarySettingsFactory {
       settings.getCycleLength(),
       ...modifierUnits
     );
-    const newName = this.nameGenerator.generate(
-      name ?? settings.getDiaryName()
-    );
     const interval = settings.getDayInterval();
     const storageKey = this.StorageKeyFactory();
     return new DiarySettings(
       newModifier,
-      newName,
+      name ?? settings.getDiaryName(),
       interval,
       storageKey,
       this.version

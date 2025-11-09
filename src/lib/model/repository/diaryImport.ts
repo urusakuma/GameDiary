@@ -12,10 +12,11 @@ export default class DiaryImport implements IDiaryImport {
   import(val: string): string {
     const diary = this.diaryDecompressor.decompressDiary(val);
     this.diaryService.addDiary(diary);
-    this.diaryNameService.updateDiaryName(
+    const uniqueName = this.diaryNameService.updateDiaryName(
       diary.getSettings().storageKey,
       diary.getSettings().getDiaryName()
     );
+    diary.getSettings().setDiaryName(uniqueName);
     return diary.getSettings().storageKey;
   }
 }

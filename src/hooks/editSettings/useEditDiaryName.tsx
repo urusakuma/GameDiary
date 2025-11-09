@@ -1,12 +1,12 @@
 import { ICurrentDiaryAccessor } from '@/control/controlDiary/controlDiaryInterface';
 import { IEditDiarySettings } from '@/control/controlDiaryEntry/controlDiaryEntryInterface';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRefreshContext } from 'src/components/context/useRefreshContest';
 import { container } from 'tsyringe';
 
 const useEditDiaryName = () => {
   const [diaryName, setDiaryName] = useState('');
-  const prevDiaryName = useRef(diaryName);
+  const [diaryAccessor, setDiaryAccessor] = useState<ICurrentDiaryAccessor>();
   const [editDiarySettings, setEditDiarySettings] =
     useState<IEditDiarySettings>();
   const { entryRefresherRegister: refreshRegister } = useRefreshContext();
@@ -17,30 +17,31 @@ const useEditDiaryName = () => {
     const diaryAccessor = container.resolve<ICurrentDiaryAccessor>(
       'ICurrentDiaryAccessor'
     );
+    setDiaryAccessor(diaryAccessor);
     const refresh = () => {
       const currentDiaryName = diaryAccessor
         .getCurrentDiary()
         .getSettings()
         .getDiaryName();
       setDiaryName(currentDiaryName);
-      prevDiaryName.current = currentDiaryName;
     };
     refresh();
 
     const unregister = refreshRegister(refresh);
     return unregister;
   }, [refreshRegister]);
+
   const editDiaryName = useCallback(
     (name: string) => {
-      if (editDiarySettings === undefined) {
+      if (editDiarySettings === undefined || diaryAccessor === undefined) {
         return;
       }
-      const isEdited = editDiarySettings.editDiaryName(name);
-      if (!isEdited) {
-        setDiaryName(prevDiaryName.current);
-        return;
-      }
-      prevDiaryName.current = name;
+      editDiarySettings.editDiaryName(name);
+      const currentDiaryName = diaryAccessor
+        .getCurrentDiary()
+        .getSettings()
+        .getDiaryName();
+      setDiaryName(currentDiaryName);
     },
     [editDiarySettings, setDiaryName]
   );

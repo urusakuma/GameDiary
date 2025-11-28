@@ -1,7 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import DairySettingsConstant from '../../dairySettingsConstant';
-import { IDayModifier } from './diaryModelInterfaces';
-
+import type { IDayModifier, Placeholders } from './diaryModelInterfaces';
 /**日の単位。ゲームによって日だったりサイクルだったりする。 */
 @injectable()
 export default class DayModifier implements IDayModifier {
@@ -17,24 +15,27 @@ export default class DayModifier implements IDayModifier {
     private modifier: string,
     @inject('CYCLE_LENGTH')
     private cycleLength: number,
+    @inject('Placeholders') private readonly placeholders: Placeholders,
     @inject('EMPTY_STRING') ...unit: Array<string>
   ) {
     this.unit = [...unit];
     this.unit = this.unit.slice(0, 4);
     this.maintainValidUnitLength();
   }
-  setModifier(val: string): void {
+  setModifier(val: string): IDayModifier {
     this.modifier = val;
+    return this;
   }
   getModifier(): string {
     return this.modifier;
   }
-  updateCycleLength(val: number): void {
+  updateCycleLength(val: number): IDayModifier {
     const cycLen = Math.trunc(val);
     if (cycLen < 1) {
-      return;
+      return this;
     }
     this.cycleLength = cycLen;
+    return this;
   }
   getCycleLength(): number {
     return this.cycleLength;
@@ -46,10 +47,10 @@ export default class DayModifier implements IDayModifier {
     }
     return this.unit[i];
   }
-  updateUnit(val: string, index: number): void {
+  updateUnit(val: string, index: number): IDayModifier {
     const num = Math.trunc(index);
     if (num < 0 || 3 < num) {
-      return;
+      return this;
     }
 
     // indexがunit.lengthを超える場合RangeErrorを発生させるので""で埋める
@@ -62,6 +63,7 @@ export default class DayModifier implements IDayModifier {
 
     // unitを後ろから探索し空文字なら取り除くことにより、unit.lengthは常に単位の個数となる。
     this.maintainValidUnitLength();
+    return this;
   }
   /** unitの末尾が空文字でないことを維持することで、unit.lengthが単位の個数であることを維持する。*/
   private maintainValidUnitLength(): void {
@@ -73,28 +75,26 @@ export default class DayModifier implements IDayModifier {
   modifyDay(nDay: number): string {
     const naturalDay = Math.trunc(nDay);
     const unitLen = this.unit.length;
-    // unitが存在しない場合、置換文字列が存在するなら置き換えて(フェーズ$Nなど)、
-    // 存在しないなら終端に付与して(n日目など)返却する。
-    if (unitLen === 0) {
-      if (this.modifier.includes(DairySettingsConstant.TOTAL_DAYS_PLACEHOLDER))
-        return this.modifier.replace(
-          DairySettingsConstant.TOTAL_DAYS_PLACEHOLDER,
-          String(naturalDay)
-        );
-      return String(naturalDay) + this.modifier;
-    }
-    // unitが存在するが置換文字列が存在しない場合は終端に付与して返却する。
+
+    // 置換文字列が存在しない場合は終端に付与して返却する。
     if (
       !(
-        this.modifier.includes(DairySettingsConstant.TOTAL_DAYS_PLACEHOLDER) ||
-        this.modifier.includes(DairySettingsConstant.YEAR_PLACEHOLDER) ||
-        this.modifier.includes(DairySettingsConstant.CYCLE_PLACEHOLDER) ||
-        this.modifier.includes(DairySettingsConstant.DAY_PLACEHOLDER)
+        this.modifier.includes(this.placeholders.totalDay) ||
+        this.modifier.includes(this.placeholders.year) ||
+        this.modifier.includes(this.placeholders.cycle) ||
+        this.modifier.includes(this.placeholders.day)
       )
     ) {
       return String(naturalDay) + this.modifier;
     }
 
+    // unitが存在しない場合、TOTAL_DAYSの置換文字列だけを置き換えて返却する
+    if (unitLen === 0) {
+      return this.modifier.replace(
+        this.placeholders.totalDay,
+        String(naturalDay)
+      );
+    }
     // 一周の最終日はcycleLen*unitLen日目。
     const cyclePeriod = this.cycleLength * unitLen;
 
@@ -118,12 +118,21 @@ export default class DayModifier implements IDayModifier {
 
     //全ての置換文字列を置き換えて返却。
     return this.modifier
-      .replace(DairySettingsConstant.YEAR_PLACEHOLDER, year)
-      .replace(DairySettingsConstant.CYCLE_PLACEHOLDER, cycle)
-      .replace(DairySettingsConstant.DAY_PLACEHOLDER, day)
-      .replace(
-        DairySettingsConstant.TOTAL_DAYS_PLACEHOLDER,
-        String(naturalDay)
-      );
+      .replace(this.placeholders.year, year)
+      .replace(this.placeholders.cycle, cycle)
+      .replace(this.placeholders.day, day)
+      .replace(this.placeholders.totalDay, String(naturalDay));
+  }
+  /**
+   * オブジェクトをJSON文字列に変換する。
+   * 実装しなくてもJSONに変換されるが、placeholdersを除外するために実装する。
+   * @returns {string} JSON文字列
+   */
+  toJson(): string {
+    return JSON.stringify({
+      modifier: this.modifier,
+      cycleLength: this.cycleLength,
+      unit: this.unit,
+    });
   }
 }

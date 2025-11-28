@@ -7,6 +7,13 @@ export default class DairySettingsConstant {
   static readonly DEFAULT_DAY_INTERVAL: number = 1;
 
   static readonly DEFAULT_CYCLE_LENGTH: number = 10;
+
+  static readonly PLACEHOLDERS = {
+    year: '$Y',
+    cycle: '$C',
+    day: '$D',
+    totalDay: '$N',
+  };
   static readonly YEAR_PLACEHOLDER: string = '$Y';
   static readonly CYCLE_PLACEHOLDER: string = '$C';
   static readonly DAY_PLACEHOLDER: string = '$D';

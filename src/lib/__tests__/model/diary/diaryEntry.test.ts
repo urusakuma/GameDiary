@@ -1,169 +1,153 @@
-import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
-import DairySettingsConstant from '@/dairySettingsConstant';
-import DiaryEntry from '@/model/diary/diaryEntry';
 import {
   IDiaryEntry,
   IDiarySettings,
-  UseExistingDataDiaryEntryFactory,
-  UsePreviousDayDiaryEntryFactory,
 } from '@/model/diary/diaryModelInterfaces';
+import '@/container/di_diary';
 import { container } from 'tsyringe';
+import DiaryEntry from '@/model/diary/diaryEntry';
 
 describe('DiaryEntry class tests', () => {
-  beforeAll(() => {
-    container.register<number>('FIRST_DAY', {
-      useValue: 1,
-    });
-    container.register<string>('DEFAULT_TITLE', {
-      useValue:
-        String(container.resolve<number>('FIRST_DAY')) +
-        DairySettingsConstant.DEFAULT_DAY_MODIFIER,
-    });
-    container.register<undefined>('UNDEFINED', { useFactory: () => undefined });
-    container.register<string>('EMPTY_STRING', { useValue: '' });
-    container.register<IDiaryEntry>('InitDiaryEntry', {
-      useClass: DiaryEntry,
-    });
-    container.register<UseExistingDataDiaryEntryFactory>(
-      'UseExistingDataDiaryEntryFactory',
-      {
-        useFactory:
-          () =>
-          (
-            day: number,
-            title: string,
-            content: string,
-            previous: number | undefined,
-            next: number | undefined
-          ) =>
-            new DiaryEntry(day, title, content, previous, next),
-      }
-    );
-    container.register<UsePreviousDayDiaryEntryFactory>(
-      'UsePreviousDayDiaryEntryFactory',
-      {
-        useFactory: () => (source: IDiaryEntry, settings: IDiarySettings) =>
-          new DiaryEntry(
-            settings.getNextDay(source.day),
-            settings.getModifierDay(settings.getNextDay(source.day)),
-            '',
-            source.day,
-            undefined
-          ),
-      }
-    );
-    container.register('MockKey', { useFactory: () => undefined });
-    container.register<IDiarySettings>('MockSettings', {
-      useClass: MockDiarySettings,
+  let entry: IDiaryEntry;
+  beforeEach(() => {
+    entry = new DiaryEntry(1, '', '', undefined, undefined);
+  });
+  describe('Dependency Injection tests', () => {
+    it('should regist container', () => {
+      const entry = container.resolve<IDiaryEntry>('IDiaryEntry');
+      expect(entry.day).toBe(1);
+      expect(entry.getTitle()).toBe('1$N日目');
+      expect(entry.getContent()).toBe('');
+      expect(entry.previous).toBe(undefined);
+      expect(entry.next).toBe(undefined);
     });
   });
-  test('init test', () => {
-    const entry = container.resolve<IDiaryEntry>('InitDiaryEntry');
-    // デフォルトの確認
-    expect(entry.day).toBe(1);
-    expect(entry.getTitle()).toBe(
-      '1' + DairySettingsConstant.DEFAULT_DAY_MODIFIER
-    );
-    expect(entry.getContent()).toBe('');
-    expect(entry.previous).toBe(undefined);
-    expect(entry.next).toBe(undefined);
+  describe('setTitle and getTitle tests', () => {
+    it('should return the same value set by setTitle ', () => {
+      const title = '1日目 テストをしてみる';
+      entry.setTitle(title);
+      expect(entry.getTitle()).toBe(title);
+    });
   });
-  test('set function', () => {
-    const entry = container.resolve<IDiaryEntry>('InitDiaryEntry');
-    // setメソッドの確認
-    const setTitle = '1日目 テストをしてみる';
-    entry.setTitle(setTitle);
-    expect(entry.getTitle()).toBe(setTitle);
-    const setContent = 'テストを書いてみる';
-    entry.setContent(setContent);
-    expect(entry.getContent()).toBe(setContent);
+  describe('setContent and getContent tests', () => {
+    it('should return the same value set by setContent ', () => {
+      const setContent = 'テストを書いてみる';
+      entry.setContent(setContent);
+      expect(entry.getContent()).toBe(setContent);
+    });
   });
-  test('next, previous', () => {
-    const entry = container.resolve<IDiaryEntry>('InitDiaryEntry');
-    // next, previousの確認少数を渡されたときに切り捨てているかチェック
-    entry.next = 0.999;
-    expect(entry.next).toBe(undefined);
-    entry.next = 1.999;
-    expect(entry.next).toBe(undefined);
-    entry.next = 2.999;
-    expect(entry.next).toBe(2);
-    entry.previous = 0.999;
-    expect(entry.previous).toBe(undefined);
-    entry.previous = 1.999;
-    expect(entry.previous).toBe(undefined);
+  describe('previous tests', () => {
+    beforeEach(() => {
+      entry = new DiaryEntry(10, '', '', 1, undefined);
+    });
+    it('should set previous when given a positive day smaller than the current day', () => {
+      entry.previous = 2;
+      expect(entry.previous).toBe(2);
+    });
+    it('should truncate non-integer values before assigning to previous', () => {
+      entry.previous = 2.999;
+      expect(entry.previous).toBe(2);
+    });
+    it('should not update previous when value is greater than or equal to current day', () => {
+      entry.previous = 10;
+      expect(entry.previous).toBe(1);
+      entry.previous = 11;
+      expect(entry.previous).toBe(1);
+    });
+    it('should not update previous when value is zero or negative', () => {
+      entry.previous = 0;
+      expect(entry.previous).toBe(1);
+      entry.previous = -1;
+      expect(entry.previous).toBe(1);
+    });
   });
-  test('isEdited function', () => {
-    const entry = container.resolve<IDiaryEntry>('InitDiaryEntry');
-    const settings = container.resolve<IDiarySettings>('MockSettings');
-    // タイトルが初期状態で、内容が空になっている
-    expect(entry.isEdited(settings)).toBeFalsy();
-    const setTitle = '1日目 テストをしてみる';
-    entry.setTitle(setTitle);
-    const setContent = 'テストを書いてみる';
-    entry.setContent(setContent);
-    // タイトルと内容どちらにも書き込まれている
-    expect(entry.isEdited(settings)).toBeTruthy();
-    entry.setContent('');
-    // タイトルが書き込まれ、内容が空になっている
-    expect(entry.isEdited(settings)).toBeTruthy();
-    entry.setTitle('');
-    // タイトルと内容どちらにも書き込まれていない
-    expect(entry.isEdited(settings)).toBeFalsy();
-    entry.setContent(setContent);
-    // 内容が書き込まれ、タイトルが空になっている
-    expect(entry.isEdited(settings)).toBeTruthy();
+  describe('next tests', () => {
+    beforeEach(() => {
+      entry = new DiaryEntry(10, '', '', 1, 11);
+    });
+    it('should set next when given a day greater than the current day', () => {
+      entry.next = 12;
+      expect(entry.next).toBe(12);
+    });
+    it('should truncate non-integer values before assigning to next', () => {
+      entry.next = 12.999;
+      expect(entry.next).toBe(12);
+    });
+    it('should not update next when value is less than or equal to current day', () => {
+      entry.next = 9;
+      expect(entry.next).toBe(11);
+    });
+    it('should set next to undefined when value is undefine', () => {
+      entry.next = undefined;
+      expect(entry.next).toBeUndefined();
+    });
   });
-  test('use factory', () => {
-    const settings = container.resolve<IDiarySettings>('MockSettings');
-    const existingDataDiaryEntryFactory =
-      container.resolve<UseExistingDataDiaryEntryFactory>(
-        'UseExistingDataDiaryEntryFactory'
-      );
-    const entryFactory = container.resolve<UsePreviousDayDiaryEntryFactory>(
-      'UsePreviousDayDiaryEntryFactory'
-    );
-    const entries: Array<IDiaryEntry> = [];
-    entries.push(
-      existingDataDiaryEntryFactory(
-        1,
-        '1日目', // TODO: Constantを使用する
-        'テストです',
-        undefined,
-        undefined
-      )
-    );
-    const entryNum = 5;
-    for (let i = 1; i < entryNum; i++) {
-      entries.push(entryFactory(entries[i - 1], settings));
+  describe('', () => {
+    const defaultTitle = '1日目';
+    const editedTitle = '1日目 test title';
+    const content = 'test content';
+    const settings = {
+      getModifierDay: jest.fn().mockReturnValue(defaultTitle),
+    } as unknown as IDiarySettings;
+
+    it('should return false when both title and content are empty', () => {
+      entry.setTitle('');
+      entry.setContent('');
+      expect(entry.isEdited(settings)).toBeFalsy();
+    });
+    it('should return false when title is the default value and content is empty', () => {
+      entry.setTitle(defaultTitle);
+      entry.setContent('');
+      expect(entry.isEdited(settings)).toBeFalsy();
+    });
+    it('should return true when content is not empty regardless of title', () => {
+      entry.setTitle(defaultTitle);
+      entry.setContent(content);
+      expect(entry.isEdited(settings)).toBeTruthy();
+      entry.setTitle('');
+      expect(entry.isEdited(settings)).toBeTruthy();
+      entry.setTitle(editedTitle);
+      expect(entry.isEdited(settings)).toBeTruthy();
+    });
+    it('should return true when title is different from the default and content is empty', () => {
+      entry.setTitle(editedTitle);
+      entry.setContent('');
+      expect(entry.isEdited(settings)).toBeTruthy();
+    });
+  });
+  describe('toJSON', () => {
+    interface EntryJson {
+      day: number;
+      title: string;
+      content: string;
+      next: number;
+      previous: number | undefined;
     }
-    for (let i = 0; i < entryNum; i++) {
-      const nowDay = i + 1;
-      expect(entries[i].day).toBe(nowDay);
-      expect(entries[i].getTitle()).toBe(settings.getModifierDay(nowDay));
-      if (i === 0) {
-        expect(entries[i].getContent()).toBe('テストです');
-        expect(entries[i].isEdited(settings)).toBeTruthy();
-      } else {
-        expect(entries[i].getContent()).toBe('');
-        expect(entries[i].isEdited(settings)).toBeFalsy();
-        expect(entries[i].previous).toBe(nowDay - 1);
-      }
-      // factoryはnextを更新しないため注意。factoryの使用者が責任を持ってnextを更新すること。
-      expect(entries[i].next).toBe(undefined);
-    }
-    // entries[4].day === 5
-    // previousに新しい数字を入れたとき少数を切り捨てて自分より小さい数字かつ1以上に数字を受け入れているかチェック
-    entries[4].previous = 6;
-    expect(entries[4].previous).toBe(4);
-    entries[4].previous = 5;
-    expect(entries[4].previous).toBe(4);
-    entries[4].previous = 3.999;
-    expect(entries[4].previous).toBe(3);
-    entries[4].previous = 4;
-    expect(entries[4].previous).toBe(4);
-    entries[4].previous = 0;
-    expect(entries[4].previous).toBe(4);
-    entries[4].previous = 0.999;
-    expect(entries[4].previous).toBe(4);
+    const day = 2;
+    const title = '2日目';
+    const content = 'test content';
+    const previous = 1;
+    const next = 3;
+    let entryJson: EntryJson;
+    beforeEach(() => {
+      entry = new DiaryEntry(day, title, content, previous, next);
+    });
+    it('should return an object containing day, title, content, and next', () => {
+      entryJson = entry.toJSON() as EntryJson;
+      expect(entryJson.day).toBe(day);
+      expect(entryJson.title).toBe(title);
+      expect(entryJson.content).toBe(content);
+      expect(entryJson.next).toBe(next);
+    });
+    it('should not include the previous property in the JSON output', () => {
+      entryJson = entry.toJSON() as EntryJson;
+      expect(entryJson.previous).toBeUndefined();
+    });
+    it('should handle empty strings and null values without errors', () => {
+      entry = new DiaryEntry(1, '', '', undefined, undefined);
+      entryJson = entry.toJSON() as EntryJson;
+      expect(entryJson.title).toBe('');
+      expect(entryJson.content).toBe('');
+      expect(entryJson.next).toBeUndefined();
+    });
   });
 });

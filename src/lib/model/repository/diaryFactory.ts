@@ -17,7 +17,7 @@ export default class DiaryFactory implements IDiaryFactory {
     @inject('IDiarySettingsFactory')
     private settingsFactory: IDiarySettingsFactory,
     @inject('UsePreviousDayDiaryEntryFactory')
-    private builder: UsePreviousDayDiaryEntryFactory
+    private factory: UsePreviousDayDiaryEntryFactory
   ) {}
 
   createUseExistingData(
@@ -25,7 +25,14 @@ export default class DiaryFactory implements IDiaryFactory {
     settings: IDiarySettings,
     lastDay: number
   ): IDiary {
-    return new Diary(this.builder, diaryEntries, settings, lastDay);
+    lastDay = Math.trunc(lastDay);
+    if (lastDay < 1 || diaryEntries.get(lastDay) === undefined) {
+      lastDay = 1;
+    }
+    if (diaryEntries.size === 0) {
+      diaryEntries = this.newEntriesFactory();
+    }
+    return new Diary(this.factory, diaryEntries, settings, lastDay);
   }
   createNewDiary(diary?: IDiary, name?: string): IDiary {
     const newEntries: Map<number, IDiaryEntry> = this.newEntriesFactory();
@@ -33,6 +40,6 @@ export default class DiaryFactory implements IDiaryFactory {
       diary?.getSettings(),
       name
     );
-    return new Diary(this.builder, newEntries, settings, 1);
+    return new Diary(this.factory, newEntries, settings, 1);
   }
 }

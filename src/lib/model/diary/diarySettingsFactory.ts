@@ -16,7 +16,7 @@ export default class DiarySettingsFactory implements IDiarySettingsFactory {
     private defaultSettingsFactory: DefaultSettingsFactory,
     @inject('UseExistingDataDayModifierFactory')
     private modifierFactory: UseExistingDataDayModifierFactory,
-    @inject('StorageKeyFactory') private StorageKeyFactory: StorageKeyFactory,
+    @inject('StorageKeyFactory') private storageKeyFactory: StorageKeyFactory,
     @inject('VERSION') private version: number
   ) {}
 
@@ -26,6 +26,10 @@ export default class DiarySettingsFactory implements IDiarySettingsFactory {
     dayInterval: number,
     storageKey: string
   ): IDiarySettings {
+    dayInterval = Math.trunc(dayInterval);
+    if (dayInterval < 1) {
+      dayInterval = 1;
+    }
     return new DiarySettings(
       dayModifier,
       diaryName,
@@ -52,7 +56,7 @@ export default class DiarySettingsFactory implements IDiarySettingsFactory {
       ...modifierUnits
     );
     const interval = settings.getDayInterval();
-    const storageKey = this.StorageKeyFactory();
+    const storageKey = this.storageKeyFactory();
     return new DiarySettings(
       newModifier,
       name ?? settings.getDiaryName(),

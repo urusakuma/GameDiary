@@ -184,19 +184,42 @@ export interface IDiarySettingsFactory {
 export type DefaultSettingsFactory = () => IDiarySettings;
 
 /**
+ * IDayModifierで使用するプレースホルダーの型定義
+ */
+export type Placeholders = {
+  year: string;
+  cycle: string;
+  day: string;
+  totalDay: string;
+};
+/**
  * 日付を修飾するクラス
  */
 export interface IDayModifier {
-  /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など) */
-  setModifier(val: string): void;
+  /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など)
+   * @param {string}val セットする修飾文字列
+   *@returns {IDayModifier} thisを返却
+   */
+  setModifier(val: string): IDayModifier;
+  /**
+   * 日付を修飾する文字列を取得する
+   * @returns {string} 修飾文字列
+   */
   getModifier(): string;
-  /** 周期的な単位が一度にどれだけ続くのか(15:春1-15,夏1-15など) */
-  updateCycleLength(val: number): void;
+  /** 周期的な単位が一度にどれだけ続くのか(15:春1-15,夏1-15など)
+   * @param {number} val セットする周期の長さ
+   * @returns {IDayModifier} thisを返却
+   */
+  updateCycleLength(val: number): IDayModifier;
+  /** 周期的な単位が一度にどれだけ続くのかを取得する
+   * @returns {number} 周期の長さ
+   */
   getCycleLength(): number;
 
   /**
    * 指定した周期で付加する単位を返却する。存在しない場合は空文字を返却する。
    * @param index 周期の位置
+   * @returns {string} 指定した周期で付加する単位
    */
   getUnit(index: number): string;
 
@@ -204,11 +227,12 @@ export interface IDayModifier {
    * 日付を修飾する周期的な単位を設定する。空文字を設定された場合は取り除く。
    * @param val 設定する単位の文字列。
    * @param index unitのどこにsetするか。
+   * @return {IDayModifier} thisを返却
    */
-  updateUnit(val: string, index: number): void;
+  updateUnit(val: string, index: number): IDayModifier;
 
   /**
-   * 受け取った日付に単位を付加して返却する。Constantに強く依存している。
+   * 受け取った日付に単位を付加して返却する。
    * - year: naturalDayをcycleLenで割った数
    * - cycle: 周期的に付与される単位
    * - day: naturalDayをcycleLenで割った余り

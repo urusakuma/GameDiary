@@ -1,98 +1,166 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
 import DiarySettingsFactory from '@/model/diary/diarySettingsFactory';
-import DiarySettings from '@/model/diary/diarySettings';
 import type {
+  DefaultSettingsFactory,
+  IDayModifier,
   IDiarySettings,
-  NewDayModifierFactory,
+  IDiarySettingsFactory,
   StorageKeyFactory,
+  UseExistingDataDayModifierFactory,
 } from '@/model/diary/diaryModelInterfaces';
-import { MockDayModifier } from '@/__tests__/__mocks__/mockDayModifier';
-import { IUniqueDiaryNameGenerator } from '@/model/repository/diaryRepositoryInterfaces';
 
 describe('DiarySettingsFactory - createUseExistingData', () => {
-  const mockDayModifier = new MockDayModifier();
-  const diaryName = 'Test Diary';
-  const dayInterval = 3;
-  const storageKey = 'testKey';
+  let settingsFactory: IDiarySettingsFactory;
+  let defaultSettingsFactory: DefaultSettingsFactory;
+  let modifierFactory: UseExistingDataDayModifierFactory;
+  let storageKeyFactory: StorageKeyFactory;
   const version = 1;
-  let diarySettingsFactory: DiarySettingsFactory;
-  let mockSettings: IDiarySettings;
-  let mockModifierFactory: NewDayModifierFactory;
-  let mockStorageKeyFactory: StorageKeyFactory;
-  let mockNameGenerator: IUniqueDiaryNameGenerator;
-  let mockDefaultSettingsFactory = beforeEach(() => {
-    jest.restoreAllMocks();
-    mockModifierFactory = jest.fn().mockReturnValue(mockDayModifier);
-    mockStorageKeyFactory = jest.fn().mockReturnValue('testKey');
-    mockSettings = {
-      storageKey: storageKey,
+  let defaultSettings: IDiarySettings;
+  const units = ['unit0', 'unit1', 'unit2', 'unit3'];
+  const dayInterval = 3;
+  const cycleLength = 15;
+  const modifierStr = '日目';
+  const diaryName = 'Test Diary';
+  let modifier: IDayModifier;
+  let settings: IDiarySettings;
+  beforeEach(() => {
+    modifier = {
+      getCycleLength: jest.fn().mockReturnValue(cycleLength),
+      getModifier: jest.fn().mockReturnValue(modifierStr),
+      getUnit: jest.fn((i: number) => units[i]),
+    } as unknown as IDayModifier;
+    defaultSettings = {
+      storageKey: 'defaultKey',
       version: version,
+      getDiaryName: jest.fn().mockReturnValue(diaryName),
       getDayInterval: jest.fn().mockReturnValue(dayInterval),
-      getCycleLength: jest.fn().mockReturnValue(15),
-      getModifier: jest.fn().mockReturnValue(mockDayModifier.getModifier()),
-      getModifierUnit: jest.fn().mockReturnValue(mockDayModifier.getUnit(0)),
+      getCycleLength: jest.fn().mockReturnValue(cycleLength),
+      getModifier: jest.fn().mockReturnValue(modifierStr),
+      getModifierUnit: jest.fn((i: number) => units[i]),
     } as unknown as IDiarySettings;
-    mockDefaultSettingsFactory = jest.fn().mockReturnValue(mockSettings);
 
-    mockNameGenerator = {
-      generate: jest.fn().mockReturnValue(diaryName),
-    };
-    container.register('DefaultSettingsFactory', {
-      useValue: mockDefaultSettingsFactory,
-    });
-    container.register('UseExistingDataDayModifierFactory', {
-      useValue: mockModifierFactory,
-    });
-    container.register('StorageKeyFactory', {
-      useValue: mockStorageKeyFactory,
-    });
-    container.register('IUniqueDiaryNameGenerator', {
-      useValue: mockNameGenerator,
-    });
-    container.register('DIARY_NAME', { useValue: diaryName });
-    container.register('Version', { useValue: version });
-
-    diarySettingsFactory = container.resolve(DiarySettingsFactory);
-  });
-
-  it('should create a DiarySettings instance with the provided parameters', () => {
-    const result = diarySettingsFactory.createUseExistingData(
-      mockDayModifier,
-      diaryName,
-      dayInterval,
-      storageKey,
+    defaultSettingsFactory = jest.fn().mockReturnValue(defaultSettings);
+    modifierFactory = jest.fn().mockReturnValue(modifier);
+    storageKeyFactory = jest.fn().mockReturnValue('key0');
+    settingsFactory = new DiarySettingsFactory(
+      defaultSettingsFactory,
+      modifierFactory,
+      storageKeyFactory,
       version
     );
-    correctSetting(result);
   });
-  it('should create a DiarySettings instance with the provided parameters', () => {
-    const result = diarySettingsFactory.createNewDiarySettings(mockSettings);
-    correctSetting(result);
-    checkCall();
+  describe('createUseExistingData tests', () => {
+    it('should creates DiarySettings using the provided data when the data is valid', () => {
+      settings = settingsFactory.createUseExistingData(
+        modifier,
+        diaryName,
+        dayInterval,
+        'defaultKey'
+      );
+      expect(settings.getCycleLength()).toBe(cycleLength);
+      expect(settings.getDayInterval()).toBe(dayInterval);
+      expect(settings.getDiaryName()).toBe(diaryName);
+      expect(settings.getModifier()).toBe(modifierStr);
+      for (let i = 0; i < 4; i++) {
+        expect(settings.getModifierUnit(i)).toBe(units[i]);
+      }
+    });
+    it('should dayInterval to 1 when the provided value is less 1', () => {
+      settings = settingsFactory.createUseExistingData(
+        modifier,
+        diaryName,
+        0,
+        'defaultKey'
+      );
+      expect(settings.getDayInterval()).toBe(1);
+    });
+    it('should truncates the decimal part of dayInterval when a non-integer value is previoded', () => {
+      settings = settingsFactory.createUseExistingData(
+        modifier,
+        diaryName,
+        3.999,
+        'defaultKey'
+      );
+      expect(settings.getDayInterval()).toBe(3);
+      settings = settingsFactory.createUseExistingData(
+        modifier,
+        diaryName,
+        0.999,
+        'defaultKey'
+      );
+      expect(settings.getDayInterval()).toBe(1);
+    });
   });
-  it('should create a DiarySettings instance with the provided parameters', () => {
-    const result = diarySettingsFactory.createNewDiarySettings();
-    correctSetting(result);
-    expect(mockDefaultSettingsFactory).toHaveBeenCalled();
-    checkCall();
-  });
-  function correctSetting(result: IDiarySettings) {
-    expect(result).toBeInstanceOf(DiarySettings);
-    expect(result.getModifier()).toBe(mockDayModifier.getModifier());
-    expect(result.getDiaryName()).toBe(diaryName);
-    expect(result.getDayInterval()).toBe(dayInterval);
-    expect(result.storageKey).toBe(storageKey);
-    expect(result.version).toBe(version);
-  }
-  function checkCall() {
-    for (let i = 0; i < 4; i++) {
-      expect(mockSettings.getModifierUnit).toHaveBeenNthCalledWith(i + 1, i);
+  describe('createNewDiarySettings tests', () => {
+    let oldSettings: IDiarySettings;
+    beforeEach(() => {
+      oldSettings = {
+        storageKey: 'defaultKey',
+        version: version,
+        getDiaryName: jest.fn().mockReturnValue(diaryName),
+        getDayInterval: jest.fn().mockReturnValue(dayInterval),
+        getCycleLength: jest.fn().mockReturnValue(cycleLength),
+        getModifier: jest.fn().mockReturnValue(modifierStr),
+        getModifierUnit: jest.fn((i: number) => units[i]),
+      } as unknown as IDiarySettings;
+    });
+    it('should DiarySettings using default settings when no arguments are provided', () => {
+      settings = settingsFactory.createNewDiarySettings();
+      expectSettingsCopiedFrom(defaultSettings, settings);
+      expectNameToUseProvidedSettings(defaultSettings, settings);
+    });
+    it('should DiarySettings using the provided settings when settings are given', () => {
+      settings = settingsFactory.createNewDiarySettings(oldSettings);
+      expectSettingsCopiedFrom(oldSettings, settings);
+      expectNameToUseProvidedSettings(oldSettings, settings);
+    });
+    it('should DiarySettings using default settings and overrrides only the name when name is provided', () => {
+      settings = settingsFactory.createNewDiarySettings(undefined, diaryName);
+      expectSettingsCopiedFrom(defaultSettings, settings);
+      expectNameToUseProvidedValue(defaultSettings, settings);
+    });
+    it('should copy the given settings and override only the name when both arguments are provided', () => {
+      settings = settingsFactory.createNewDiarySettings(oldSettings, diaryName);
+      expectSettingsCopiedFrom(oldSettings, settings);
+      expectNameToUseProvidedValue(oldSettings, settings);
+    });
+
+    function expectSettingsCopiedFrom(
+      providedSettings: IDiarySettings,
+      settings: IDiarySettings
+    ) {
+      expect(providedSettings.getCycleLength).toHaveBeenCalledTimes(1);
+      expect(settings.getCycleLength()).toBe(cycleLength);
+      expect(providedSettings.getDayInterval).toHaveBeenCalledTimes(1);
+      expect(settings.getDayInterval()).toBe(dayInterval);
+      expect(providedSettings.getModifier).toHaveBeenCalledTimes(1);
+      expect(settings.getModifier()).toBe(modifierStr);
+      expect(providedSettings.getModifierUnit).toHaveBeenCalledTimes(
+        units.length
+      );
+      for (let i = 0; i < units.length; i++) {
+        expect(providedSettings.getModifierUnit).toHaveBeenNthCalledWith(
+          i + 1,
+          i
+        );
+        expect(settings.getModifierUnit(i)).toBe(units[i]);
+      }
+      expect(settings.storageKey).not.toBe(providedSettings.storageKey);
+      expect(settings.version).toBe(version);
     }
-    expect(mockSettings.getModifier).toHaveBeenCalled();
-    expect(mockSettings.getCycleLength).toHaveBeenCalled();
-    expect(mockNameGenerator.generate).toHaveBeenCalled();
-    expect(mockSettings.getDayInterval).toHaveBeenCalled();
-    expect(mockStorageKeyFactory).toHaveBeenCalled();
-  }
+    function expectNameToUseProvidedSettings(
+      providedSettings: IDiarySettings,
+      settings: IDiarySettings
+    ) {
+      expect(providedSettings.getDiaryName).toHaveBeenCalledTimes(1);
+      expect(settings.getDiaryName()).toBe(diaryName);
+    }
+    function expectNameToUseProvidedValue(
+      providedSettings: IDiarySettings,
+      settings: IDiarySettings
+    ) {
+      expect(providedSettings.getDiaryName).not.toHaveBeenCalled();
+      expect(settings.getDiaryName()).toBe(diaryName);
+    }
+  });
 });

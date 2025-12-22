@@ -1,5 +1,7 @@
 import { MockDiaryEntry } from '@/__tests__/__mocks__/mockDiaryEntry';
 import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
+import '@/container/di_diary';
+import { KeyNotFoundError } from '@/error';
 import Diary from '@/model/diary/diary';
 import {
   IDiary,
@@ -11,104 +13,156 @@ import {
 import { container } from 'tsyringe';
 
 describe('DairySettings class tests', () => {
+  let entry: IDiaryEntry;
+  let diaryEntries: Map<number, IDiaryEntry>;
+  let settings: IDiarySettings;
+  let builder: UsePreviousDayDiaryEntryFactory;
+  let builtEntry: Array<IDiaryEntry>;
+  let diary: Diary;
+
+  const entryFactory = (day: number, previous: number | undefined) => {
+    return {
+      day,
+      previous,
+      next: undefined,
+    } as unknown as jest.Mocked<IDiaryEntry>;
+  };
   beforeEach(() => {
-    container.clearInstances();
-    container.register<number>('FIRST_DAY', {
-      useValue: 1,
-    });
-    container.register('MockKey', { useFactory: () => undefined });
-    container.register<IDiarySettings>('IDiarySettings', {
-      useClass: MockDiarySettings,
-    });
-    container.register<IDiaryEntry>('IDiaryEntry', {
-      useClass: MockDiaryEntry,
-    });
-    container.register<UseExistingDataDiaryEntryFactory>(
-      'UseExistingDataDiaryEntryFactory',
-      {
-        useFactory:
-          () =>
-          (
-            day: number,
-            title: string,
-            content: string,
-            previous: number | undefined,
-            next: number | undefined
-          ) =>
-            new MockDiaryEntry(day, previous, next),
-      }
-    );
-    container.register<IDiary>('InitDiary', {
-      useClass: Diary,
-    });
-    container.register<Map<number, IDiaryEntry>>(
-      'DIARY_ENTRIES_CONTAINING_FIRST_DAY',
-      {
-        useValue: new Map<number, IDiaryEntry>().set(
-          container.resolve('FIRST_DAY'),
-          container.resolve('IDiaryEntry')
-        ),
-      }
-    );
-    container.register<UsePreviousDayDiaryEntryFactory>(
-      'UsePreviousDayDiaryEntryFactory',
-      {
-        useFactory: () => (source: IDiaryEntry, settings: IDiarySettings) => {
-          const day = settings.getNextDay(source.day);
-          return new MockDiaryEntry(day, source.day, undefined);
-        },
-      }
-    );
+    entry = {
+      day: 1,
+      previous: undefined,
+    } as unknown as jest.Mocked<IDiaryEntry>;
+    settings = {
+      getNextDay: jest.fn().mockReturnValueOnce(2).mockReturnValueOnce(3),
+    } as unknown as jest.Mocked<IDiarySettings>;
+    diaryEntries = new Map().set(1, entry);
+    builtEntry = [entry];
+    builder = (source: IDiaryEntry, settings: IDiarySettings) => {
+      const sourceDay = source.day;
+      const entry = entryFactory(settings.getNextDay(sourceDay), sourceDay);
+      builtEntry.push(entry);
+      return entry;
+    };
+    diary = new Diary(builder, diaryEntries, settings, 1);
   });
-  test('init test', () => {
-    const diary = container.resolve<IDiary>('InitDiary');
-    const diaryEntry = container.resolve<IDiaryEntry>('IDiaryEntry');
-    const settings = container.resolve<IDiarySettings>('IDiarySettings');
-    // デフォルトの確認
-    expect(diary.getLastDay()).toBe(1);
-    expect(diary.getEntry(1)).toEqual(diaryEntry);
-    expect(diary.getSettings()).toEqual(settings);
+  describe('Mock tests', () => {
+    it('should entryFactory return jest.Mocked<IDiaryEntry>', () => {
+      const entry = entryFactory(2, 1);
+      expect(entry.day).toBe(2);
+      expect(entry.previous).toBe(1);
+      expect(entry.next).toBeUndefined();
+      entry.next = 3;
+      expect(entry.next).toBe(3);
+    });
   });
-  test('create delete entry', () => {
-    const diary = container.resolve<IDiary>('InitDiary');
-    const entryFactory = container.resolve<UseExistingDataDiaryEntryFactory>(
-      'UseExistingDataDiaryEntryFactory'
-    );
-    for (let i = 2; i < 6; i++) {
-      const newDay = entryFactory(i, '', '', i - 1, undefined);
-      const correctPreviousDaysDate = i !== 2 ? i - 2 : undefined;
-      const oldDay = entryFactory(i - 1, '', '', correctPreviousDaysDate, i);
+  describe('getSettings tests', () => {
+    it('should return settings', () => {
+      expect(diary.getSettings()).toBe(settings);
+    });
+  });
+  describe('getLastDay tests', () => {
+    it('should return lastDay', () => {
+      expect(diary.getLastDay()).toBe(1);
+    });
+  });
 
-      expect(diary.createNewEntry()).toBe(i);
-      expect(diary.getEntry(i)).toEqual(newDay);
-      expect(diary.getLastDay()).toEqual(i);
-      expect(diary.getEntry(i - 1)).toEqual(oldDay);
-    }
-    // 最終日を消去する
-    expect(diary.deleteEntry(5)).toBeTruthy();
-    expect(diary.getLastDay()).toEqual(4);
-
-    // 1日目は消去できない
-    expect(diary.deleteEntry(1)).toBeFalsy();
-    // 2日目を削除する
-    expect(diary.deleteEntry(2)).toBeTruthy();
-    // 抜けた日付を埋めるようにnextとpreviousを変化させる
-    expect(diary.getEntry(1).next).toBe(3);
-    expect(diary.getEntry(3).previous).toBe(1);
-    expect(diary.getLastDay()).toEqual(4); //最終日以外を消去しても最終日は変わらない
-    //2日目を消去しようとするとエラーをスローする
-    expect(() => diary.getEntry(2)).toThrow(`not exists day=2 entry`);
-    expect(() => diary.deleteEntry(2)).toThrow(`not exists day=2 entry`);
-    //新しく作ると最終日の後ろに追加される
-    expect(diary.createNewEntry()).toBe(5);
+  describe('getEntry tests', () => {
+    it('should return existing entry', () => {
+      expect(diary.getEntry(1)).toEqual(diaryEntries.get(1));
+    });
+    it('should throw error when entry not exists', () => {
+      expect(() => diary.getEntry(2)).toThrow(`not exists day=2 entry`);
+    });
   });
-  test('JSON test', () => {
-    const diaryJson =
-      '{"settings":{"_storageKey":"bec0da1f-0053-4c59-acfb-f4a574bd8c98"},"diaryEntries":[{"day":1,"title":"","content":"","next":2},{"day":2,"title":"","content":"","next":3},{"day":3,"title":"","content":"","next":4},{"day":4,"title":"","content":"","next":5},{"day":5,"title":"","content":""}],"lastDay":5}';
-    const diary = container.resolve<IDiary>('InitDiary');
-    for (let i = 2; i < 6; i++) {
+  describe('createNewEntry tests', () => {
+    const nextDay = 99;
+    beforeEach(() => {
+      settings.getNextDay = jest.fn().mockReturnValue(nextDay);
+    });
+    it('should create new entry with getNextDay', () => {
+      const day = diary.createNewEntry();
+      expect(day).toBe(nextDay);
+      expect(settings.getNextDay).toHaveBeenCalledTimes(1);
+    });
+    it('should save new entry into diaryEntries', () => {
       diary.createNewEntry();
-    }
-    expect(JSON.stringify(diary)).toBe(diaryJson);
+      expect(diary.getEntry(nextDay)).toBe(builtEntry[1]);
+    });
+    it('should update previous entry next to new day', () => {
+      expect(diary.getEntry(1).next).toBeUndefined();
+      diary.createNewEntry();
+      expect(diary.getEntry(1).next).toBe(nextDay);
+    });
+    it('should update lastDay to new day', () => {
+      diary.createNewEntry();
+      expect(diary.getLastDay()).toBe(nextDay);
+    });
+    it('should return new day', () => {
+      const day = diary.createNewEntry();
+      expect(day).toBe(nextDay);
+    });
+  });
+  describe('test deleteEntry', () => {
+    const lastDay = 5;
+    beforeEach(() => {
+      for (let i = 2; i <= lastDay; i++) {
+        settings.getNextDay = jest.fn().mockReturnValue(i);
+        diary.createNewEntry();
+      }
+    });
+    it('should return false when entry does not exist', () => {
+      const isDeleted = diary.deleteEntry(lastDay + 1);
+      expect(isDeleted).toBeFalsy();
+    });
+    it('should delete lastDay entry and update lastDay to previous', () => {
+      expect(diary.getEntry(lastDay)).not.toBeNull();
+      const isDeleted = diary.deleteEntry(lastDay);
+      expect(isDeleted).toBeTruthy();
+      expect(() => diary.getEntry(lastDay)).toThrow(
+        `not exists day=${lastDay} entry`
+      );
+    });
+    it('should link previous and next when deleting middle entry', () => {
+      expect(diary.getEntry(1).next).toBe(2);
+      expect(diary.getEntry(3).previous).toBe(2);
+      const isDeleted = diary.deleteEntry(2);
+      expect(isDeleted).toBeTruthy();
+      expect(diary.getEntry(1).next).toBe(3);
+      expect(diary.getEntry(3).previous).toBe(1);
+    });
+    it('should not delete first entry', () => {
+      const isDeleted = diary.deleteEntry(1);
+      expect(isDeleted).toBeFalsy();
+    });
+  });
+  describe('toJson tests', () => {
+    it('should serialize settings, diaryEntries, and lastDay', () => {
+      const lastDay = 5;
+      const days = Array<number>(lastDay);
+      days[0] = 1;
+      for (let i = 2; i <= lastDay; i++) {
+        settings.getNextDay = jest.fn().mockReturnValue(i);
+        days[i - 1] = diary.createNewEntry();
+      }
+      interface DiaryJson {
+        settings: IDiarySettings;
+        diaryEntries: IDiaryEntry[];
+        lastDay: number;
+      }
+
+      const json: DiaryJson = diary.toJSON() as DiaryJson;
+
+      expect(json.settings).toEqual(settings);
+      expect(Array.isArray(json.diaryEntries)).toBeTruthy();
+      expect(json.diaryEntries.some((e, i) => e.day === days[i])).toBeTruthy();
+      expect(json.lastDay).toBe(days.at(-1));
+    });
+
+    it('should be called automatically by JSON.stringify', () => {
+      const str = JSON.stringify(diary);
+      expect(str).toContain('"settings"');
+      expect(str).toContain('"diaryEntries"');
+      expect(str).toContain('"lastDay"');
+    });
   });
 });

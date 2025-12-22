@@ -24,7 +24,7 @@ export default class Diary implements IDiary {
     @inject('IDiarySettings')
     private settings: IDiarySettings,
     @inject('FIRST_DAY')
-    private lastDay: number = 1
+    private lastDay: number
   ) {
     assert(diaryEntries.size !== 0, `not exists any entry`);
     assert(diaryEntries.get(lastDay) !== undefined, `not exists ${lastDay}`);
@@ -40,11 +40,7 @@ export default class Diary implements IDiary {
    * @returns 新しいIDiaryEntryのday
    */
   createNewEntry(): number {
-    const lastDiary = this.diaryEntries.get(this.lastDay);
-    assert(
-      lastDiary !== undefined,
-      new KeyNotFoundError(`not exists day=${this.lastDay}`)
-    );
+    const lastDiary = this.getEntry(this.lastDay);
     const newDiary = this.builder(lastDiary, this.settings);
     this.diaryEntries.set(newDiary.day, newDiary);
     this.getEntry(this.lastDay).next = newDiary.day;
@@ -77,21 +73,21 @@ export default class Diary implements IDiary {
     if (entry === undefined) {
       return false;
     }
-    const previous =
-      entry.previous !== undefined ? this.getEntry(entry.previous) : undefined;
-    const next =
-      entry.next !== undefined ? this.getEntry(entry.next) : undefined;
-    if (this.lastDay === day && previous !== undefined) {
-      // 削除する日が最新日と同じかつ前日が存在するなら、前日から削除日を消し、lastDayを前日に置き換える。
-      previous.next = undefined;
-      this.lastDay = previous.day;
-    } else if (previous != undefined && next != undefined) {
-      // 前後にエントリーが存在するならそれらを繋げる。
-      previous.next = next.day;
-      next.previous = previous.day;
-    } else {
-      //最新日でなく前後にエントリーもないなら、それは初日なので削除しない。
+    if (entry.previous === undefined) {
+      // 前日が存在しないなら初日なので削除しない
       return false;
+    }
+    const previousEntry = this.getEntry(entry.previous);
+    const nextEntry =
+      entry.next !== undefined ? this.getEntry(entry.next) : undefined;
+    if (this.lastDay === day) {
+      // 削除する日が最新日と同じなら、前日から翌日(削除する日)のリンクを消し、lastDayを前日に置き換える。
+      previousEntry.next = undefined;
+      this.lastDay = previousEntry.day;
+    } else if (nextEntry !== undefined) {
+      // 前後にエントリーが存在するならそれらを繋げる。
+      previousEntry.next = nextEntry.day;
+      nextEntry.previous = previousEntry.day;
     }
     return this.diaryEntries.delete(day);
   }

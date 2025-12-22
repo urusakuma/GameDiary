@@ -13,6 +13,7 @@ import {
   DefaultSettingsFactory,
   IDayModifier,
   UseExistingDataDayModifierFactory,
+  Placeholders,
 } from '@/model/diary/diaryModelInterfaces';
 import {
   IsStorageAvailableFunc,
@@ -173,6 +174,10 @@ container.register<DefaultSettingsFactory>('DefaultSettingsFactory', {
   useFactory: (c) => () => c.resolve<IDiarySettings>('IDiarySettings'),
 });
 
+container.register<Placeholders>('Placeholders', {
+  useValue: DairySettingsConstant.PLACEHOLDERS,
+});
+
 container.register<IDayModifier>('IDayModifier', {
   useClass: DayModifier,
 });
@@ -188,9 +193,14 @@ container.register<UseExistingDataDayModifierFactory>(
   'UseExistingDataDayModifierFactory',
   {
     useFactory:
-      () =>
+      (c) =>
       (modifier: string, cycleLength: number, ...unit: Array<string>) =>
-        new DayModifier(modifier, cycleLength, ...unit),
+        new DayModifier(
+          modifier,
+          cycleLength,
+          c.resolve<Placeholders>('Placeholders'),
+          ...unit
+        ),
   }
 );
 

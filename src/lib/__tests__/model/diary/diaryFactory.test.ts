@@ -1,70 +1,96 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
 import DiaryFactory from '@/model/repository/diaryFactory';
 import Diary from '@/model/diary/diary';
 import type {
   IDiary,
   IDiaryEntry,
   IDiarySettings,
-  NewDiarySettingsFactory,
+  IDiarySettingsFactory,
   UsePreviousDayDiaryEntryFactory,
 } from '@/model/diary/diaryModelInterfaces';
 
 describe('DiaryFactory', () => {
-  let mockNewEntriesFactory: jest.Mock<() => Map<number, IDiaryEntry>>;
-  let mockSettingsFactory: jest.Mock<NewDiarySettingsFactory>;
-  let mockBuilder: UsePreviousDayDiaryEntryFactory;
+  let newEntriesFactory: () => Map<number, IDiaryEntry>;
+  let settingsFactory: IDiarySettingsFactory;
+  let entryFactory: UsePreviousDayDiaryEntryFactory;
   let diaryFactory: DiaryFactory;
-  const mockEntries = new Map<number, IDiaryEntry>().set(1, {} as IDiaryEntry);
-  const mockSettings = {} as unknown as IDiarySettings;
-  const mockEntry = {} as unknown as UsePreviousDayDiaryEntryFactory;
+  const entry = {} as IDiaryEntry;
+  const entries = new Map<number, IDiaryEntry>().set(1, entry);
+  const settings = {} as unknown as IDiarySettings;
+  const name = 'DiaryName';
+  const otherSettings = {} as unknown as IDiarySettings;
+  const otherDiary = {
+    getSettings: jest.fn().mockReturnValue(otherSettings),
+  } as unknown as IDiary;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    mockNewEntriesFactory?.mockClear();
-    mockSettingsFactory?.mockClear();
-    mockBuilder = jest.fn()?.mockClear();
-    mockNewEntriesFactory = jest.fn().mockReturnValue(mockEntries);
-    mockSettingsFactory = jest.fn().mockReturnValue(mockSettings);
-    mockBuilder = jest.fn().mockReturnValue(mockEntry);
-
-    container.register('NewDiaryEntriesFactory', {
-      useValue: mockNewEntriesFactory,
-    });
-    container.register('NewDiarySettingsFactory', {
-      useValue: mockSettingsFactory,
-    });
-    container.register('UsePreviousDayDiaryEntryFactory', {
-      useValue: mockBuilder,
-    });
-
-    diaryFactory = container.resolve(DiaryFactory);
-  });
-
-  it('should create a new Diary when no diary is provided', () => {
-    const result = diaryFactory.createNewDiary();
-
-    expect(mockNewEntriesFactory).toHaveBeenCalledTimes(1);
-    expect(mockSettingsFactory).toHaveBeenCalledTimes(1);
-    expect(result).toBeInstanceOf(Diary);
-    expect(result).toEqual(
-      new Diary(mockBuilder, mockEntries, mockSettings, 1)
+    newEntriesFactory = jest.fn().mockReturnValue(entries);
+    settingsFactory = {
+      createUseExistingData: jest.fn().mockReturnValue(settings),
+      createNewDiarySettings: jest.fn().mockReturnValue(settings),
+    } as unknown as IDiarySettingsFactory;
+    entryFactory = jest.fn();
+    diaryFactory = new DiaryFactory(
+      newEntriesFactory,
+      settingsFactory,
+      entryFactory
     );
   });
-
-  it('should create a new Diary with existing diary settings when a diary is provided', () => {
-    const mockDiary = {
-      getSettings: jest.fn().mockReturnValue(mockSettings),
-    } as unknown as IDiary;
-
-    const result = diaryFactory.createNewDiary(mockDiary);
-
-    expect(mockNewEntriesFactory).toHaveBeenCalledTimes(1);
-    expect(mockDiary.getSettings).toHaveBeenCalledTimes(1);
-    expect(mockSettingsFactory).toHaveBeenCalledWith(mockDiary.getSettings());
-    expect(result).toBeInstanceOf(Diary);
-    expect(result).toEqual(
-      new Diary(mockBuilder, mockEntries, mockSettings, 1)
-    );
+  describe('createUseExistingData tests', () => {
+    it('should create a diary using existing data with provided entries, settings, and lastDay', () => {
+      const diary = diaryFactory.createUseExistingData(entries, settings, 1);
+      expect(diary).toBeInstanceOf(Diary);
+      expect(diary.getEntry(1)).toBe(entry);
+      expect(diary.getSettings()).toBe(settings);
+      expect(diary.getLastDay()).toBe(1);
+    });
+    it('should set lastDay to 1 when lastDay is less than 1', () => {
+      const diary = diaryFactory.createUseExistingData(entries, settings, 0);
+      expect(diary.getLastDay()).toBe(1);
+    });
+    it('should set lastDay to 1 when entry for lastDay does not exist', () => {
+      const diary = diaryFactory.createUseExistingData(entries, settings, 2);
+      expect(diary.getLastDay()).toBe(1);
+    });
+    it('should truncate decimal values from lastDay', () => {
+      let diary = diaryFactory.createUseExistingData(entries, settings, 0.999);
+      expect(diary.getLastDay()).toBe(1);
+      diary = diaryFactory.createUseExistingData(entries, settings, 1.999);
+      expect(diary.getLastDay()).toBe(1);
+    });
+    it('should call newEntriesFactory when diaryEntries is empty', () => {
+      const diary = diaryFactory.createUseExistingData(new Map(), settings, 2);
+      expect(diary.getEntry(1)).toBe(entry);
+      expect(newEntriesFactory).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe('createNewDiary tests', () => {
+    it('should create a new diary with fresh entries and default lastDay set to 1', () => {
+      const diary = diaryFactory.createNewDiary();
+      expect(diary).toBeInstanceOf(Diary);
+      expect(diary.getEntry(1)).toBe(entry);
+      expect(diary.getLastDay()).toBe(1);
+      expect(diary.getSettings()).toBe(settings);
+      expect(newEntriesFactory).toHaveBeenCalledTimes(1);
+    });
+    it('should pass existing settings to createNewDiarySettings when a diary is provided', () => {
+      const diary = diaryFactory.createNewDiary(otherDiary);
+      expect(diary.getSettings()).toBe(settings);
+      expect(diary.getSettings()).not.toBe(otherSettings);
+      expect(otherDiary.getSettings).toHaveBeenCalledTimes(1);
+      expect(settingsFactory.createNewDiarySettings).toHaveBeenCalledTimes(1);
+      expect(settingsFactory.createNewDiarySettings).toHaveBeenCalledWith(
+        otherSettings,
+        undefined
+      );
+    });
+    it('should use provided name when creating new diary settings', () => {
+      const diary = diaryFactory.createNewDiary(undefined, name);
+      expect(settingsFactory.createNewDiarySettings).toHaveBeenCalledTimes(1);
+      expect(settingsFactory.createNewDiarySettings).toHaveBeenCalledWith(
+        undefined,
+        name
+      );
+    });
   });
 });

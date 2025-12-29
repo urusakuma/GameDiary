@@ -125,8 +125,10 @@ export interface IDiaryExporter {
 }
 /** カレントの日記をストレージに保存するハンドラ */
 export interface IDiarySaveHandler {
-  /**ストレージにDiaryを保存する。*/
-  save(): void;
+  /**ストレージにDiaryを保存する。
+   * @return {boolean} 保存に成功したならtrue、失敗したならfalse
+   */
+  save(): boolean;
 }
 
 /** 受け取ったKeyの日記をロードし、カレントとして設定する*/

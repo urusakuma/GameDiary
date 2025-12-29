@@ -15,10 +15,7 @@ import {
   UseExistingDataDayModifierFactory,
   Placeholders,
 } from '@/model/diary/diaryModelInterfaces';
-import {
-  IsStorageAvailableFunc,
-  IStorageService,
-} from '@/model/utils/storageServiceInterface';
+import { IStorageService } from '@/model/utils/storageServiceInterface';
 import {
   ICurrentDiaryManager,
   IDiaryDataMigrator,
@@ -35,10 +32,7 @@ import Diary from '@/model/diary/diary';
 import DairySettingsConstant from '@/dairySettingsConstant';
 import DayModifier from '@/model/diary/dayModifier';
 import DiarySettings from '@/model/diary/diarySettings';
-import {
-  isStorageAvailable,
-  LocalStorageService,
-} from '@/model/utils/storageService';
+import StorageService from '@/model/utils/storageService';
 import DiaryFactory from '@/model/repository/diaryFactory';
 import DiaryEntryFactory from '@/model/diary/diaryEntryFactory';
 import DiarySettingsFactory from '@/model/diary/diarySettingsFactory';
@@ -205,13 +199,7 @@ container.register<UseExistingDataDayModifierFactory>(
 );
 
 // storageServiceInterfaces
-container.registerSingleton<IStorageService>(
-  'IStorageService',
-  LocalStorageService
-);
-container.register<IsStorageAvailableFunc>('IsStorageAvailableFunc', {
-  useValue: isStorageAvailable,
-});
+container.registerSingleton<IStorageService>('IStorageService', StorageService);
 
 // diaryRepositoryInterfaces
 container.registerSingleton<IDiaryService>('IDiaryService', DiaryService);

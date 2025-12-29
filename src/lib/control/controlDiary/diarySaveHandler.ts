@@ -11,8 +11,8 @@ export default class DiarySaveHandler implements IDiarySaveHandler {
     @inject('ICurrentDiaryAccessor')
     private diaryAccessor: ICurrentDiaryAccessor
   ) {}
-  save(): void {
+  save(): boolean {
     const diary = this.diaryAccessor.getCurrentDiary();
-    this.diarySave.save(diary);
+    return this.diarySave.save(diary);
   }
 }

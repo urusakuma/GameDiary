@@ -1,9 +1,6 @@
 import DairySettingsConstant from '@/dairySettingsConstant';
 import { isTypeMatch } from '@/model/utils/checkTypeMatch';
-import type {
-  IsStorageAvailableFunc,
-  IStorageService,
-} from '@/model/utils/storageServiceInterface';
+import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import { inject, injectable } from 'tsyringe';
 import { IDiaryNameManager } from './diaryRepositoryInterfaces';
 import { InvalidJsonError } from '@/error';
@@ -12,12 +9,7 @@ export default class DiaryNameManager implements IDiaryNameManager {
   private diaryNameSet: Set<string> = new Set<string>();
   private diaryNames: Record<string, string> = {};
 
-  constructor(
-    @inject('IStorageService')
-    private storage: IStorageService,
-    @inject('IsStorageAvailableFunc')
-    private isStorageAvailable: IsStorageAvailableFunc
-  ) {
+  constructor(@inject('IStorageService') private storage: IStorageService) {
     // まず、itemListを初期化し、ストレージからゲームデータ名のリストを取得する。
     const recordStr = storage.getItem(DairySettingsConstant.DIARY_NAME_LIST);
     if (recordStr === null) {
@@ -59,13 +51,11 @@ export default class DiaryNameManager implements IDiaryNameManager {
     //ストレージキーと名前を保存してストレージに登録する
     this.diaryNameSet.add(name);
     this.diaryNames[key] = name;
-    if (this.isStorageAvailable(this.storage)) {
-      this.storage.setItem(
-        DairySettingsConstant.DIARY_NAME_LIST,
-        JSON.stringify(this.diaryNames)
-      );
-    }
-    return true;
+    const result = this.storage.setItem(
+      DairySettingsConstant.DIARY_NAME_LIST,
+      JSON.stringify(this.diaryNames)
+    );
+    return result;
   }
 
   removeDiaryName(key: string): void {
@@ -75,12 +65,10 @@ export default class DiaryNameManager implements IDiaryNameManager {
     }
     this.diaryNameSet.delete(removeName);
     delete this.diaryNames[key];
-    if (this.isStorageAvailable(this.storage)) {
-      this.storage.setItem(
-        DairySettingsConstant.DIARY_NAME_LIST,
-        JSON.stringify(this.diaryNames)
-      );
-    }
+    this.storage.setItem(
+      DairySettingsConstant.DIARY_NAME_LIST,
+      JSON.stringify(this.diaryNames)
+    );
   }
   hasDiaryName(name: string): boolean {
     return this.diaryNameSet.has(name);

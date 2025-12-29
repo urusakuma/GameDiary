@@ -44,11 +44,8 @@ describe('DayModifier class tests', () => {
       }
     });
     it('should truncate the fractional of index when the argument is not an integer', () => {
-      for (let i = 0; i < 5; i++) {
-        modifier.updateUnit(`Unit${i}`, i);
-        if (i === 0) {
-          continue;
-        }
+      for (let i = 1; i < 5; i++) {
+        modifier.updateUnit(`Unit${i - 1}`, i - 1);
         expect(modifier.getUnit(i - 0.001)).toBe('Unit' + (i - 1));
       }
     });

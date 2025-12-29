@@ -119,7 +119,7 @@ export interface IDiaryExport {
 /** 受け取ったDiaryをストレージに保存する */
 export interface IDiarySave {
   /**ストレージにDiaryを保存する。*/
-  save(diary: IDiary): void;
+  save(diary: IDiary): boolean;
 }
 
 /**

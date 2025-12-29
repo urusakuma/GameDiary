@@ -3,12 +3,13 @@ import toast from 'react-hot-toast';
 import { container } from 'tsyringe';
 
 const executeSave = async () => {
-  try {
-    container.resolve<IDiarySaveHandler>('IDiarySaveHandler').save();
+  const isSaved = container
+    .resolve<IDiarySaveHandler>('IDiarySaveHandler')
+    .save();
+  if (isSaved) {
     toast.success('セーブしました');
-  } catch (err) {
+  } else {
     toast.error('セーブできませんでした');
-    throw err;
   }
 };
 export default executeSave;

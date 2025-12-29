@@ -1,16 +1,10 @@
-import { MockDiaryEntry } from '@/__tests__/__mocks__/mockDiaryEntry';
-import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
 import '@/container/di_diary';
-import { KeyNotFoundError } from '@/error';
 import Diary from '@/model/diary/diary';
 import {
-  IDiary,
   IDiaryEntry,
   IDiarySettings,
-  UseExistingDataDiaryEntryFactory,
   UsePreviousDayDiaryEntryFactory,
 } from '@/model/diary/diaryModelInterfaces';
-import { container } from 'tsyringe';
 
 describe('DairySettings class tests', () => {
   let entry: IDiaryEntry;

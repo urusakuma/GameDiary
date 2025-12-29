@@ -1,49 +1,73 @@
-import { NotSupportedError } from '@/error';
 import { IStorageService } from './storageServiceInterface';
 import { inject, injectable } from 'tsyringe';
 @injectable()
-export class LocalStorageService implements IStorageService {
+export default class StorageService implements IStorageService {
   constructor(@inject('LocalStorage') private storage: Storage) {}
+  private _isStorageAvailable: boolean | null = null;
   getItem(key: string): string | null {
-    return this.storage.getItem(key);
+    try {
+      return this.storage.getItem(key);
+    } catch (e) {
+      return null;
+    }
   }
-  setItem(key: string, value: string): void {
-    this.storage.setItem(key, value);
+  setItem(key: string, value: string): boolean {
+    if (
+      this._isStorageAvailable === false ||
+      this._isStorageAvailable === null
+    ) {
+      // まだ確認していない、もしくは使用不可と判定されている場合は確認する
+      // 再確認するため、キャッシュをnullに設定する
+      this._isStorageAvailable = null;
+      const isAvailable = this.isStorageAvailable();
+      if (!isAvailable) {
+        // ストレージが使用不可なので保存しない
+        return false;
+      }
+    }
+    try {
+      this.storage.setItem(key, value);
+      return true;
+    } catch (e) {
+      // 何らかの理由により保存に失敗した
+      // 入力が大きすぎるだけかもしれないのでisStorageAvailableで使用可否を再確認する
+      // 再確認するため、キャッシュをnullに設定する
+      this._isStorageAvailable = null;
+      this.isStorageAvailable();
+      return false;
+    }
   }
   removeItem(key: string): void {
-    this.storage.removeItem(key);
+    try {
+      this.storage.removeItem(key);
+    } catch (e) {
+      return;
+    }
   }
+
+  /**
+   * ストレージが使用可能か判別する。原因は問わず、使用不可の場合はfalseを返す。
+   * @returns {boolean} ストレージが使用可能ならtrue、使用できないならfalse。
+   */
+  isStorageAvailable(): boolean {
+    if (this._isStorageAvailable === null) {
+      // まだ確認していない場合は確認する
+      try {
+        const x = '__storage_test__';
+        this.storage.setItem(x, x);
+        this.storage.removeItem(x);
+        this._isStorageAvailable = true;
+      } catch (e) {
+        this._isStorageAvailable =
+          e instanceof DOMException &&
+          (e.name === 'QuotaExceededError' || // Firefox以外のブラウザ
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED'); // Firefox
+      }
+    }
+    return this._isStorageAvailable;
+  }
+
   get length() {
     return this.storage.length;
-  }
-}
-/**
- * ストレージが使用できないときに例外を投げるための関数。
- * ストレージを使用する関数の置き換えに利用する。
- * @param _ 使用しない引数
- */
-export const notSupportFunc = (..._: any[]) => {
-  throw new NotSupportedError(
-    'データが保存できませんでした。\nメモリが足りないか古いブラウザを使用しています。'
-  );
-};
-/**
- * ストレージが使用可能か判別する。MDNからほぼ丸々コピってきたのでそのまま使えるはず。
- * @returns {boolean} ストレージが使用可能ならtrue、使用できないならfalse。
- */
-export function isStorageAvailable(storage: IStorageService): boolean {
-  try {
-    const x = '__storage_test__';
-    storage.setItem(x, x);
-    storage.removeItem(x);
-    return true;
-  } catch (e) {
-    return (
-      e instanceof DOMException &&
-      (e.name === 'QuotaExceededError' || // everything except Firefox
-        e.name === 'NS_ERROR_DOM_QUOTA_REACHED') && // Firefox
-      storage &&
-      storage.length !== 0 // acknowledge QuotaExceededError only if there's something already stored
-    );
   }
 }

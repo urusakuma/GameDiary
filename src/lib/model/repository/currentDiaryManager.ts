@@ -6,13 +6,15 @@ import DairySettingsConstant from '@/dairySettingsConstant';
 export default class CurrentDiaryManager implements ICurrentDiaryManager {
   private currentDiaryKey: string = '';
   constructor(@inject('IStorageService') private storage: IStorageService) {
-    const key = this.storage.getItem(DairySettingsConstant.CURRENT_DIARY_KEY);
-    if (key !== null) {
-      this.currentDiaryKey = key;
-      return;
-    }
+    this.currentDiaryKey = this.getCurrentDiaryKey();
   }
   getCurrentDiaryKey(): string {
+    if (this.currentDiaryKey === '') {
+      const key = this.storage.getItem(DairySettingsConstant.CURRENT_DIARY_KEY);
+      if (key !== null) {
+        this.currentDiaryKey = key;
+      }
+    }
     return this.currentDiaryKey;
   }
   setCurrentDiaryKey(key: string): void {

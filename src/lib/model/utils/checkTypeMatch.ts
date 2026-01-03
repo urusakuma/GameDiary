@@ -65,3 +65,16 @@ export function isArrayType<T extends CheckedType>(
 ): arr is Array<TypeMap[T]> {
   return arr.every((element) => typeof element === type);
 }
+
+/**
+ * レコード内の全要素が指定された型かを確認する。
+ * @param obj 調査対象のレコード
+ * @param type 要素が持つべき型
+ * @returns すべての要素が指定された型の場合は true、それ以外の場合は false
+ */
+export function isRecordType<T extends CheckedType>(
+  obj: Record<string, unknown>,
+  type: T
+): obj is Record<string, TypeMap[T]> {
+  return Object.values(obj).every((element) => typeof element === type);
+}

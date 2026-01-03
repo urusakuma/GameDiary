@@ -1,45 +1,36 @@
-import 'reflect-metadata';
 import { IDiary } from '@/model/diary/diaryModelInterfaces';
-import { container } from 'tsyringe';
-import { MockDiary } from '@/__tests__/__mocks__/mockDiary';
 import { CompressDiary } from '@/model/serialization/serializationInterface';
-import { MockDiarySettings } from '@/__tests__/__mocks__/mockDiarySettings';
 import DiaryExport from '@/model/repository/diaryExport';
 import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
 
 describe('DiaryExport', () => {
   let diaryExport: DiaryExport;
   let mockDiaryService: jest.Mocked<IDiaryService>;
-  let mockCompressDiary: jest.Mock<CompressDiary>;
-  const mockSettings = new MockDiarySettings();
-  const mockDiary: IDiary = new MockDiary();
+  let mockCompressDiary: jest.Mocked<CompressDiary>;
+  let mockDiary: IDiary;
+  const storageKey = 'testDiaryKey';
+  const compressedDIaryStr = 'compressedDiaryData';
   beforeEach(() => {
+    mockDiary = {} as unknown as IDiary;
     mockDiaryService = {
-      addDiary: jest.fn(),
-      getDiary: jest.fn().mockReturnValueOnce(mockDiary),
-      deleteDiary: jest.fn(),
-    };
-
-    mockCompressDiary = jest.fn().mockReturnValue('compressedDiaryData');
-
-    container.registerInstance('IDiaryService', mockDiaryService);
-    container.register('CompressDiary', { useValue: mockCompressDiary });
-    container.register('IDiary', MockDiary);
-    container.register(DiaryExport, DiaryExport);
-    diaryExport = container.resolve(DiaryExport);
+      getDiary: jest.fn(),
+    } as unknown as jest.Mocked<IDiaryService>;
+    mockCompressDiary = jest.fn().mockReturnValue(compressedDIaryStr);
+    diaryExport = new DiaryExport(mockDiaryService, mockCompressDiary);
   });
 
-  it('should save the diary using storage service and compressDiary function', () => {
-    // mockDiaryService.getDiary returns mockDiary
-    const validExportResult = diaryExport.export(mockSettings.storageKey);
-    expect(validExportResult).toBe('compressedDiaryData');
+  it('should export the diary by reading from storage and compressing it', () => {
+    mockDiaryService.getDiary.mockReturnValue(mockDiary);
+    const result = diaryExport.export(storageKey);
+    expect(mockDiaryService.getDiary).toHaveBeenCalledWith(storageKey);
     expect(mockCompressDiary).toHaveBeenCalledWith(mockDiary);
-    expect(mockDiaryService.getDiary).toHaveBeenCalledWith(
-      mockSettings.storageKey
-    );
-
-    // mockDiaryService.getDiary returns undefined
-    const emptyExportResult = diaryExport.export(mockSettings.storageKey);
-    expect(emptyExportResult).toBe('');
+    expect(result).toBe('compressedDiaryData');
+  });
+  it('should return empty string if diary does not exist', () => {
+    mockDiaryService.getDiary.mockReturnValue(undefined);
+    const result = diaryExport.export(storageKey);
+    expect(mockDiaryService.getDiary).toHaveBeenCalledWith(storageKey);
+    expect(mockCompressDiary).not.toHaveBeenCalled();
+    expect(result).toBe('');
   });
 });

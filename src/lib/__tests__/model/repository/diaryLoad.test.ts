@@ -11,11 +11,9 @@ describe('DiaryLoad', () => {
   let mockDiaryService: jest.Mocked<IDiaryService>;
   let mockStorageService: jest.Mocked<IStorageService>;
   let mockDiaryDecompressor: jest.Mocked<IDiaryDecompressor>;
-  let mockDIaryNameService: jest.Mocked<IDiaryNameService>;
+  let mockDiaryNameService: jest.Mocked<IDiaryNameService>;
   let mockDiary: jest.Mocked<IDiary>;
   const dairyKey = 'diaryKey';
-  const diaryServiceDate = 'diaryDate in DiaryService';
-  const storageServiceDate = 'diaryDate in StorageService';
   beforeEach(() => {
     mockDiaryService = {
       getDiary: jest.fn(),
@@ -27,7 +25,7 @@ describe('DiaryLoad', () => {
     mockDiaryDecompressor = {
       decompressDiary: jest.fn(),
     };
-    mockDIaryNameService = {
+    mockDiaryNameService = {
       updateDiaryName: jest.fn(),
     } as unknown as jest.Mocked<IDiaryNameService>;
     mockDiary = {
@@ -45,7 +43,7 @@ describe('DiaryLoad', () => {
       mockDiaryService,
       mockStorageService,
       mockDiaryDecompressor,
-      mockDIaryNameService
+      mockDiaryNameService
     );
     const loadResult = diaryLoad.load(dairyKey);
     expect(loadResult).toBe(mockDiary);
@@ -59,7 +57,7 @@ describe('DiaryLoad', () => {
       mockDiaryService,
       mockStorageService,
       mockDiaryDecompressor,
-      mockDIaryNameService
+      mockDiaryNameService
     );
     expect(() => diaryLoad.load(dairyKey)).toThrow(
       new KeyNotFoundError(`Key "${dairyKey}" not found`)
@@ -69,13 +67,13 @@ describe('DiaryLoad', () => {
     mockDiaryService.getDiary.mockReturnValue(undefined);
     mockStorageService.getItem.mockReturnValue('compressedDiaryData');
     mockDiaryDecompressor.decompressDiary.mockReturnValue(mockDiary);
-    mockDIaryNameService.updateDiaryName.mockReturnValue('Unique Diary Name');
+    mockDiaryNameService.updateDiaryName.mockReturnValue('Unique Diary Name');
 
     const diaryLoad = new DiaryLoad(
       mockDiaryService,
       mockStorageService,
       mockDiaryDecompressor,
-      mockDIaryNameService
+      mockDiaryNameService
     );
     const loadResult = diaryLoad.load(dairyKey);
 
@@ -84,7 +82,7 @@ describe('DiaryLoad', () => {
     expect(mockDiaryDecompressor.decompressDiary).toHaveBeenCalledWith(
       'compressedDiaryData'
     );
-    expect(mockDIaryNameService.updateDiaryName).toHaveBeenCalledWith(
+    expect(mockDiaryNameService.updateDiaryName).toHaveBeenCalledWith(
       dairyKey,
       mockDiary.getSettings().getDiaryName()
     );

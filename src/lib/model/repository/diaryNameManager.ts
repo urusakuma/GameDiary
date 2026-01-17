@@ -46,15 +46,21 @@ export default class DiaryNameManager implements IDiaryNameManager {
     if (key === '' || name === '' || this.diaryNameSet.has(name)) {
       return false;
     }
-    //前の文字をsetから取り除く
-    this.diaryNameSet.delete(this.diaryNames[key]);
+    const oldName = this.diaryNames[key];
     //ストレージキーと名前を保存してストレージに登録する
-    this.diaryNameSet.add(name);
     this.diaryNames[key] = name;
     const result = this.storage.setItem(
       DairySettingsConstant.DIARY_NAME_LIST,
       JSON.stringify(this.diaryNames)
     );
+    if (!result) {
+      // ストレージの登録に失敗した場合、変更を元に戻す
+      this.diaryNames[key] = oldName;
+      return false;
+    }
+    // setの更新
+    this.diaryNameSet.delete(oldName);
+    this.diaryNameSet.add(name);
     return result;
   }
 

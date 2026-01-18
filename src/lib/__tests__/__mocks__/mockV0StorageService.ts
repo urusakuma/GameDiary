@@ -1,4 +1,4 @@
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 import { MockStorageService } from './mockStorageService';
 import { injectable, singleton } from 'tsyringe';
 @singleton()
@@ -13,10 +13,10 @@ export class MockV0StorageService extends MockStorageService {
       itemList.push(new Item(itemKey, itemName));
     }
     this.setItem(
-      DairySettingsConstant.GAME_DATA_NAME_LIST,
+      DiarySettingsConstant.GAME_DATA_NAME_LIST,
       JSON.stringify(itemList)
     );
-    this.setItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME, 'testKey0');
+    this.setItem(DiarySettingsConstant.CURRENT_GAME_DATA_NAME, 'testKey0');
   }
 }
 

@@ -7,7 +7,7 @@ import useRefreshCurrentDiary from './useRefreshCurrentDiary';
 import { useSelectedDiaryContext } from 'src/components/context/selectedDiaryContext';
 
 const useDiaryDelete = () => {
-  const [dairyDelete, setDiaryDelete] = useState<IDeleteDiary>();
+  const [diaryDelete, setDiaryDelete] = useState<IDeleteDiary>();
   const { useReadHowToUse } = useFetchHowToUse();
   const { refreshCurrentDiary } = useRefreshCurrentDiary();
   const { selectCurrentDiary } = useSelectedDiaryContext();
@@ -17,18 +17,18 @@ const useDiaryDelete = () => {
   }, []);
   const deleteDiary = useCallback(
     async (key: string) => {
-      if (dairyDelete === undefined) {
+      if (diaryDelete === undefined) {
         return;
       }
-      const isDeleted = dairyDelete.delete(key);
+      const isDeleted = diaryDelete.delete(key);
       if (!isDeleted) {
         await useReadHowToUse();
-        dairyDelete.delete(key);
+        diaryDelete.delete(key);
       }
       refreshCurrentDiary();
       selectCurrentDiary();
     },
-    [dairyDelete, useReadHowToUse, refreshCurrentDiary, selectCurrentDiary]
+    [diaryDelete, useReadHowToUse, refreshCurrentDiary, selectCurrentDiary]
   );
   return { deleteDiary };
 };

@@ -2,7 +2,7 @@ import DiaryNameManager from '@/model/repository/diaryNameManager';
 import { IDiaryNameManager } from '@/model/repository/diaryRepositoryInterfaces';
 import { IStorageService } from '@/model/utils/storageServiceInterface';
 import { InvalidJsonError } from '@/error';
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 
 describe('DiaryNameManager class tests', () => {
   let diaryNameManager: IDiaryNameManager;
@@ -60,7 +60,7 @@ describe('DiaryNameManager class tests', () => {
         expect.arrayContaining(Object.entries(diaryRecord))
       );
       expect(mockStorage.setItem).toHaveBeenCalledWith(
-        DairySettingsConstant.DIARY_NAME_LIST,
+        DiarySettingsConstant.DIARY_NAME_LIST,
         JSON.stringify(diaryRecord)
       );
     });
@@ -97,7 +97,7 @@ describe('DiaryNameManager class tests', () => {
         expect.arrayContaining(Object.entries(diaryRecord))
       );
       expect(mockStorage.setItem).toHaveBeenCalledWith(
-        DairySettingsConstant.DIARY_NAME_LIST,
+        DiarySettingsConstant.DIARY_NAME_LIST,
         JSON.stringify(diaryRecord)
       );
     });

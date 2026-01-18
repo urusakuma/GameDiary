@@ -6,7 +6,7 @@ import {
   UsePreviousDayDiaryEntryFactory,
 } from '@/model/diary/diaryModelInterfaces';
 
-describe('DairySettings class tests', () => {
+describe('DiarySettings class tests', () => {
   let entry: IDiaryEntry;
   let diaryEntries: Map<number, IDiaryEntry>;
   let settings: IDiarySettings;

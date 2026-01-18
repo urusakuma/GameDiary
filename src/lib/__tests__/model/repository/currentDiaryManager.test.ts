@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import CurrentDiaryManager from '@/model/repository/currentDiaryManager';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 
 describe('CurrentDiaryManager', () => {
   let storage: jest.Mocked<IStorageService>;
@@ -33,7 +33,7 @@ describe('CurrentDiaryManager', () => {
       const manager = new CurrentDiaryManager(storage);
       expect(manager.getCurrentDiaryKey()).toBe(diaryKey);
       expect(storage.getItem).toHaveBeenCalledWith(
-        DairySettingsConstant.CURRENT_DIARY_KEY
+        DiarySettingsConstant.CURRENT_DIARY_KEY
       );
     });
   });
@@ -43,7 +43,7 @@ describe('CurrentDiaryManager', () => {
       manager.setCurrentDiaryKey(diaryKey);
       expect(manager.getCurrentDiaryKey()).toBe(diaryKey);
       expect(storage.setItem).toHaveBeenCalledWith(
-        DairySettingsConstant.CURRENT_DIARY_KEY,
+        DiarySettingsConstant.CURRENT_DIARY_KEY,
         diaryKey
       );
     });

@@ -13,7 +13,7 @@ describe('DiaryLoad', () => {
   let mockDiaryDecompressor: jest.Mocked<IDiaryDecompressor>;
   let mockDiaryNameService: jest.Mocked<IDiaryNameService>;
   let mockDiary: jest.Mocked<IDiary>;
-  const dairyKey = 'diaryKey';
+  const diaryKey = 'diaryKey';
   beforeEach(() => {
     mockDiaryService = {
       getDiary: jest.fn(),
@@ -32,7 +32,7 @@ describe('DiaryLoad', () => {
       getSettings: jest.fn().mockReturnValue({
         getDiaryName: jest.fn().mockReturnValue('Original Diary Name'),
         setDiaryName: jest.fn(),
-        storageKey: dairyKey,
+        storageKey: diaryKey,
       } as unknown as jest.Mocked<IDiarySettings>),
     } as unknown as jest.Mocked<IDiary>;
   });
@@ -45,9 +45,9 @@ describe('DiaryLoad', () => {
       mockDiaryDecompressor,
       mockDiaryNameService
     );
-    const loadResult = diaryLoad.load(dairyKey);
+    const loadResult = diaryLoad.load(diaryKey);
     expect(loadResult).toBe(mockDiary);
-    expect(mockDiaryService.getDiary).toHaveBeenCalledWith(dairyKey);
+    expect(mockDiaryService.getDiary).toHaveBeenCalledWith(diaryKey);
   });
   it('should return a KeyNotFoundError if the data does not exist in either IDiaryService or IStorageService', () => {
     // DiaryServiceにもストレージにもデータがない場合、エラーをスローする
@@ -59,8 +59,8 @@ describe('DiaryLoad', () => {
       mockDiaryDecompressor,
       mockDiaryNameService
     );
-    expect(() => diaryLoad.load(dairyKey)).toThrow(
-      new KeyNotFoundError(`Key "${dairyKey}" not found`)
+    expect(() => diaryLoad.load(diaryKey)).toThrow(
+      new KeyNotFoundError(`Key "${diaryKey}" not found`)
     );
   });
   it('should load and return diary from IStorageService when not found in IDiaryService', () => {
@@ -75,15 +75,15 @@ describe('DiaryLoad', () => {
       mockDiaryDecompressor,
       mockDiaryNameService
     );
-    const loadResult = diaryLoad.load(dairyKey);
+    const loadResult = diaryLoad.load(diaryKey);
 
     expect(loadResult).toBe(mockDiary);
-    expect(mockStorageService.getItem).toHaveBeenCalledWith(dairyKey);
+    expect(mockStorageService.getItem).toHaveBeenCalledWith(diaryKey);
     expect(mockDiaryDecompressor.decompressDiary).toHaveBeenCalledWith(
       'compressedDiaryData'
     );
     expect(mockDiaryNameService.updateDiaryName).toHaveBeenCalledWith(
-      dairyKey,
+      diaryKey,
       mockDiary.getSettings().getDiaryName()
     );
     expect(mockDiary.getSettings().setDiaryName).toHaveBeenCalledWith(

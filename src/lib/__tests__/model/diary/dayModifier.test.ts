@@ -1,4 +1,4 @@
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 import { IDayModifier, Placeholders } from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';
 import '@/container/di_diary';
@@ -19,16 +19,16 @@ describe('DayModifier class tests', () => {
   describe('Dependency Injection tests', () => {
     it('should regist container', () => {
       expect(modifier.getModifier()).toBe(
-        DairySettingsConstant.DEFAULT_DAY_MODIFIER
+        DiarySettingsConstant.DEFAULT_DAY_MODIFIER
       );
       expect(modifier.getCycleLength()).toBe(
-        DairySettingsConstant.DEFAULT_CYCLE_LENGTH
+        DiarySettingsConstant.DEFAULT_CYCLE_LENGTH
       );
       for (let i = 0; i < 4; i++) {
         expect(modifier.getUnit(i)).toBe('');
       }
       expect(modifier.getModifier()).toBe(
-        DairySettingsConstant.DEFAULT_DAY_MODIFIER
+        DiarySettingsConstant.DEFAULT_DAY_MODIFIER
       );
     });
   });
@@ -63,7 +63,7 @@ describe('DayModifier class tests', () => {
       testCycleLength.forEach((val) => {
         modifier.updateCycleLength(val);
         expect(modifier.getCycleLength()).toBe(
-          DairySettingsConstant.DEFAULT_CYCLE_LENGTH
+          DiarySettingsConstant.DEFAULT_CYCLE_LENGTH
         );
       });
     });

@@ -1,7 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 import type { IStorageService } from '../utils/storageServiceInterface';
 import { ICurrentDiaryManager } from './diaryRepositoryInterfaces';
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 @injectable()
 export default class CurrentDiaryManager implements ICurrentDiaryManager {
   private currentDiaryKey: string = '';
@@ -10,7 +10,7 @@ export default class CurrentDiaryManager implements ICurrentDiaryManager {
   }
   getCurrentDiaryKey(): string {
     if (this.currentDiaryKey === '') {
-      const key = this.storage.getItem(DairySettingsConstant.CURRENT_DIARY_KEY);
+      const key = this.storage.getItem(DiarySettingsConstant.CURRENT_DIARY_KEY);
       if (key !== null) {
         this.currentDiaryKey = key;
       }
@@ -19,6 +19,6 @@ export default class CurrentDiaryManager implements ICurrentDiaryManager {
   }
   setCurrentDiaryKey(key: string): void {
     this.currentDiaryKey = key;
-    this.storage.setItem(DairySettingsConstant.CURRENT_DIARY_KEY, key);
+    this.storage.setItem(DiarySettingsConstant.CURRENT_DIARY_KEY, key);
   }
 }

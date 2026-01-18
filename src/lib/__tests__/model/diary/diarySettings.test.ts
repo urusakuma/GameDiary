@@ -1,4 +1,4 @@
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 import {
   IDayModifier,
   IDiarySettings,
@@ -7,7 +7,7 @@ import DiarySettings from '@/model/diary/diarySettings';
 import { container } from 'tsyringe';
 import '@/container/di_diary';
 
-describe('DairySettings class tests', () => {
+describe('DiarySettings class tests', () => {
   let modifier: IDayModifier;
   let settings: IDiarySettings;
   beforeEach(() => {
@@ -26,17 +26,17 @@ describe('DairySettings class tests', () => {
     it('should regist container', () => {
       const settings = container.resolve<IDiarySettings>('IDiarySettings');
       expect(settings.getDiaryName()).toBe(
-        DairySettingsConstant.DEFAULT_DIARY_NAME
+        DiarySettingsConstant.DEFAULT_DIARY_NAME
       );
-      expect(settings.version).toBe(DairySettingsConstant.CURRENT_VERSION);
+      expect(settings.version).toBe(DiarySettingsConstant.CURRENT_VERSION);
       expect(settings.getCycleLength()).toBe(
-        DairySettingsConstant.DEFAULT_CYCLE_LENGTH
+        DiarySettingsConstant.DEFAULT_CYCLE_LENGTH
       );
       expect(settings.getDayInterval()).toBe(
-        DairySettingsConstant.DEFAULT_DAY_INTERVAL
+        DiarySettingsConstant.DEFAULT_DAY_INTERVAL
       );
       expect(settings.getModifier()).toBe(
-        DairySettingsConstant.DEFAULT_DAY_MODIFIER
+        DiarySettingsConstant.DEFAULT_DAY_MODIFIER
       );
     });
   });

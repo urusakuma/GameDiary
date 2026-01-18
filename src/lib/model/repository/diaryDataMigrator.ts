@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 import { IDiaryDataMigrator } from './diaryRepositoryInterfaces';
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import { InvalidJsonError } from '@/error';
 import {
@@ -17,7 +17,7 @@ export default class DiaryDataMigrator implements IDiaryDataMigrator {
   migrate(): void {
     // current_game_data_nameが存在するならv0
     const v0CurrentDiaryKey = this.storage.getItem(
-      DairySettingsConstant.CURRENT_GAME_DATA_NAME
+      DiarySettingsConstant.CURRENT_GAME_DATA_NAME
     );
     if (v0CurrentDiaryKey !== null) {
       this.migrateV0toV1();
@@ -31,19 +31,19 @@ export default class DiaryDataMigrator implements IDiaryDataMigrator {
   migrateV0toV1(): void {
     // CURRENT_GAME_DATA_NAMEをCURRENT_DIARY_KEYに名前変更
     const v0CurrentDiaryKey = this.storage.getItem(
-      DairySettingsConstant.CURRENT_GAME_DATA_NAME
+      DiarySettingsConstant.CURRENT_GAME_DATA_NAME
     );
     if (v0CurrentDiaryKey !== null) {
-      this.storage.removeItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME);
+      this.storage.removeItem(DiarySettingsConstant.CURRENT_GAME_DATA_NAME);
       this.storage.setItem(
-        DairySettingsConstant.CURRENT_DIARY_KEY,
+        DiarySettingsConstant.CURRENT_DIARY_KEY,
         v0CurrentDiaryKey
       );
     }
 
     // まず、itemListを初期化し、ストレージからゲームデータ名のリストを取得する。
     const diaryNameList = this.storage.getItem(
-      DairySettingsConstant.GAME_DATA_NAME_LIST
+      DiarySettingsConstant.GAME_DATA_NAME_LIST
     );
     if (diaryNameList === null) {
       return;
@@ -67,10 +67,10 @@ export default class DiaryDataMigrator implements IDiaryDataMigrator {
       keyNamePairObj[v.storageKey] = v.playGamedataName;
     });
     // gameDataListを削除
-    this.storage.removeItem(DairySettingsConstant.GAME_DATA_NAME_LIST);
+    this.storage.removeItem(DiarySettingsConstant.GAME_DATA_NAME_LIST);
     // diaryNameListへと保存
     this.storage.setItem(
-      DairySettingsConstant.DIARY_NAME_LIST,
+      DiarySettingsConstant.DIARY_NAME_LIST,
       JSON.stringify(keyNamePairObj)
     );
   }

@@ -1,4 +1,4 @@
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 import { isTypeMatch } from '@/model/utils/checkTypeMatch';
 import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import { inject, injectable } from 'tsyringe';
@@ -11,7 +11,7 @@ export default class DiaryNameManager implements IDiaryNameManager {
 
   constructor(@inject('IStorageService') private storage: IStorageService) {
     // まず、itemListを初期化し、ストレージからゲームデータ名のリストを取得する。
-    const recordStr = storage.getItem(DairySettingsConstant.DIARY_NAME_LIST);
+    const recordStr = storage.getItem(DiarySettingsConstant.DIARY_NAME_LIST);
     if (recordStr === null) {
       // nullならデータが存在しない
       return;
@@ -50,7 +50,7 @@ export default class DiaryNameManager implements IDiaryNameManager {
     //ストレージキーと名前を保存してストレージに登録する
     this.diaryNames[key] = name;
     const result = this.storage.setItem(
-      DairySettingsConstant.DIARY_NAME_LIST,
+      DiarySettingsConstant.DIARY_NAME_LIST,
       JSON.stringify(this.diaryNames)
     );
     if (!result) {
@@ -72,7 +72,7 @@ export default class DiaryNameManager implements IDiaryNameManager {
     this.diaryNameSet.delete(removeName);
     delete this.diaryNames[key];
     this.storage.setItem(
-      DairySettingsConstant.DIARY_NAME_LIST,
+      DiarySettingsConstant.DIARY_NAME_LIST,
       JSON.stringify(this.diaryNames)
     );
   }

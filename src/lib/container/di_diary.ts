@@ -29,7 +29,7 @@ import {
 } from '@/model/repository/diaryRepositoryInterfaces';
 import DiaryEntry from '@/model/diary/diaryEntry';
 import Diary from '@/model/diary/diary';
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 import DayModifier from '@/model/diary/dayModifier';
 import DiarySettings from '@/model/diary/diarySettings';
 import StorageService from '@/model/utils/storageService';
@@ -120,13 +120,13 @@ container.register<number>('FIRST_DAY', {
 container.register<string>('DEFAULT_TITLE', {
   useValue:
     String(container.resolve<number>('FIRST_DAY')) +
-    DairySettingsConstant.DEFAULT_DAY_MODIFIER,
+    DiarySettingsConstant.DEFAULT_DAY_MODIFIER,
 });
 container.register<string>('HOW_TO_USE_TEXT_URL', {
-  useValue: DairySettingsConstant.HOW_TO_USE_TEXT_URL,
+  useValue: DiarySettingsConstant.HOW_TO_USE_TEXT_URL,
 });
 container.register<string>('HOW_TO_USE_KEY', {
-  useValue: DairySettingsConstant.HOW_TO_USE_KEY,
+  useValue: DiarySettingsConstant.HOW_TO_USE_KEY,
 });
 container.register<string>('EMPTY_STRING', { useValue: '' });
 container.register<undefined>('UNDEFINED', { useFactory: () => undefined });
@@ -150,16 +150,16 @@ container.register<IDiarySettings>('IDiarySettings', {
   useClass: DiarySettings,
 });
 container.register<string>('DIARY_NAME', {
-  useValue: DairySettingsConstant.DEFAULT_DIARY_NAME,
+  useValue: DiarySettingsConstant.DEFAULT_DIARY_NAME,
 });
 container.register<number>('DAY_INTERVAL', {
-  useValue: DairySettingsConstant.DEFAULT_DAY_INTERVAL,
+  useValue: DiarySettingsConstant.DEFAULT_DAY_INTERVAL,
 });
 container.register<string>('STORAGE_KEY', {
   useFactory: () => crypto.randomUUID(),
 });
 container.register<number>('VERSION', {
-  useValue: DairySettingsConstant.CURRENT_VERSION,
+  useValue: DiarySettingsConstant.CURRENT_VERSION,
 });
 container.register<IDiarySettingsFactory>('IDiarySettingsFactory', {
   useClass: DiarySettingsFactory,
@@ -169,7 +169,7 @@ container.register<DefaultSettingsFactory>('DefaultSettingsFactory', {
 });
 
 container.register<Placeholders>('Placeholders', {
-  useValue: DairySettingsConstant.PLACEHOLDERS,
+  useValue: DiarySettingsConstant.PLACEHOLDERS,
 });
 
 container.register<IDayModifier>('IDayModifier', {
@@ -177,10 +177,10 @@ container.register<IDayModifier>('IDayModifier', {
 });
 
 container.register<string>('DAY_MODIFIER', {
-  useValue: DairySettingsConstant.DEFAULT_DAY_MODIFIER,
+  useValue: DiarySettingsConstant.DEFAULT_DAY_MODIFIER,
 });
 container.register<number>('CYCLE_LENGTH', {
-  useValue: DairySettingsConstant.DEFAULT_CYCLE_LENGTH,
+  useValue: DiarySettingsConstant.DEFAULT_CYCLE_LENGTH,
 });
 
 container.register<UseExistingDataDayModifierFactory>(

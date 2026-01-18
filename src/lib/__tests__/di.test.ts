@@ -1,4 +1,4 @@
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 import DiaryEntry from '@/model/diary/diaryEntry';
 import { IDiaryEntry } from '@/model/diary/diaryModelInterfaces';
 import { container } from 'tsyringe';
@@ -11,7 +11,7 @@ describe('diaryEntry class tests', () => {
     container.register<string>('DEFAULT_TITLE', {
       useValue:
         String(container.resolve<number>('FIRST_DAY')) +
-        DairySettingsConstant.DEFAULT_DAY_MODIFIER,
+        DiarySettingsConstant.DEFAULT_DAY_MODIFIER,
     });
     container.register<undefined>('UNDEFINED', { useFactory: () => undefined });
     container.register<string>('EMPTY_STRING', { useValue: '' });

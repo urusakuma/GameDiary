@@ -19,16 +19,16 @@ const useImportDiary = () => {
       return;
     }
     const func = () => diaryImporter.importText(text);
-    importDairy(func, 'テキスト');
+    importDiary(func, 'テキスト');
   };
   const importFromFile = (file: File | undefined) => {
     if (file === undefined || diaryImporter === undefined) {
       return;
     }
     const func = () => diaryImporter.importFile(file);
-    importDairy(func, 'ファイル');
+    importDiary(func, 'ファイル');
   };
-  const importDairy = async (func: () => void, type: string) => {
+  const importDiary = async (func: () => void, type: string) => {
     try {
       await func();
       refreshCurrentDiary();

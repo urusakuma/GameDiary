@@ -40,11 +40,11 @@ describe('DiaryImport', () => {
   });
 
   it('should process diary import by decompressing, saving, and updating names', () => {
-    const dairyStr = 'diaryData';
-    diaryImport.import(dairyStr);
+    const diaryStr = 'diaryData';
+    diaryImport.import(diaryStr);
 
     expect(mockDiaryDecompressor.decompressDiary).toHaveBeenCalledWith(
-      dairyStr
+      diaryStr
     );
     expect(mockDiaryService.addDiary).toHaveBeenCalledWith(mockDiary);
     expect(diaryNameService.updateDiaryName).toHaveBeenCalledWith(

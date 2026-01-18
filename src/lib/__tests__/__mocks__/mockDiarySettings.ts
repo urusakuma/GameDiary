@@ -1,4 +1,4 @@
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 import { IDiarySettings } from '@/model/diary/diaryModelInterfaces';
 import { inject, injectable } from 'tsyringe';
 
@@ -19,7 +19,7 @@ export class MockDiarySettings implements IDiarySettings {
   }
   setDiaryName(val: string): void {}
   getDiaryName(): string {
-    return DairySettingsConstant.DEFAULT_DIARY_NAME;
+    return DiarySettingsConstant.DEFAULT_DIARY_NAME;
   }
   updateDayInterval(val: number): void {}
   getDayInterval(): number {
@@ -27,11 +27,11 @@ export class MockDiarySettings implements IDiarySettings {
   }
   setModifier(val: string): void {}
   getModifier(): string {
-    return DairySettingsConstant.DEFAULT_DAY_MODIFIER;
+    return DiarySettingsConstant.DEFAULT_DAY_MODIFIER;
   }
   updateCycleLength(val: number): void {}
   getCycleLength(): number {
-    return DairySettingsConstant.DEFAULT_CYCLE_LENGTH;
+    return DiarySettingsConstant.DEFAULT_CYCLE_LENGTH;
   }
   updateModifierUnit(unit: string, i: number): void {}
 
@@ -42,6 +42,6 @@ export class MockDiarySettings implements IDiarySettings {
     return day + 1;
   }
   getModifierDay(day: number): string {
-    return String(day) + DairySettingsConstant.DEFAULT_DAY_MODIFIER;
+    return String(day) + DiarySettingsConstant.DEFAULT_DAY_MODIFIER;
   }
 }

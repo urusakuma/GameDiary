@@ -1,6 +1,6 @@
 import DiaryDataMigrator from '@/model/repository/diaryDataMigrator';
 import { MockV0StorageService } from '../../__mocks__/mockV0StorageService';
-import DairySettingsConstant from '@/dairySettingsConstant';
+import DiarySettingsConstant from '@/diarySettingsConstant';
 import {
   hasField,
   isArrayType,
@@ -23,7 +23,7 @@ describe('DiaryDataMigrator class tests', () => {
       playGamedataName: string;
     };
     beforeEach(() => {
-      const json = storage.getItem(DairySettingsConstant.GAME_DATA_NAME_LIST);
+      const json = storage.getItem(DiarySettingsConstant.GAME_DATA_NAME_LIST);
       if (json === null) {
         throw Error;
       }
@@ -44,7 +44,7 @@ describe('DiaryDataMigrator class tests', () => {
     });
     it('should store currentGameDataKey in current_game_data_name', () => {
       expect(
-        storage.getItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME)
+        storage.getItem(DiarySettingsConstant.CURRENT_GAME_DATA_NAME)
       ).toBe('testKey0');
     });
     it('should expose game_data_name_list as an array of objects', () => {
@@ -76,7 +76,7 @@ describe('DiaryDataMigrator class tests', () => {
     beforeEach(() => {
       new DiaryDataMigrator(storage).migrate();
 
-      const s = storage.getItem(DairySettingsConstant.DIARY_NAME_LIST);
+      const s = storage.getItem(DiarySettingsConstant.DIARY_NAME_LIST);
       if (s === null) {
         throw Error;
       }
@@ -89,9 +89,9 @@ describe('DiaryDataMigrator class tests', () => {
     });
     it('should rename current_game_data_name to current_diary_key', () => {
       expect(
-        storage.getItem(DairySettingsConstant.CURRENT_GAME_DATA_NAME)
+        storage.getItem(DiarySettingsConstant.CURRENT_GAME_DATA_NAME)
       ).toBeNull();
-      expect(storage.getItem(DairySettingsConstant.CURRENT_DIARY_KEY)).toBe(
+      expect(storage.getItem(DiarySettingsConstant.CURRENT_DIARY_KEY)).toBe(
         'testKey0'
       );
     });

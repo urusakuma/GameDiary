@@ -1,7 +1,7 @@
 /**
  * 定数を管理するためのクラス。
  */
-export default class DairySettingsConstant {
+export default class DiarySettingsConstant {
   static readonly CURRENT_VERSION: number = 1;
   static readonly DEFAULT_DIARY_NAME: string = '新しい日記';
   static readonly DEFAULT_DAY_INTERVAL: number = 1;
@@ -19,7 +19,7 @@ export default class DairySettingsConstant {
   static readonly DAY_PLACEHOLDER: string = '$D';
   static readonly TOTAL_DAYS_PLACEHOLDER: string = '$N';
   static readonly DEFAULT_DAY_MODIFIER: string =
-    DairySettingsConstant.TOTAL_DAYS_PLACEHOLDER + '日目';
+    DiarySettingsConstant.TOTAL_DAYS_PLACEHOLDER + '日目';
 
   /** v0で使用していたカレントの日記のストレージキーを保存するためのキー。実際にはストレージキーが入るためv1で修正 */
   static readonly CURRENT_GAME_DATA_NAME: string = 'currentGameDataName';

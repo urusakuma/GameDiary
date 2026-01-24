@@ -21,6 +21,9 @@ export default class UniqueDiaryNameGenerator
     while (this.diaryNameManager.hasDiaryName(newName)) {
       newName = name + String(i);
       i++;
+      if (i > 10000) {
+        throw new Error('Unable to generate a unique diary name.');
+      }
     }
     return newName;
   }

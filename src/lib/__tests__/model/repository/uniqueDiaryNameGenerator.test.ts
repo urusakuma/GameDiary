@@ -50,4 +50,10 @@ describe('UniqueDiaryNameGenerator', () => {
     expect(nameManager.hasDiaryName).toHaveBeenNthCalledWith(1, 'newDiary');
     expect(nameManager.hasDiaryName).toHaveBeenNthCalledWith(2, 'newDiary1');
   });
+  it('should throw an error if unable to generate a unique name after many attempts', () => {
+    nameManager.hasDiaryName.mockReturnValue(true);
+    expect(() => {
+      nameGenerator.generate('diary');
+    }).toThrow('Unable to generate a unique diary name.');
+  });
 });

@@ -1,85 +1,69 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
 import DiaryService from '@/model/repository/diaryService';
-import type {
-  IsStorageAvailableFunc,
-  IStorageService,
-} from '@/model/utils/storageServiceInterface';
+import type { IStorageService } from '@/model/utils/storageServiceInterface';
 import type {
   IDiary,
   IDiarySettings,
 } from '@/model/diary/diaryModelInterfaces';
 import { MockDiary } from '../../__mocks__/mockDiary';
-import { IDiaryService } from '@/model/repository/diaryRepositoryInterfaces';
-import { MockDiarySettings } from '../../__mocks__/mockDiarySettings';
+import {
+  IDiarySave,
+  IDiaryService,
+} from '@/model/repository/diaryRepositoryInterfaces';
 
 describe('DiaryService', () => {
-  let storageMock: jest.Mocked<IStorageService>;
+  let storage: jest.Mocked<IStorageService>;
   let diarySettings: IDiarySettings;
   let diaryService: IDiaryService;
-  let isStorageAvailableFunc: jest.Mocked<IsStorageAvailableFunc>;
-  const storageKey = 'bec0da1f-0053-4c59-acfb-f4a574bd8c98';
-  const diary: IDiary = new MockDiary();
+  let diarySave: IDiarySave;
+  const storageKey = 'storageKey1';
+  let diary: IDiary = new MockDiary();
   beforeEach(() => {
-    storageMock = {
+    storage = {
       setItem: jest.fn(),
       getItem: jest.fn(),
       removeItem: jest.fn(),
-      length: 0,
-    };
-    isStorageAvailableFunc = jest.fn().mockReturnValue(true);
-    container.registerInstance('IStorageService', storageMock);
-    container.register('MockKey', { useFactory: () => undefined });
-    container.register<IDiarySettings>('IDiarySettings', {
-      useClass: MockDiarySettings,
-    });
-    container.register<IsStorageAvailableFunc>('IsStorageAvailableFunc', {
-      useValue: isStorageAvailableFunc,
-    });
-    container.register<IDiaryService>('IDiaryService', {
-      useClass: DiaryService,
-    });
-    diarySettings = container.resolve<IDiarySettings>('IDiarySettings');
+    } as unknown as jest.Mocked<IStorageService>;
+    diarySettings = { storageKey: storageKey } as unknown as IDiarySettings;
+    diary = {
+      getSettings: () => diarySettings,
+    } as unknown as IDiary;
+    diarySave = { save: jest.fn() } as IDiarySave;
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should add a diary and store it in storage', () => {
-    diaryService = container.resolve<IDiaryService>('IDiaryService');
-    diaryService.addDiary(diary);
-    const storageKey = diarySettings.storageKey;
-    expect(diaryService.getDiary(storageKey)).toBe(diary);
-    expect(storageMock.setItem).toHaveBeenCalledWith(
-      storageKey,
-      JSON.stringify(diary)
-    );
-  });
-
-  it('should retrieve a diary by key', () => {
-    diaryService = container.resolve<IDiaryService>('IDiaryService');
-    diaryService.addDiary(diary);
-    const retrievedDiary = diaryService.getDiary(storageKey);
-    expect(retrievedDiary).toBe(diary);
-  });
-
-  it('should delete a diary and remove it from storage', () => {
-    diaryService = container.resolve<IDiaryService>('IDiaryService');
-    diaryService.addDiary(diary);
-    expect(diaryService.getDiary(storageKey)).not.toBeUndefined();
-    diaryService.deleteDiary(storageKey);
-    expect(diaryService.getDiary(storageKey)).toBeUndefined();
-    expect(storageMock.removeItem).toHaveBeenCalledWith(storageKey);
-  });
-  it('do not use storage', () => {
-    isStorageAvailableFunc = jest.fn().mockReturnValue(false);
-    container.register<IsStorageAvailableFunc>('IsStorageAvailableFunc', {
-      useValue: isStorageAvailableFunc,
+  describe('getDiary', () => {
+    it('should return the diary for existing key', () => {
+      diaryService = new DiaryService(diarySave, storage);
+      diaryService.addDiary(diary);
+      const result = diaryService.getDiary(storageKey);
+      expect(result).toBe(diary);
     });
-    diaryService = container.resolve<IDiaryService>('IDiaryService');
-    diaryService.addDiary(diary);
-    expect(diaryService.getDiary(storageKey)).toBe(diary);
-    expect(storageMock.setItem).not.toHaveBeenCalled();
+    it('should return undefined for non-existing diary', () => {
+      diaryService = new DiaryService(diarySave, storage);
+      const result = diaryService.getDiary('nonExistingKey');
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('addDiary', () => {
+    it('should add a diary and store it in storage', () => {
+      diaryService = new DiaryService(diarySave, storage);
+      diaryService.addDiary(diary);
+      expect(diaryService.getDiary(storageKey)).toBe(diary);
+      expect(diarySave.save).toHaveBeenCalledWith(diary);
+    });
+  });
+
+  describe('deleteDiary', () => {
+    it('should delete a diary and remove it from storage', () => {
+      diaryService = new DiaryService(diarySave, storage);
+      diaryService.addDiary(diary);
+      expect(diaryService.getDiary(storageKey)).toBe(diary);
+
+      diaryService.deleteDiary(storageKey);
+
+      expect(diaryService.getDiary(storageKey)).toBeUndefined();
+      expect(storage.removeItem).toHaveBeenCalledWith(storageKey);
+    });
   });
 });

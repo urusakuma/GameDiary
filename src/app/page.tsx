@@ -2,11 +2,11 @@
 import 'reflect-metadata';
 import ContextProvider from 'src/components/context/contexts';
 import { Toaster } from 'react-hot-toast';
-import Sidebar from 'src/components/sidebar/sidebar';
-import Settings from 'src/components/settings/settings';
-import Header from 'src/components/mainContent/header';
-import DiaryEntryContent from 'src/components/mainContent/diaryEntryContent';
-import Background from 'src/components/background';
+import Sidebar from 'src/components/feature/Sidebar/Sidebar';
+import Settings from 'src/components/feature/Settings/Settings';
+import Header from 'src/components/feature/mainContent/Header';
+import DiaryEntryContentEditor from 'src/components/feature/mainContent/DiaryEntryContentEditor';
+import Background from '@shared/components/Background';
 const DiaryLayout = () => {
   return (
     <ContextProvider>
@@ -19,7 +19,7 @@ const DiaryLayout = () => {
           {/* ヘッダー */}
           <Header />
           {/* コンテンツエリア */}
-          <DiaryEntryContent />
+          <DiaryEntryContentEditor />
           {/* 設定エリア */}
           <Settings />
         </div>

@@ -1,0 +1,48 @@
+import 'reflect-metadata';
+import { IDiaryLoad } from '@features/diary/services/repository/diaryRepositoryInterfaces';
+import { ICurrentDiaryAccessor } from '@features/diary/control/diary/controlDiaryInterface';
+import { MockDiary } from '@features/diary/__tests__/__mocks__/mockDiary';
+import DiaryLoadHandler from '@features/diary/control/diary/useCases/diaryLoadHandler';
+import { IDiary } from '@features/diary/model/diaryModelInterfaces';
+
+describe('DiaryLoadHandler', () => {
+  let diaryLoadHandler: DiaryLoadHandler;
+  let mockDiaryAccessor: jest.Mocked<ICurrentDiaryAccessor>;
+  let mockDiaryLoad: jest.Mocked<IDiaryLoad>;
+  const diary = new MockDiary();
+  const key = diary.getSettings().storageKey;
+  beforeEach(() => {
+    mockDiaryAccessor = {
+      getCurrentDiary: jest.fn(),
+      setCurrentDiary: jest.fn(),
+    } as unknown as jest.Mocked<ICurrentDiaryAccessor>;
+
+    mockDiaryLoad = {
+      load: jest.fn(),
+    } as unknown as jest.Mocked<IDiaryLoad>;
+
+    diaryLoadHandler = new DiaryLoadHandler(mockDiaryLoad, mockDiaryAccessor);
+  });
+
+  it('should load the new diary if the current diary has a different key', () => {
+    mockDiaryAccessor.getCurrentDiary.mockReturnValue({
+      getSettings: jest
+        .fn()
+        .mockReturnValue({ storageKey: jest.fn().mockReturnValue('testKey') }),
+    } as unknown as jest.Mocked<IDiary>);
+
+    diaryLoadHandler.load(key);
+
+    expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalled();
+    expect(mockDiaryAccessor.setCurrentDiary).toHaveBeenCalledWith(key);
+    expect(mockDiaryLoad.load).toHaveBeenCalledWith(key);
+  });
+  it('should not reload the diary if it is already loaded', () => {
+    mockDiaryAccessor.getCurrentDiary.mockReturnValue(diary);
+    diaryLoadHandler.load(key);
+
+    expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalled();
+    expect(mockDiaryAccessor.setCurrentDiary).not.toHaveBeenCalled();
+    expect(mockDiaryLoad.load).not.toHaveBeenCalled();
+  });
+});

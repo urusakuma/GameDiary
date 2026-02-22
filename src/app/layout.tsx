@@ -1,7 +1,9 @@
 import 'reflect-metadata';
 import type { Metadata } from 'next';
+
+import '@features/diary/container/di_diary';
+
 import './globals.css';
-import '../features/diary/container/di_diary';
 
 export const metadata: Metadata = {
   title: 'Game Diary',

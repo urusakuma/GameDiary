@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import { container } from 'tsyringe';
 import { useEffect, useState } from 'react';
 
-import '@/container/di_diary';
+import '@features/diary/container/di_diary';
 import {
   IDiaryDataMigrator,
   ICurrentDiaryManager,

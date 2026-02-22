@@ -6,7 +6,7 @@ import { useDiaryNameListContext } from '@features/diary/components/diary/DiaryN
 import { useSelectedDiaryContext } from '@features/diary/components/diary/SelectedDiaryContext';
 import { useModalContext } from '@features/diary/components/ui/state/ModalContext';
 import Overlay from '@features/diary/components/ui/Overlay';
-import { useDarkModeContext } from '@features/diary/components/ui/state/DarkModeContext';
+import { useDarkModeContext } from '@shared/components/DarkModeContext';
 import { useRefreshContext } from '@features/diary/components/app/RefreshContext';
 
 const LoadModal = () => {

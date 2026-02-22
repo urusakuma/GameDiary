@@ -1,0 +1,23 @@
+@startuml layeredArchitecture
+title レイヤ構成図 : GameDiaryの依存関係
+
+
+package UI{
+  [React Components]
+  [Presentation Logic (Custom Hooks / Context)]
+}
+package Application{
+  [Diary UseCases]
+}
+package Domain {
+  [Domain Model]
+}
+
+package Storage{
+  [LocalStorage]
+}
+
+UI --> Application
+Application --> Domain
+Application --> Storage
+@enduml

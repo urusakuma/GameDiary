@@ -1,0 +1,30 @@
+@startuml domainModel
+title "ドメインモデル図 : 保存データの構造"
+
+class Diary {
+}
+
+class DiarySettings {
+  storageKey : string
+  version : number
+  diaryName : string
+  dayInterval : number
+}
+
+class DayModifier  {
+  modifier : string
+  cycleLength : number
+  units : string[]
+}
+
+class DiaryEntry {
+  day : number
+  title : string
+  content : string
+}
+
+Diary "1" *-- "1" DiarySettings
+DiarySettings "1" *-- "1" DayModifier
+Diary "1" *-- "1..*" DiaryEntry
+
+@enduml

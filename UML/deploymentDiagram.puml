@@ -1,0 +1,16 @@
+@startuml deploymentDiagram
+left to right direction
+skinparam linetype ortho
+title 配置図 : GitHub Pages による静的サイト構成
+
+node "GitHub Pages" {
+  artifact "Static Files (HTML, CSS, JS)"
+}
+node "Browser" {
+  component "Client runtime"
+}
+"Browser" -----> "GitHub Pages" : HTTPS request
+"Browser" <----- "GitHub Pages" : HTTPS response
+
+
+@enduml

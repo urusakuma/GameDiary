@@ -5,7 +5,7 @@ import useDeleteDiary from '@features/diary/hooks/data/useDeleteDiary';
 import { useSelectedDiaryContext } from '@features/diary/components/diary/SelectedDiaryContext';
 import { useDiaryNameListContext } from '@features/diary/components/diary/DiaryNameListContext';
 import Overlay from '@features/diary/components/ui/Overlay';
-import { useDarkModeContext } from '@features/diary/components/ui/state/DarkModeContext';
+import { useDarkModeContext } from '@shared/components/DarkModeContext';
 import { useModalContext } from '@features/diary/components/ui/state/ModalContext';
 
 const deleteModal = () => {

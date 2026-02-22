@@ -7,7 +7,7 @@ import {
   lightInput,
 } from '@features/diary/components/styles/ComponentStyles';
 import Overlay from '@features/diary/components/ui/Overlay';
-import { useDarkModeContext } from '@features/diary/components/ui/state/DarkModeContext';
+import { useDarkModeContext } from '@shared/components/DarkModeContext';
 import { useModalContext } from '@features/diary/components/ui/state/ModalContext';
 
 const CreateModal = () => {

@@ -1,4 +1,4 @@
-import { useDarkModeContext } from '../../components/context/darkModeContext';
+import { useDarkModeContext } from './DarkModeContext';
 
 interface BackgroundWrapperProps {
   children: React.ReactNode;

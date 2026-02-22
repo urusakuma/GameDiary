@@ -5,7 +5,7 @@ import {
   darkButton,
   lightButton,
 } from '@features/diary/components/styles/ComponentStyles';
-import { useDarkModeContext } from '@features/diary/components/ui/state/DarkModeContext';
+import { useDarkModeContext } from '@shared/components/DarkModeContext';
 import {
   useDiaryEntryResetContext,
   useDiaryEntryTitleContext,

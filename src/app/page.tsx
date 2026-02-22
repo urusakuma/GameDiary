@@ -1,12 +1,14 @@
 'use client';
 import 'reflect-metadata';
-import ContextProvider from 'src/components/context/contexts';
 import { Toaster } from 'react-hot-toast';
-import Sidebar from 'src/components/feature/Sidebar/Sidebar';
-import Settings from 'src/components/feature/Settings/Settings';
-import Header from 'src/components/feature/mainContent/Header';
-import DiaryEntryContentEditor from 'src/components/feature/mainContent/DiaryEntryContentEditor';
+
 import Background from '@shared/components/Background';
+import ContextProvider from '@features/diary/components/app/AppInitProvider';
+import Sidebar from '@features/diary/components/layout/Sidebar';
+import Settings from '@features/diary/components/settings/Settings';
+import Header from '@features/diary/components/layout/Header';
+import DiaryEntryContentEditor from '@features/diary/components/diaryEntry/DiaryEntryContentEditor';
+
 const DiaryLayout = () => {
   return (
     <ContextProvider>

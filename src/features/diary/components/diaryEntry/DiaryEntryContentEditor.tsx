@@ -6,7 +6,7 @@ import {
   darkInput,
   lightInput,
 } from '@features/diary/components/styles/ComponentStyles';
-import { useDarkModeContext } from '@shared/components/DarkModeContext';
+import { useDarkModeContext } from '@features/diary/components/app/DarkModeContext';
 import { useDiaryEntryContentContext } from '@features/diary/components/diaryEntry/DiaryEntryStateProvider';
 import { useModalContext } from '@features/diary/components/ui/state/ModalContext';
 import { useChangeCurrentEntryContext } from '@features/diary/components/diaryEntry/ChangeCurrentEntryContext';

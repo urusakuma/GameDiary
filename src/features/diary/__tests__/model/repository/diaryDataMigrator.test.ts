@@ -9,7 +9,7 @@ import {
   isTypeMatch,
 } from '@shared/utils/checkTypeMatch';
 import { InvalidJsonError } from '@lib/error';
-import { IStorageService } from '@shared/utils/storageServiceInterface';
+import { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 
 describe('DiaryDataMigrator class tests', () => {
   let storage: IStorageService;

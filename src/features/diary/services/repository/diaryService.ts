@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 
-import type { IStorageService } from '@shared/utils/storageServiceInterface';
+import type { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 import type { IDiary } from '@features/diary/model/diaryModelInterfaces';
 import type { IDiarySave } from '@features/diary/services/persistence/diaryPersistenceInterfaces';
 

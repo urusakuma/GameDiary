@@ -1,3 +1,5 @@
+import { inject, injectable } from 'tsyringe';
+
 import type {
   IDiarySettingsFactory,
   IDayModifier,
@@ -7,7 +9,6 @@ import type {
   StorageKeyFactory,
 } from '../diaryModelInterfaces';
 import DiarySettings from '../diarySettings';
-import { inject, injectable } from 'tsyringe';
 
 @injectable()
 export default class DiarySettingsFactory implements IDiarySettingsFactory {

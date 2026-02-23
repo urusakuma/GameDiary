@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { ReactNode, useEffect } from 'react';
-import { useDarkModeContext } from '@shared/components/DarkModeContext';
+import { useDarkModeContext } from '@features/diary/components/app/DarkModeContext';
 import { useModalContext } from '@features/diary/components/ui/state/ModalContext';
 
 type OverlayProps = {

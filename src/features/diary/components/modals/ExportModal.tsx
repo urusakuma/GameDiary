@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 import Overlay from '@features/diary/components/ui/Overlay';
 import useExportDiary from '@features/diary/hooks/io/useExportDiary';
-import { useDarkModeContext } from '@shared/components/DarkModeContext';
+import { useDarkModeContext } from '@features/diary/components/app/DarkModeContext';
 import { useModalContext } from '@features/diary/components/ui/state/ModalContext';
 
 const ExportModal = () => {

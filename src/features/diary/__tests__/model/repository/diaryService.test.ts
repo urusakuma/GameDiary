@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import DiaryService from '@features/diary/services/repository/diaryService';
-import type { IStorageService } from '@shared/utils/storageServiceInterface';
+import type { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 import type {
   IDiary,
   IDiarySettings,

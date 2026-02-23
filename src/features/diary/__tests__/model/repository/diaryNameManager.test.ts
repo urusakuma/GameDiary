@@ -1,6 +1,6 @@
 import DiaryNameManager from '@features/diary/services/persistence/diaryNameManager';
 import { IDiaryNameManager } from '@features/diary/services/persistence/diaryPersistenceInterfaces';
-import { IStorageService } from '@shared/utils/storageServiceInterface';
+import { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 import { InvalidJsonError } from '@lib/error';
 import STORAGE_CONSTANTS from '@features/diary/services/constants';
 

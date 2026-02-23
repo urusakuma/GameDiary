@@ -2,7 +2,7 @@ import { inject, injectable } from 'tsyringe';
 
 import { InvalidJsonError } from '@lib/error';
 import { isTypeMatch } from '@shared/utils/checkTypeMatch';
-import type { IStorageService } from '@shared/utils/storageServiceInterface';
+import type { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 
 import STORAGE_CONSTANTS from '../constants';
 import { IDiaryNameManager } from './diaryPersistenceInterfaces';

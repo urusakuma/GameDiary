@@ -5,7 +5,7 @@ import {
   lightInput,
 } from '@features/diary/components/styles/ComponentStyles';
 import useDayInterval from '@features/diary/hooks/editSettings/useDayInterval';
-import { useDarkModeContext } from '@shared/components/DarkModeContext';
+import { useDarkModeContext } from '@features/diary/components/app/DarkModeContext';
 
 const DayInterval = () => {
   const { isDarkMode } = useDarkModeContext();

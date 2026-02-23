@@ -1,4 +1,4 @@
-import { IStorageService } from '@shared/utils/storageServiceInterface';
+import { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 import { injectable, singleton } from 'tsyringe';
 
 @singleton()

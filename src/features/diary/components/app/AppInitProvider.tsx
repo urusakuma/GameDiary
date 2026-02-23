@@ -36,11 +36,12 @@ const AppInitProvider = ({ children }: ContextWrapperProps) => {
       return;
     }
     try {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       useReadHowToUse();
     } catch (e) {
       console.error(e);
     }
-  }, []);
+  }, [useReadHowToUse]);
   if (!isReady) {
     return <div>Loading...</div>;
   }

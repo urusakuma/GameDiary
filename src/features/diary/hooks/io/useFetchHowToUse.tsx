@@ -32,7 +32,7 @@ const useFetchHowToUse = () => {
         loader.load(container.resolve<string>('HOW_TO_USE_KEY'))
       );
       setIsRead(true);
-    } catch (e) {
+    } catch {
       await fetchHowToUse();
     }
   }, [fetchHowToUse]);

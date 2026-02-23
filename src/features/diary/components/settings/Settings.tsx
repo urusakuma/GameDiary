@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import useSettingOpen from '@features/diary/hooks/ui/useSettingsOpen';
-import { useDarkModeContext } from '@shared/components/DarkModeContext';
+import { useDarkModeContext } from '@features/diary/components/app/DarkModeContext';
 
 import DiaryName from './DiaryName';
 import Modifier from './Modifier';

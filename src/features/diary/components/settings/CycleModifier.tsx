@@ -2,7 +2,7 @@
 
 import useCycleLength from '@features/diary/hooks/editSettings/useCycleLength';
 import useModifierCycle from '@features/diary/hooks/editSettings/usetModifierCycle';
-import { useDarkModeContext } from '@shared/components/DarkModeContext';
+import { useDarkModeContext } from '@features/diary/components/app/DarkModeContext';
 import {
   darkInput,
   lightInput,

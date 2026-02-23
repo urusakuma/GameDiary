@@ -2,7 +2,7 @@ import { inject, injectable } from 'tsyringe';
 
 import { IDiary } from '@features/diary/model/diaryModelInterfaces';
 import type { CompressDiary } from '@features/diary/services/serialization/serializationInterface';
-import type { IStorageService } from '@shared/utils/storageServiceInterface';
+import type { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 
 import type { IDiarySave } from './diaryPersistenceInterfaces';
 

@@ -2,7 +2,7 @@
 import { ChangeEvent, useEffect, useState, useCallback, useRef } from 'react';
 
 import useImportDiary from '@features/diary/hooks/io/useImportDiary';
-import { useDarkModeContext } from '@shared/components/DarkModeContext';
+import { useDarkModeContext } from '@features/diary/components/app/DarkModeContext';
 import { useModalContext } from '@features/diary/components/ui/state/ModalContext';
 import Overlay from '@features/diary/components/ui/Overlay';
 

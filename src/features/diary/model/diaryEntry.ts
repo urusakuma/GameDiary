@@ -1,4 +1,3 @@
-import DiarySettingsConstant from '@features/diary/model/constants';
 import { IDiaryEntry, IDiarySettings } from './diaryModelInterfaces';
 import { inject, injectable } from 'tsyringe';
 

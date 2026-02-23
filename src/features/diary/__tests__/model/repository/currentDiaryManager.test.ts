@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import CurrentDiaryManager from '@features/diary/services/persistence/currentDiaryManager';
-import type { IStorageService } from '@shared/utils/storageServiceInterface';
+import type { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 import STORAGE_CONSTANTS from '@features/diary/services/constants';
 
 describe('CurrentDiaryManager', () => {

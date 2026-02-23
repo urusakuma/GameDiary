@@ -1,6 +1,6 @@
 'use client';
 
-import { useDarkModeContext } from '@shared/components/DarkModeContext';
+import { useDarkModeContext } from '@features/diary/components/app/DarkModeContext';
 
 import { useDiaryEntriesListContext } from './DiaryEntryListContext';
 import ListItem from './DiaryEntryListItem';

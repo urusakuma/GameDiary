@@ -2,8 +2,8 @@
 import 'reflect-metadata';
 import { Toaster } from 'react-hot-toast';
 
-import Background from '@shared/components/Background';
-import ContextProvider from '@features/diary/components/app/AppInitProvider';
+import Background from '@features/diary/components/app/Background';
+import AppProviders from '@features/diary/components/app/AppProviders';
 import Sidebar from '@features/diary/components/layout/Sidebar';
 import Settings from '@features/diary/components/settings/Settings';
 import Header from '@features/diary/components/layout/Header';
@@ -11,7 +11,7 @@ import DiaryEntryContentEditor from '@features/diary/components/diaryEntry/Diary
 
 const DiaryLayout = () => {
   return (
-    <ContextProvider>
+    <AppProviders>
       <Toaster position="bottom-center" reverseOrder={false} />
       <Background>
         {/* 左サイドバー */}
@@ -26,7 +26,7 @@ const DiaryLayout = () => {
           <Settings />
         </div>
       </Background>
-    </ContextProvider>
+    </AppProviders>
   );
 };
 export default DiaryLayout;

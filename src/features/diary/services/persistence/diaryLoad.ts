@@ -1,7 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 
 import { KeyNotFoundError } from '@lib/error';
-import type { IStorageService } from '@shared/utils/storageServiceInterface';
+import type { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 import type { IDiaryNameService } from '@features/diary/control/diary/controlDiaryInterface';
 import type { IDiary } from '@features/diary/model/diaryModelInterfaces';
 import type { IDiaryDecompressor } from '@features/diary/services/serialization/serializationInterface';

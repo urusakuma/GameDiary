@@ -5,7 +5,7 @@ import {
   lightButton,
 } from '@features/diary/components/styles/ComponentStyles';
 import DiaryEntriesList from '@features/diary/components/diary/DiaryEntriesList';
-import { useDarkModeContext } from '@shared/components/DarkModeContext';
+import { useDarkModeContext } from '@features/diary/components/app/DarkModeContext';
 import { useModalContext } from '@features/diary/components/ui/state/ModalContext';
 
 const Sidebar = () => {

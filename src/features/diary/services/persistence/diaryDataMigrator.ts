@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 
-import type { IStorageService } from '@shared/utils/storageServiceInterface';
+import type { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 import { InvalidJsonError } from '@lib/error';
 import {
   isTypeMatch,

@@ -5,7 +5,7 @@ import {
   lightInput,
 } from '@features/diary/components/styles/ComponentStyles';
 import useEditModifier from '@features/diary/hooks/editSettings/useEditModifier';
-import { useDarkModeContext } from '@shared/components/DarkModeContext';
+import { useDarkModeContext } from '@features/diary/components/app/DarkModeContext';
 
 const Modifier = () => {
   const { isDarkMode } = useDarkModeContext();

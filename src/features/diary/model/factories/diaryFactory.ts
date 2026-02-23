@@ -1,4 +1,5 @@
 import { inject, injectable } from 'tsyringe';
+
 import Diary from '../diary';
 import type {
   IDiary,
@@ -9,6 +10,7 @@ import type {
   NewDiaryEntriesFactory,
   UsePreviousDayDiaryEntryFactory,
 } from '../diaryModelInterfaces';
+
 @injectable()
 export default class DiaryFactory implements IDiaryFactory {
   constructor(

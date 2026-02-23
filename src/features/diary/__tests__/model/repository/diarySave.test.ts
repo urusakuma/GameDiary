@@ -4,7 +4,7 @@ import {
   IDiary,
   IDiarySettings,
 } from '@features/diary/model/diaryModelInterfaces';
-import { IStorageService } from '@shared/utils/storageServiceInterface';
+import { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 import { CompressDiary } from '@features/diary/services/serialization/serializationInterface';
 
 describe('DiarySave', () => {

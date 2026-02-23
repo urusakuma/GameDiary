@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { IDiaryDecompressor } from '@features/diary/services/serialization/serializationInterface';
 import { IDiaryService } from '@features/diary/services/repository/diaryRepositoryInterfaces';
 import DiaryLoad from '@features/diary/services/persistence/diaryLoad';
-import { IStorageService } from '@shared/utils/storageServiceInterface';
+import { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 import { KeyNotFoundError } from '@lib/error';
 import { IDiaryNameService } from '@features/diary/control/diary/controlDiaryInterface';
 import {

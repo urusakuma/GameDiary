@@ -1,4 +1,4 @@
-import { StorageService } from '@shared/utils/storageService';
+import { StorageService } from '@features/diary/services/persistence/storageService';
 
 describe('storageService', () => {
   let storageService: StorageService;

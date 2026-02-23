@@ -16,7 +16,7 @@ import {
   Placeholders,
 } from '@features/diary/model/diaryModelInterfaces';
 import DIARY_MODEL_CONSTANTS from '@features/diary/model/constants';
-import { IStorageService } from '@shared/utils/storageServiceInterface';
+import { IStorageService } from '@features/diary/services/persistence/storageServiceInterface';
 import {
   ICurrentDiaryManager,
   IDiaryDataMigrator,
@@ -33,7 +33,7 @@ import DiaryEntry from '@features/diary/model/diaryEntry';
 import Diary from '@features/diary/model/diary';
 import DayModifier from '@features/diary/model/dayModifier';
 import DiarySettings from '@features/diary/model/diarySettings';
-import StorageService from '@shared/utils/storageService';
+import StorageService from '@features/diary/services/persistence/storageService';
 import DiaryFactory from '@features/diary/model/factories/diaryFactory';
 import DiaryEntryFactory from '@features/diary/model/factories/diaryEntryFactory';
 import DiarySettingsFactory from '@features/diary/model/factories/diarySettingsFactory';

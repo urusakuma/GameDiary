@@ -1,4 +1,5 @@
 # GameDiary
+URL: https://urusakuma.github.io/GameDiary/
 
 ## 概要
 

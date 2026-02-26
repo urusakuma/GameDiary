@@ -15,8 +15,8 @@ lastDayは必ずDiaryEntriesの最新の日付を保持する
 end note
 
 class DiarySettings {
-  diaryName : string
-  dayInterval : number
+  - diaryName : string
+  - dayInterval : number
 }
 note right
 diaryNameは空文字以外である
@@ -28,7 +28,7 @@ class DayModifier  {
   - cycleLength : number
   - units : string[]
   ---
-  modifyDay(originDay: number)
+  + modifyDay(originDay: number)
 }
 note right
 unitsの最後の要素は常に空文字以外

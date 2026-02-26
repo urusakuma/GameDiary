@@ -3,21 +3,25 @@ title レイヤ構成図 : GameDiaryの依存関係
 
 
 package UI{
-  [React Components]
-  [Presentation Logic (Custom Hooks / Context)]
+  interface UseCaseIntaerface
+  [React Components] --> UseCaseIntaerface
+  [Presentation Logic (Custom Hooks / Context)] --> UseCaseIntaerface
 }
 package Application{
+  UseCaseIntaerface <|-- [Diary UseCases]
   [Diary UseCases]
+  interface StorageInterface
+  [Diary UseCases] --> StorageInterface
 }
 package Domain {
   [Domain Model]
 }
 
 package Storage{
+  StorageInterface<|--[StorageService]
+  StorageService-->[LocalStorage]
   [LocalStorage]
 }
 
-UI --> Application
 Application --> Domain
-Application --> Storage
 @enduml

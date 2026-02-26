@@ -26,6 +26,12 @@ describe('DiarySettings class tests', () => {
       settings.setDiaryName(name);
       expect(settings.getDiaryName()).toBe(name);
     });
+    it('should not set when the argument is empty string', () => {
+      const name = 'My Diary';
+      settings.setDiaryName(name);
+      settings.setDiaryName('');
+      expect(settings.getDiaryName()).toBe(name);
+    });
   });
   describe('setModifier tests', () => {
     it('should set modifier via IDayModifier', () => {

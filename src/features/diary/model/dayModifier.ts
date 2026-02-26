@@ -23,20 +23,21 @@ export default class DayModifier implements IDayModifier {
     this.unit = this.unit.slice(0, 4);
     this.maintainValidUnitLength();
   }
-  setModifier(val: string): IDayModifier {
+  setModifier(val: string): void {
+    if (val === '') {
+      return;
+    }
     this.modifier = val;
-    return this;
   }
   getModifier(): string {
     return this.modifier;
   }
-  updateCycleLength(val: number): IDayModifier {
+  updateCycleLength(val: number): void {
     const cycLen = Math.trunc(val);
     if (cycLen < 1) {
-      return this;
+      return;
     }
     this.cycleLength = cycLen;
-    return this;
   }
   getCycleLength(): number {
     return this.cycleLength;
@@ -48,10 +49,10 @@ export default class DayModifier implements IDayModifier {
     }
     return this.unit[i];
   }
-  updateUnit(val: string, index: number): IDayModifier {
+  updateUnit(val: string, index: number): void {
     const num = Math.trunc(index);
     if (num < 0 || 3 < num) {
-      return this;
+      return;
     }
 
     // indexがunit.lengthを超える場合RangeErrorを発生させるので""で埋める
@@ -64,7 +65,6 @@ export default class DayModifier implements IDayModifier {
 
     // unitを後ろから探索し空文字なら取り除くことにより、unit.lengthは常に単位の個数となる。
     this.maintainValidUnitLength();
-    return this;
   }
   /** unitの末尾が空文字でないことを維持することで、unit.lengthが単位の個数であることを維持する。*/
   private maintainValidUnitLength(): void {
@@ -73,8 +73,8 @@ export default class DayModifier implements IDayModifier {
     }
   }
 
-  modifyDay(nDay: number): string {
-    const naturalDay = Math.trunc(nDay);
+  modifyDay(originalDay: number): string {
+    const naturalDay = Math.trunc(originalDay);
     const unitLen = this.unit.length;
 
     // 置換文字列が存在しない場合は終端に付与して返却する。

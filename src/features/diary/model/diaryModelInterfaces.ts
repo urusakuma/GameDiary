@@ -198,19 +198,20 @@ export type Placeholders = {
 export interface IDayModifier {
   /** 日付をどのように修飾するのかという文字列(日目、$Y年春$N日など)
    * @param {string}val セットする修飾文字列
-   *@returns {IDayModifier} thisを返却
    */
-  setModifier(val: string): IDayModifier;
+  setModifier(val: string): void;
+
   /**
    * 日付を修飾する文字列を取得する
    * @returns {string} 修飾文字列
    */
   getModifier(): string;
+
   /** 周期的な単位が一度にどれだけ続くのか(15:春1-15,夏1-15など)
    * @param {number} val セットする周期の長さ
-   * @returns {IDayModifier} thisを返却
    */
-  updateCycleLength(val: number): IDayModifier;
+  updateCycleLength(val: number): void;
+
   /** 周期的な単位が一度にどれだけ続くのかを取得する
    * @returns {number} 周期の長さ
    */
@@ -226,10 +227,9 @@ export interface IDayModifier {
   /**
    * 日付を修飾する周期的な単位を設定する。空文字を設定された場合は取り除く。
    * @param val 設定する単位の文字列。
-   * @param index unitのどこにsetするか。
-   * @return {IDayModifier} thisを返却
+   * @param index unitのどこにsetするか。0~3の範囲で指定する。
    */
-  updateUnit(val: string, index: number): IDayModifier;
+  updateUnit(val: string, index: number): void;
 
   /**
    * 受け取った日付に単位を付加して返却する。

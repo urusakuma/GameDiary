@@ -42,6 +42,10 @@ export default class DiarySettings implements IDiarySettings {
   }
 
   setDiaryName(val: string): void {
+    //空文字が入力された場合は変更しない。
+    if (val === '') {
+      return;
+    }
     this.diaryName = val;
   }
   getDiaryName(): string {

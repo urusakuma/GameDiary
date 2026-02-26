@@ -6,9 +6,11 @@ module.exports = {
   },
   testMatch: ['**/!(__mocks__)/**/?(*.)+(test).ts'],
   testPathIgnorePatterns: ['/node_modules/', '/old_data/'],
-  roots: ['<rootDir>/src/lib'],
+  roots: ['<rootDir>/src/features'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/lib/$1',
+    '^@features/(.*)$': '<rootDir>/src/features/$1',
+    '^@lib/(.*)$': '<rootDir>/src/lib/$1',
+    '^@shared/(.*)$': '<rootDir>/src/shared/$1',
   },
   setupFiles: ['<rootDir>/node_modules/reflect-metadata'],
   transform: {

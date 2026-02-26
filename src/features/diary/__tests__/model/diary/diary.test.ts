@@ -18,12 +18,15 @@ describe('DiarySettings class tests', () => {
       day,
       previous,
       next: undefined,
+      isEdited: () => false,
     } as unknown as jest.Mocked<IDiaryEntry>;
   };
   beforeEach(() => {
     entry = {
       day: 1,
       previous: undefined,
+      next: undefined,
+      isEdited: () => false,
     } as unknown as jest.Mocked<IDiaryEntry>;
     settings = {
       getNextDay: jest.fn().mockReturnValueOnce(2).mockReturnValueOnce(3),
@@ -31,9 +34,9 @@ describe('DiarySettings class tests', () => {
     diaryEntries = new Map().set(1, entry);
     builtEntry = [entry];
     builder = (source: IDiaryEntry, settings: IDiarySettings) => {
-      const sourceDay = source.day;
-      const entry = entryFactory(settings.getNextDay(sourceDay), sourceDay);
+      const entry = entryFactory(settings.getNextDay(source.day), source.day);
       builtEntry.push(entry);
+      source.next = entry.day;
       return entry;
     };
     diary = new Diary(builder, diaryEntries, settings, 1);
@@ -95,6 +98,69 @@ describe('DiarySettings class tests', () => {
       expect(day).toBe(nextDay);
     });
   });
+
+  describe('getNextEntry tests', () => {
+    it('should return undifined if no next entry', () => {
+      expect(diary.getNextEntry(1)).toBeUndefined();
+    });
+    it('should return next entry', () => {
+      const nextDay = diary.createNewEntry();
+      expect(diary.getNextEntry(1)).toBe(diary.getEntry(nextDay));
+    });
+  });
+
+  describe('getPreviousEntry tests', () => {
+    beforeEach(() => {
+      const newEntry = builder(entry, settings);
+      diaryEntries = new Map().set(1, entry).set(2, newEntry);
+      diary = new Diary(builder, diaryEntries, settings, 1);
+    });
+    it('should return previous entry day', () => {
+      expect(diary.getPreviousEntry(2)).toBe(diary.getEntry(1));
+    });
+    it('should return this day if no previous entry', () => {
+      expect(diary.getPreviousEntry(1)).toBe(diary.getEntry(1));
+    });
+  });
+
+  describe('pruneTrailingUneditedEntries tests', () => {
+    beforeEach(() => {
+      for (let i = 2; i < 4; i++) {
+        const newEntry = entryFactory(i, i - 1);
+        diaryEntries.set(i, newEntry);
+        builtEntry.push(newEntry);
+      }
+      diary = new Diary(builder, diaryEntries, settings, 3);
+    });
+    it('should correctly diaryEntries before pruning', () => {
+      for (let i = 1; i < 4; i++) {
+        expect(diary.getEntry(i)).toBe(builtEntry[i - 1]);
+      }
+    });
+    it('should not delete farst day', () => {
+      diary.pruneTrailingUneditedEntries(0);
+      expect(diary.getEntry(1)).toBe(builtEntry[0]);
+    });
+    it('should delete entries after lastEditedDay', () => {
+      diary.pruneTrailingUneditedEntries(1);
+      expect(() => diary.getEntry(2)).toThrow(`not exists day=2 entry`);
+      expect(() => diary.getEntry(3)).toThrow(`not exists day=3 entry`);
+    });
+    it('should update lastDay to lastEditedDay', () => {
+      diary.pruneTrailingUneditedEntries(2);
+      expect(diary.getLastDay()).toBe(2);
+    });
+    it('should not delete entries before lastEditedDay', () => {
+      diary.pruneTrailingUneditedEntries(2);
+      expect(diary.getEntry(2)).toBe(builtEntry[1]);
+    });
+    it('should not delete entries when the entry edited', () => {
+      builtEntry[2].isEdited = () => true;
+      diary.pruneTrailingUneditedEntries(3);
+      expect(diary.getEntry(3)).toBe(builtEntry[2]);
+    });
+  });
+
   describe('test deleteEntry', () => {
     const lastDay = 5;
     beforeEach(() => {

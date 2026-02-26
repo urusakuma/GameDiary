@@ -16,7 +16,6 @@ import {
 } from '@features/diary/control/diaryEntry/controlDiaryEntryInterface';
 import ContextWrapperProps from '@shared/components/contextWrapperProps';
 import { useRefreshContext } from '@features/diary/components/app/RefreshContext';
-import { useDiaryEntriesListContext } from '@features/diary/components/diary/DiaryEntryListContext';
 import { KeyboardEventHandler } from '@features/diary/components/ui/state/ModalContext';
 
 type ChangeCurrentEntryContextType = {
@@ -36,8 +35,7 @@ export const ChangeCurrentEntryProvider = ({
   const [entryAccessor, setEntryAccessor] =
     useState<ICurrentDiaryEntryAccessor>();
   const [diaryAccessor, setDiaryAccessor] = useState<ICurrentDiaryAccessor>();
-  const { refreshEntry } = useRefreshContext();
-  const { addDiaryEntry, deleteDiaryEntry } = useDiaryEntriesListContext();
+  const { refreshAll } = useRefreshContext();
   useEffect(() => {
     // 初期化処理
     const changeCurrentEntryInstance =
@@ -62,32 +60,15 @@ export const ChangeCurrentEntryProvider = ({
         return;
       }
       if (e.key === 'ArrowRight') {
-        const isCreated = changeCurrentEntry.moveToNext();
-        refreshEntry();
-        if (!isCreated) {
-          return;
-        }
-        const day = entryAccessor.getCurrentDiaryEntry().day;
-        const title = entryAccessor.getCurrentDiaryEntry().getTitle();
-        addDiaryEntry(day, title);
+        changeCurrentEntry.moveToNext();
+        refreshAll();
       }
       if (e.key === 'ArrowLeft') {
-        const day = entryAccessor.getCurrentDiaryEntry().day;
-        const isDeleted = changeCurrentEntry.moveToPrevious();
-        refreshEntry();
-        if (!isDeleted) {
-          return;
-        }
-        deleteDiaryEntry(day);
+        changeCurrentEntry.moveToPrevious();
+        refreshAll();
       }
     },
-    [
-      changeCurrentEntry,
-      entryAccessor,
-      refreshEntry,
-      addDiaryEntry,
-      deleteDiaryEntry,
-    ]
+    [changeCurrentEntry, entryAccessor, refreshAll]
   );
   const moveByDate = useCallback(
     (date: number) => {
@@ -95,9 +76,9 @@ export const ChangeCurrentEntryProvider = ({
         return;
       }
       changeCurrentEntry.moveByDate(date);
-      refreshEntry();
+      refreshAll();
     },
-    [changeCurrentEntry, refreshEntry]
+    [changeCurrentEntry, refreshAll]
   );
   const moveToLatest = useCallback(() => {
     if (changeCurrentEntry === undefined || diaryAccessor === undefined) {
@@ -105,8 +86,8 @@ export const ChangeCurrentEntryProvider = ({
     }
     const lastDay = diaryAccessor.getCurrentDiary().getLastDay();
     changeCurrentEntry.moveByDate(lastDay);
-    refreshEntry();
-  }, [changeCurrentEntry, diaryAccessor, refreshEntry]);
+    refreshAll();
+  }, [changeCurrentEntry, diaryAccessor, refreshAll]);
   const changeCurrentObj = useMemo(() => {
     return { moveByDate, moveToLatest, onArrowMoveEntry };
   }, [moveByDate, moveToLatest, onArrowMoveEntry]);
@@ -115,7 +96,7 @@ export const ChangeCurrentEntryProvider = ({
     moveToLatest === undefined ||
     onArrowMoveEntry === undefined
   ) {
-    return <div>Loading...</div>;
+    return <div>ChangeCurrentEntryProvider Loading...</div>;
   }
   return (
     <ChangeCurrentEntryContext.Provider value={changeCurrentObj}>

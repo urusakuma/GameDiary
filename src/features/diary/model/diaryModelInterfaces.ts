@@ -8,19 +8,50 @@ export type UsePreviousDayDiaryEntryFactory = (
 export interface IDiary {
   /** 設定クラスへの直接アクセス。インスタンスそのものを変更できないようにはしている */
   getSettings(): IDiarySettings;
+
   /** 日記の最新日 */
   getLastDay(): number;
+
   /**
    * 新しいエントリーを作成する。
    * @returns {number} 新しく作成したエントリーのday
    */
   createNewEntry(): number;
+
   /**
    * 指定した日付のエントリーを取得する。
    * @param day 要求するエントリーの日付
    * @returns {IDiaryEntry} 指定されたエントリー
    */
   getEntry(day: number): IDiaryEntry;
+
+  /**
+   * 日記に存在するエントリーの日付をすべて取得する。
+   * @returns {MapIterator<number>} 日記に存在するエントリーの日付のイテレータ
+   */
+  collectEntryDays(): MapIterator<number>;
+  /**
+   * 指定したエントリーの翌日のエントリーを取得する。
+   * 存在しない場合は新しいエントリーを作成して返す。
+   * @param day 要求するエントリーの日付
+   * @returns {IDiaryEntry | undefined} 指定されたエントリーの翌日のエントリー。存在しない場合はundefinedが返る。
+   */
+  getNextEntry(day: number): IDiaryEntry | undefined;
+
+  /**
+   * 指定したエントリーの前日のエントリーを取得する。
+   * 当日のエントリーが未編集かつ翌日のエントリーが存在しない場合は、当日のエントリーを削除する。
+   * @param day 要求するエントリーの日付
+   * @returns {IDiaryEntry} 指定されたエントリーの前日のエントリー
+   */
+  getPreviousEntry(day: number): IDiaryEntry;
+
+  /**
+   * 指定したまでの未編集のエントリーを末尾から削除する。初日は削除されない。
+   * @param day 最新の日付。これ以前のエントリーは削除されない。
+   */
+  pruneTrailingUneditedEntries(day: number): void;
+
   /**
    * 指定したエントリーを削除する。削除に成功した場合trueを返す。初日など削除できない日付も存在する。
    * @param day 削除するエントリーの日付
@@ -28,6 +59,7 @@ export interface IDiary {
    */
   deleteEntry(day: number): boolean;
 }
+
 /**
  * 新しい日記を作成する関数。
  * Diaryを受け取った場合、DiaryのSettingsからストレージキー以外をコピーする。
@@ -42,24 +74,34 @@ export interface IDiaryFactory {
   ): IDiary;
   createNewDiary(diary?: IDiary, name?: string): IDiary;
 }
+
 /**
  * 1日分の日記を管理するクラス
  */
 export interface IDiaryEntry {
   /** エントリーの日付 */
   get day(): number;
-  /** エントリーのタイトル */
+
+  /** エントリーのタイトルをセットする */
   setTitle(val: string): void;
+
+  /**エントリーのタイトルをゲットする */
   getTitle(): string;
-  /** エントリーの内容 */
+
+  /** エントリーの内容をセットする */
   setContent(val: string): void;
+
+  /** エントリーの内容をゲットする */
   getContent(): string;
+
   /** 前日のエントリーの日付 */
   set previous(val: number);
   get previous(): number | undefined;
+
   /** 翌日のエントリーの日付 */
   set next(val: number | undefined);
   get next(): number | undefined;
+
   /**
    * このエントリーが編集されたならTrue、されていないならFalse
    * @param settings 初期のタイトルを取得するためのSettings

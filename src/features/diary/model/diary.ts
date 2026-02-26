@@ -27,7 +27,10 @@ export default class Diary implements IDiary {
     private lastDay: number
   ) {
     assert(diaryEntries.size !== 0, `not exists any entry`);
-    assert(diaryEntries.get(lastDay) !== undefined, `not exists ${lastDay}`);
+    assert(
+      diaryEntries.get(lastDay) !== undefined,
+      `not exists lastDay=${lastDay}`
+    );
   }
   getSettings() {
     return this.settings;
@@ -60,6 +63,38 @@ export default class Diary implements IDiary {
       new KeyNotFoundError(`not exists day=${day} entry`)
     );
     return entry;
+  }
+
+  getNextEntry(day: number): IDiaryEntry | undefined {
+    const entry = this.getEntry(day);
+    if (entry.next !== undefined) {
+      return this.getEntry(entry.next);
+    }
+    return undefined;
+  }
+
+  getPreviousEntry(day: number): IDiaryEntry {
+    const entry = this.getEntry(day);
+    if (entry.previous === undefined) {
+      return entry;
+    }
+    return this.getEntry(entry.previous);
+  }
+
+  pruneTrailingUneditedEntries(sinceDay: number): void {
+    let entry = this.getEntry(this.lastDay);
+    while (entry.day > sinceDay && entry.previous !== undefined) {
+      if (entry.isEdited(this.settings)) {
+        break;
+      }
+      const preDay = entry.previous;
+      this.deleteEntry(entry.day);
+      entry = this.getEntry(preDay);
+    }
+  }
+
+  collectEntryDays(): MapIterator<number> {
+    return this.diaryEntries.keys();
   }
 
   /**

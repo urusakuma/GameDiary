@@ -1,5 +1,11 @@
 import { container } from 'tsyringe';
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 import ContextWrapperProps from '@shared/components/contextWrapperProps';
 import { useRefreshContext } from '@features/diary/components/app/RefreshContext';
@@ -9,9 +15,7 @@ import { ICurrentDiaryEntryAccessor } from '@features/diary/control/diaryEntry/c
 type DayTitlePairType = { day: number; title: string };
 type DiaryEntryListContextType = {
   diaryEntries: DayTitlePairType[];
-  addDiaryEntry: (day: number, title: string) => void;
-  deleteDiaryEntry: (day: number) => void;
-  updateDiaryEntryTitle: (day: number, title: string) => void;
+  deleteEntry: (day: number) => void;
 };
 const DiaryEntriesListContext = createContext<DiaryEntryListContextType | null>(
   null
@@ -21,7 +25,7 @@ export const DiaryEntriesListProvider = ({ children }: ContextWrapperProps) => {
   const [entryAccessor, setEntryAccessor] =
     useState<ICurrentDiaryEntryAccessor>();
   const [diaryEntries, setDiaryEntries] = useState<DayTitlePairType[]>([]);
-  const { diaryRefresherRegister } = useRefreshContext();
+  const { diaryRefresherRegister, refreshDiary } = useRefreshContext();
   useEffect(() => {
     const diaryAccessorInstance = container.resolve<ICurrentDiaryAccessor>(
       'ICurrentDiaryAccessor'
@@ -32,48 +36,45 @@ export const DiaryEntriesListProvider = ({ children }: ContextWrapperProps) => {
     );
     setEntryAccessor(entryAccessorInstance);
     const refresh = () => {
-      const list = [];
-      let day: number | undefined = diaryAccessorInstance
+      const list: Array<DayTitlePairType> = [];
+      const iterator = diaryAccessorInstance
         .getCurrentDiary()
-        .getLastDay();
-      while (day !== undefined) {
+        .collectEntryDays();
+      iterator.forEach((day) => {
         const entry = diaryAccessorInstance.getCurrentDiary().getEntry(day);
-        list.unshift({ day, title: entry.getTitle() });
-        day = entry.previous;
-      }
+        list.push({ day, title: entry.getTitle() });
+      });
       setDiaryEntries(list);
     };
     refresh();
     const unregister = diaryRefresherRegister(refresh);
     return unregister;
   }, [diaryRefresherRegister]);
+
+  const deleteEntry = useCallback(
+    (day: number) => {
+      if (
+        entryAccessor === undefined ||
+        diaryAccessor === undefined ||
+        refreshDiary === undefined
+      ) {
+        return;
+      }
+      const isToday = day === entryAccessor.getCurrentDiaryEntry().day;
+      if (isToday) {
+        return;
+      }
+      diaryAccessor.getCurrentDiary().deleteEntry(day);
+      refreshDiary();
+    },
+    [entryAccessor, diaryAccessor, refreshDiary]
+  );
   if (diaryAccessor === undefined || entryAccessor === undefined) {
     return <div>Loading...</div>;
   }
-  const addDiaryEntry = (day: number, title: string) => {
-    const pair = { day, title };
-    setDiaryEntries((prev) => [...prev, pair]);
-  };
-  const deleteDiaryEntry = (day: number) => {
-    const isToday = day === entryAccessor.getCurrentDiaryEntry().day;
-    if (isToday) {
-      return;
-    }
-    setDiaryEntries((prev) =>
-      prev.filter((option, i) => i === 0 || option.day !== day)
-    );
-    diaryAccessor.getCurrentDiary().deleteEntry(day);
-  };
-  const updateDiaryEntryTitle = (day: number, title: string) => {
-    setDiaryEntries((prev) =>
-      prev.map((pair) => (pair.day === day ? { ...pair, title } : pair))
-    );
-  };
   const optionsObj: DiaryEntryListContextType = {
-    diaryEntries: diaryEntries,
-    addDiaryEntry,
-    deleteDiaryEntry,
-    updateDiaryEntryTitle,
+    diaryEntries,
+    deleteEntry,
   };
   return (
     <DiaryEntriesListContext.Provider value={optionsObj}>

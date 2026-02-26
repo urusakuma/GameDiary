@@ -22,7 +22,7 @@ GameDiary はもともと個人用のツールとして開発しました。そ�
 
 ## レイヤー構成
 
-### レイヤード構成図
+### レイヤードアーキテクチャ図
 
 ![Layered Architecture](./images/layeredArchitecture.png)
 

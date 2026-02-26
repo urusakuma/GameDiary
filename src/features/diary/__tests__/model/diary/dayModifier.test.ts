@@ -24,6 +24,7 @@ describe('DayModifier class tests', () => {
       placeholders
     );
   });
+
   describe('getUnit', () => {
     it('should return a value between 0 to 4, otherwise it should return an empty string', () => {
       for (let i = -1; i < 5; i++) {
@@ -46,6 +47,11 @@ describe('DayModifier class tests', () => {
   describe('setModifier', () => {
     it('should set the argument as is', () => {
       modifier.setModifier('フェーズ');
+      expect(modifier.modifyDay(1)).toBe('1フェーズ');
+    });
+    it('should not change the modifier when the argument is empty string', () => {
+      modifier.setModifier('フェーズ');
+      modifier.setModifier('');
       expect(modifier.modifyDay(1)).toBe('1フェーズ');
     });
   });
@@ -93,7 +99,8 @@ describe('DayModifier class tests', () => {
       expect(modifier.modifyDay(1)).toBe('1日目');
     });
     it('should not use unit if replacement string does not exist', () => {
-      modifier.setModifier('フェーズ').updateUnit('Hoge', 1);
+      modifier.setModifier('フェーズ');
+      modifier.updateUnit('Hoge', 1);
       expect(modifier.modifyDay(1)).toBe('1フェーズ');
     });
     it('should replace when a replacement string for TotalDay exists', () => {
@@ -101,10 +108,9 @@ describe('DayModifier class tests', () => {
       expect(modifier.modifyDay(1)).toBe('フェーズ1');
     });
     it('should alternate between two cycles', () => {
-      modifier
-        .setModifier(dateModifierLabel)
-        .updateUnit('前期', 0)
-        .updateUnit('後期', 1);
+      modifier.setModifier(dateModifierLabel);
+      modifier.updateUnit('前期', 0);
+      modifier.updateUnit('後期', 1);
       expect(modifier.modifyDay(1)).toBe('1年目前期1日目1');
       expect(modifier.modifyDay(10)).toBe('1年目前期10日目10');
       expect(modifier.modifyDay(11)).toBe('1年目後期1日目11');
@@ -113,10 +119,9 @@ describe('DayModifier class tests', () => {
       expect(modifier.modifyDay(2000)).toBe('100年目後期10日目2000');
     });
     it('Should be removed when the unit is deleted', () => {
-      modifier
-        .setModifier(dateModifierLabel)
-        .updateUnit('前期', 0)
-        .updateUnit('後期', 1);
+      modifier.setModifier(dateModifierLabel);
+      modifier.updateUnit('前期', 0);
+      modifier.updateUnit('後期', 1);
       expect(modifier.modifyDay(10)).toBe('1年目前期10日目10');
       expect(modifier.modifyDay(20)).toBe('1年目後期10日目20');
       modifier.updateUnit('', 1);
@@ -124,10 +129,9 @@ describe('DayModifier class tests', () => {
       expect(modifier.modifyDay(11)).toBe('2年目前期1日目11');
     });
     it('If you skip a unit and put it in the position, you should put a space between them.', () => {
-      modifier
-        .setModifier(dateModifierLabel)
-        .updateUnit('春', 0)
-        .updateUnit('冬', 3);
+      modifier.setModifier(dateModifierLabel);
+      modifier.updateUnit('春', 0);
+      modifier.updateUnit('冬', 3);
       expect(modifier.modifyDay(1)).toBe('1年目春1日目1');
       expect(modifier.modifyDay(11)).toBe('1年目1日目11');
       expect(modifier.modifyDay(21)).toBe('1年目1日目21');
@@ -141,12 +145,11 @@ describe('DayModifier class tests', () => {
       expect(modifier.modifyDay(21)).toBe('1年目秋1日目21');
     });
     it('should apply four periods in sequence', () => {
-      modifier
-        .setModifier(dateModifierLabel)
-        .updateUnit('春', 0)
-        .updateUnit('夏', 1)
-        .updateUnit('秋', 2)
-        .updateUnit('冬', 3);
+      modifier.setModifier(dateModifierLabel);
+      modifier.updateUnit('春', 0);
+      modifier.updateUnit('夏', 1);
+      modifier.updateUnit('秋', 2);
+      modifier.updateUnit('冬', 3);
       expect(modifier.modifyDay(1)).toBe('1年目春1日目1');
       expect(modifier.modifyDay(11)).toBe('1年目夏1日目11');
       expect(modifier.modifyDay(21)).toBe('1年目秋1日目21');
@@ -154,11 +157,10 @@ describe('DayModifier class tests', () => {
       expect(modifier.modifyDay(41)).toBe('2年目春1日目41');
     });
     it('should apply three periods in sequence', () => {
-      modifier
-        .setModifier(dateModifierLabel)
-        .updateUnit('前期', 0)
-        .updateUnit('中期', 1)
-        .updateUnit('後期', 2);
+      modifier.setModifier(dateModifierLabel);
+      modifier.updateUnit('前期', 0);
+      modifier.updateUnit('中期', 1);
+      modifier.updateUnit('後期', 2);
       expect(modifier.modifyDay(1)).toBe('1年目前期1日目1');
       expect(modifier.modifyDay(11)).toBe('1年目中期1日目11');
       expect(modifier.modifyDay(21)).toBe('1年目後期1日目21');
@@ -167,11 +169,10 @@ describe('DayModifier class tests', () => {
   });
   describe('toJson', () => {
     it('should return correct JSON object', () => {
-      modifier
-        .setModifier('フェーズ')
-        .updateCycleLength(5)
-        .updateUnit('ユニット1', 0)
-        .updateUnit('ユニット2', 1);
+      modifier.setModifier('フェーズ');
+      modifier.updateCycleLength(5);
+      modifier.updateUnit('ユニット1', 0);
+      modifier.updateUnit('ユニット2', 1);
       const jsonObj = {
         modifier: 'フェーズ',
         cycleLength: 5,

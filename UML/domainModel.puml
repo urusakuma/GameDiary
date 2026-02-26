@@ -2,29 +2,58 @@
 title "ドメインモデル図 : 保存データの構造"
 
 class Diary {
+  - diaryEntries: Map<number, DiaryEntry>
+  - lastDay: number
+  ---
+  + createNewEntry()
+  + getEntry(day:number)
+  + deleteEntry(day:number)
 }
+note right
+diaryEntriesは必ずday=1のDiaryEntryを持つ
+lastDayは必ずDiaryEntriesの最新の日付を保持する
+end note
 
 class DiarySettings {
-  storageKey : string
-  version : number
   diaryName : string
   dayInterval : number
 }
+note right
+diaryNameは空文字以外である
+dayIntervalは1より大きい整数値
+end note
 
 class DayModifier  {
-  modifier : string
-  cycleLength : number
-  units : string[]
+  - modifier : string
+  - cycleLength : number
+  - units : string[]
+  ---
+  modifyDay(originDay: number)
 }
+note right
+unitsの最後の要素は常に空文字以外
+cycleLengthは1より大きい整数値
+
+初期実装時に責務分割を誤り、
+SettingsがDayModifierを保持する構造になった
+動作上の問題はないが、正しくはDiaryが持つべきである
+end note
 
 class DiaryEntry {
-  day : number
-  title : string
-  content : string
+  - day : number
+  - title : string
+  - content : string
+  + previous: number | undefined
+  + next: number | undefined
 }
+note right
+dayは変更不可能
+titleは空文字を許容しない
+previousがundefinedなのは初日だけ
+nextがundefinedなのは最新日だけ
+end note
 
 Diary "1" *-- "1" DiarySettings
 DiarySettings "1" *-- "1" DayModifier
 Diary "1" *-- "1..*" DiaryEntry
-
 @enduml

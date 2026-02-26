@@ -4,7 +4,6 @@ import { container } from 'tsyringe';
 
 import ContextWrapperProps from '@shared/components/contextWrapperProps';
 import { useRefreshContext } from '@features/diary/components/app/RefreshContext';
-import { useDiaryEntriesListContext } from '@features/diary/components/diary/DiaryEntryListContext';
 import useDiaryEntryTitle from '@features/diary/hooks/editDiaryEntry/useDiaryEntryTitle';
 import useDiaryEntryContent from '@features/diary/hooks/editDiaryEntry/useDiaryEntryContent';
 import useClearDiaryEntry from '@features/diary/hooks/editDiaryEntry/useClearDiaryEntry';
@@ -34,7 +33,6 @@ export const DiaryEntryProvider = ({ children }: ContextWrapperProps) => {
   const { content, updateContent, refreshContent } = useDiaryEntryContent();
   const { clear } = useClearDiaryEntry();
   const { entryRefresherRegister, refreshAll } = useRefreshContext();
-  const {} = useDiaryEntriesListContext();
 
   const [currentDiaryEntry, setCurrentDiaryEntryAccessor] =
     useState<ICurrentDiaryEntryAccessor>();

@@ -17,21 +17,21 @@ export interface ICurrentDiaryEntryAccessor {
 export interface IChangeCurrentDiaryEntry {
   /**
    * カレントの日記のエントリを指定した日付に変更する
-   * @param date 日付
+   * @param day 日付
    */
-  moveByDate(date: number): void;
+  moveByDate(day: number): void;
+
   /**
    * カレントの日記のエントリを次の日付に変更する
    * 次の日付のエントリが存在しない場合は新しく作成する
-   * @returns {boolean} 新しいエントリを作成した場合はtrue、既存のエントリに移動した場合はfalse
    */
-  moveToNext(): boolean;
+  moveToNext(): void;
+
   /**
    * カレントの日記のエントリを前の日付に変更する
    * 前の日付のエントリが存在しない場合は何もしない
-   * @returns {boolean} 元の日付のエントリが削除された場合はtrue、元のエントリを削除しなければfalse
    */
-  moveToPrevious(): boolean;
+  moveToPrevious(): void;
 }
 /** 日記のエントリを削除するクラス */
 export interface IDeleteDiaryEntry {

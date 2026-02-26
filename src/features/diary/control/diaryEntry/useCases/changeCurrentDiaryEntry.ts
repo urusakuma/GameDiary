@@ -18,35 +18,31 @@ export default class ChangeCurrentDiaryEntry
     private diaryEntryAccessor: ICurrentDiaryEntryAccessor
   ) {}
 
-  moveByDate(date: number): void {
-    this.diaryEntryAccessor.setCurrentDiaryEntry(date);
+  moveByDate(day: number): void {
+    this.diaryEntryAccessor.setCurrentDiaryEntry(day);
+    this.diaryAccessor.getCurrentDiary().pruneTrailingUneditedEntries(day);
   }
 
-  moveToNext(): boolean {
-    const today = this.diaryEntryAccessor.getCurrentDiaryEntry();
-    if (today.next !== undefined) {
-      this.diaryEntryAccessor.setCurrentDiaryEntry(today.next);
-      return false;
+  moveToNext(): void {
+    const currentDiary = this.diaryAccessor.getCurrentDiary();
+
+    const today = this.diaryEntryAccessor.getCurrentDiaryEntry().day;
+    let nextEntry = currentDiary.getNextEntry(today)?.day;
+    if (nextEntry === undefined) {
+      nextEntry = currentDiary.createNewEntry();
     }
-    // nextが存在しない場合新しくエントリを作成する。
-    const newDay = this.diaryAccessor.getCurrentDiary().createNewEntry();
-    this.diaryEntryAccessor.setCurrentDiaryEntry(newDay);
-    return true;
+
+    this.diaryEntryAccessor.setCurrentDiaryEntry(nextEntry);
   }
 
-  moveToPrevious(): boolean {
-    const today = this.diaryEntryAccessor.getCurrentDiaryEntry();
-    if (today.previous === undefined) {
-      // previousが存在しない場合は移動できない。
-      return false;
-    }
-    this.diaryEntryAccessor.setCurrentDiaryEntry(today.previous);
-    const settings = this.diaryAccessor.getCurrentDiary().getSettings();
-    if (today.isEdited(settings) || today.next !== undefined) {
-      // 編集済み、またはnextが存在する場合は削除しない。
-      return false;
-    }
-    this.diaryAccessor.getCurrentDiary().deleteEntry(today.day);
-    return true;
+  moveToPrevious(): void {
+    const currentDiary = this.diaryAccessor.getCurrentDiary();
+
+    const today = this.diaryEntryAccessor.getCurrentDiaryEntry().day;
+    const previousDay = currentDiary.getPreviousEntry(today).day;
+
+    this.diaryEntryAccessor.setCurrentDiaryEntry(previousDay);
+
+    currentDiary.pruneTrailingUneditedEntries(previousDay);
   }
 }

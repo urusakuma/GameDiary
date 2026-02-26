@@ -33,7 +33,7 @@ export const DiaryEntryProvider = ({ children }: ContextWrapperProps) => {
   const { title, updateTitle, refreshTitle } = useDiaryEntryTitle();
   const { content, updateContent, refreshContent } = useDiaryEntryContent();
   const { clear } = useClearDiaryEntry();
-  const { entryRefresherRegister, refreshEntry } = useRefreshContext();
+  const { entryRefresherRegister, refreshAll } = useRefreshContext();
   const {} = useDiaryEntriesListContext();
 
   const [currentDiaryEntry, setCurrentDiaryEntryAccessor] =
@@ -51,7 +51,6 @@ export const DiaryEntryProvider = ({ children }: ContextWrapperProps) => {
     const unregister = entryRefresherRegister(refresh);
     return unregister;
   }, [entryRefresherRegister, refreshTitle, refreshContent]);
-  const { updateDiaryEntryTitle } = useDiaryEntriesListContext();
 
   const titleObj: DiaryEntryTitleContextType = useMemo(() => {
     return {
@@ -61,11 +60,10 @@ export const DiaryEntryProvider = ({ children }: ContextWrapperProps) => {
           return;
         }
         updateTitle(title);
-        const day = currentDiaryEntry.getCurrentDiaryEntry().day;
-        updateDiaryEntryTitle(day, title);
+        refreshAll();
       },
     };
-  }, [title, updateTitle, currentDiaryEntry, updateDiaryEntryTitle]);
+  }, [title, updateTitle, currentDiaryEntry, refreshAll]);
   const contentObj: DiaryEntryContextContextType = useMemo(() => {
     return {
       content,
@@ -79,13 +77,10 @@ export const DiaryEntryProvider = ({ children }: ContextWrapperProps) => {
           return;
         }
         clear();
-        refreshEntry();
-        const day = currentDiaryEntry.getCurrentDiaryEntry().day;
-        const title = currentDiaryEntry.getCurrentDiaryEntry().getTitle();
-        updateDiaryEntryTitle(day, title);
+        refreshAll();
       },
     };
-  }, [clear, refreshEntry, currentDiaryEntry]);
+  }, [clear, refreshAll, currentDiaryEntry]);
   return (
     <DiaryEntryTitleContext.Provider value={titleObj}>
       <DiaryEntryStateContext.Provider value={contentObj}>

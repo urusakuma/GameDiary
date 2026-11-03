@@ -1,4 +1,4 @@
-import DiarySettingsConstant from '@features/diary/model/constants';
+import STORAGE_CONSTANTS from '@features/diary/services/constants';
 import { MockStorageService } from './mockStorageService';
 
 export class MockV1StorageService extends MockStorageService {
@@ -10,10 +10,7 @@ export class MockV1StorageService extends MockStorageService {
       const itemName = 'testName' + String(i);
       itemRecord[itemKey] = itemName;
     }
-    this.setItem(
-      DiarySettingsConstant.DIARY_NAME_LIST,
-      JSON.stringify(itemRecord)
-    );
-    this.setItem(DiarySettingsConstant.CURRENT_DIARY_KEY, 'testKey0');
+    this.setItem(STORAGE_CONSTANTS.DIARY_NAME_LIST, JSON.stringify(itemRecord));
+    this.setItem(STORAGE_CONSTANTS.CURRENT_DIARY_KEY, 'testKey0');
   }
 }

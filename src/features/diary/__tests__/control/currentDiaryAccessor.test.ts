@@ -1,75 +1,55 @@
-import 'reflect-metadata';
-import { container } from 'tsyringe';
 import CurrentDiaryAccessor from '@features/diary/control/diary/accessors/currentDiaryAccessor';
-import type {
+import {
   ICurrentDiaryManager,
-  IDiaryService,
-} from '@features/diary/services/repository/diaryRepositoryInterfaces';
-import { MockDiary } from '@features/diary/__tests__/__mocks__/mockDiary';
-import { NotFoundError } from '@lib/error';
+  IDiaryLoad,
+} from '@features/diary/services/persistence/diaryPersistenceInterfaces';
+import { KeyNotFoundError } from '@lib/error';
+import { MockDiary } from '../__mocks__/mockDiary';
 
-describe('CurrentDiaryAccessor Constructor', () => {
-  let mockCurrentDiaryManager: ICurrentDiaryManager;
-  let mockDiaryService: IDiaryService;
+describe('CurrentDiaryAccessor', () => {
+  let manager: jest.Mocked<ICurrentDiaryManager>;
+  let loader: jest.Mocked<IDiaryLoad>;
+  let accessor: CurrentDiaryAccessor;
   const diary = new MockDiary();
-  const key = 'testKey';
+
   beforeEach(() => {
-    mockCurrentDiaryManager = {
-      getCurrentDiaryKey: jest.fn(),
+    manager = {
+      getCurrentDiaryKey: jest.fn().mockReturnValue('current-key'),
       setCurrentDiaryKey: jest.fn(),
     };
-    mockDiaryService = {
-      getDiary: jest.fn(),
-      addDiary: jest.fn(),
-      deleteDiary: jest.fn(),
-    };
-
-    container.registerInstance('ICurrentDiaryManager', mockCurrentDiaryManager);
-    container.registerInstance('IDiaryService', mockDiaryService);
+    loader = { load: jest.fn().mockReturnValue(diary) };
+    accessor = new CurrentDiaryAccessor(manager, loader);
   });
 
-  it('should retrieve the current diary successfully', () => {
-    (mockCurrentDiaryManager.getCurrentDiaryKey as jest.Mock).mockReturnValue(
-      key
-    );
-    (mockDiaryService.getDiary as jest.Mock).mockReturnValue(diary);
-    const accessor = container.resolve(CurrentDiaryAccessor);
+  it('loads the diary selected by the current key', () => {
     expect(accessor.getCurrentDiary()).toBe(diary);
-    expect(mockCurrentDiaryManager.getCurrentDiaryKey).toHaveBeenCalled();
-    expect(mockDiaryService.getDiary).toHaveBeenCalledWith(key);
+    expect(manager.getCurrentDiaryKey).toHaveBeenCalledTimes(1);
+    expect(loader.load).toHaveBeenCalledWith('current-key');
   });
-  it('should return undefined when the current diary is not found', () => {
-    (mockCurrentDiaryManager.getCurrentDiaryKey as jest.Mock).mockReturnValue(
-      key
-    );
-    (mockDiaryService.getDiary as jest.Mock).mockReturnValue(undefined);
-    const accessor = container.resolve(CurrentDiaryAccessor);
-    expect(() => accessor.getCurrentDiary()).toThrow(
-      new NotFoundError('current diary is not found')
-    );
-    expect(mockCurrentDiaryManager.getCurrentDiaryKey).toHaveBeenCalled();
-    expect(mockDiaryService.getDiary).toHaveBeenCalledWith(key);
+
+  it('propagates a failure to load the current diary', () => {
+    const error = new KeyNotFoundError('missing diary');
+    loader.load.mockImplementation(() => {
+      throw error;
+    });
+    expect(() => accessor.getCurrentDiary()).toThrow(error);
   });
-  it('should set the current diary successfully', () => {
-    (mockCurrentDiaryManager.getCurrentDiaryKey as jest.Mock).mockReturnValue(
-      key
-    );
-    (mockDiaryService.getDiary as jest.Mock).mockReturnValue(diary);
-    const accessor = container.resolve(CurrentDiaryAccessor);
-    accessor.setCurrentDiary(key);
-    expect(mockDiaryService.getDiary).toHaveBeenCalledWith(key);
-    expect(mockCurrentDiaryManager.setCurrentDiaryKey).toHaveBeenCalledWith(
-      key
+
+  it('loads the selected diary before updating the current key', () => {
+    accessor.setCurrentDiary('new-key');
+    expect(loader.load).toHaveBeenCalledWith('new-key');
+    expect(manager.setCurrentDiaryKey).toHaveBeenCalledWith('new-key');
+    expect(loader.load.mock.invocationCallOrder[0]).toBeLessThan(
+      manager.setCurrentDiaryKey.mock.invocationCallOrder[0]
     );
   });
-  it('should not set the current diary when the diary is not found', () => {
-    (mockCurrentDiaryManager.getCurrentDiaryKey as jest.Mock).mockReturnValue(
-      key
-    );
-    (mockDiaryService.getDiary as jest.Mock).mockReturnValue(undefined);
-    const accessor = container.resolve(CurrentDiaryAccessor);
-    accessor.setCurrentDiary(key);
-    expect(mockDiaryService.getDiary).toHaveBeenCalledWith(key);
-    expect(mockCurrentDiaryManager.setCurrentDiaryKey).not.toHaveBeenCalled();
+
+  it('keeps the current key unchanged when loading the selected diary fails', () => {
+    const error = new KeyNotFoundError('missing diary');
+    loader.load.mockImplementation(() => {
+      throw error;
+    });
+    expect(() => accessor.setCurrentDiary('missing-key')).toThrow(error);
+    expect(manager.setCurrentDiaryKey).not.toHaveBeenCalled();
   });
 });

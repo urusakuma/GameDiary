@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { IDiaryLoad } from '@features/diary/services/repository/diaryRepositoryInterfaces';
+import { IDiaryLoad } from '@features/diary/services/persistence/diaryPersistenceInterfaces';
 import { ICurrentDiaryAccessor } from '@features/diary/control/diary/controlDiaryInterface';
 import { MockDiary } from '@features/diary/__tests__/__mocks__/mockDiary';
 import DiaryLoadHandler from '@features/diary/control/diary/useCases/diaryLoadHandler';

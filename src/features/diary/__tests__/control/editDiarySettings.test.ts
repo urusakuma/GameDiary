@@ -1,6 +1,9 @@
 import 'reflect-metadata';
 import EditDiarySettings from '@features/diary/control/diary/useCases/editDiarySettings';
-import type { ICurrentDiaryAccessor } from '@features/diary/control/diary/controlDiaryInterface';
+import type {
+  ICurrentDiaryAccessor,
+  IDiaryNameService,
+} from '@features/diary/control/diary/controlDiaryInterface';
 import {
   IDiary,
   IDiarySettings,
@@ -11,12 +14,14 @@ describe('EditDiarySettings', () => {
   let editDiarySettings: EditDiarySettings;
   let mockSettings: jest.Mocked<IDiarySettings>;
 
+  let names: jest.Mocked<IDiaryNameService>;
   beforeEach(() => {
     mockDiaryAccessor = {
       getCurrentDiary: jest.fn(),
     } as unknown as jest.Mocked<ICurrentDiaryAccessor>;
 
     mockSettings = {
+      storageKey: 'diary-key',
       setDiaryName: jest.fn(),
       updateDayInterval: jest.fn(),
       setModifier: jest.fn(),
@@ -28,25 +33,24 @@ describe('EditDiarySettings', () => {
       getSettings: jest.fn().mockReturnValue(mockSettings),
     } as unknown as jest.Mocked<IDiary>);
 
-    editDiarySettings = new EditDiarySettings(mockDiaryAccessor);
+    names = {
+      updateDiaryName: jest.fn().mockReturnValue('unique name'),
+    } as unknown as jest.Mocked<IDiaryNameService>;
+    editDiarySettings = new EditDiarySettings(mockDiaryAccessor, names);
   });
 
   it('should call setDiaryName with the correct arguments', () => {
     const name = 'name';
     editDiarySettings.editDiaryName(name);
-    expect(mockSettings.setDiaryName).toHaveBeenCalledWith(name);
+    expect(names.updateDiaryName).toHaveBeenCalledWith('diary-key', name);
+    expect(mockSettings.setDiaryName).toHaveBeenCalledWith('unique name');
   });
   it('should call updateDayInterval with the correct arguments', () => {
     const interval = 3;
     editDiarySettings.editDayInterval(interval);
     expect(mockSettings.updateDayInterval).toHaveBeenCalledWith(interval);
   });
-  it('should call updateDayInterval with the correct arguments', () => {
-    const interval = 3;
-    editDiarySettings.editDayInterval(interval);
-    expect(mockSettings.updateDayInterval).toHaveBeenCalledWith(interval);
-  });
-  it('should call updateDayInterval with the correct arguments', () => {
+  it('should update the day modifier', () => {
     const modifier = '日目';
     editDiarySettings.editModifier(modifier);
     expect(mockSettings.setModifier).toHaveBeenCalledWith(modifier);
@@ -61,7 +65,7 @@ describe('EditDiarySettings', () => {
       cycle
     );
   });
-  it('should call updateDayInterval with the correct arguments', () => {
+  it('should update the cycle length', () => {
     const len = 15;
     editDiarySettings.editCycleLength(len);
     expect(mockSettings.updateCycleLength).toHaveBeenCalledWith(len);

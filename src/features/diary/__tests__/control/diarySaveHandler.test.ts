@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { IDiarySave } from '@features/diary/services/repository/diaryRepositoryInterfaces';
+import { IDiarySave } from '@features/diary/services/persistence/diaryPersistenceInterfaces';
 import DiarySaveHandler from '@features/diary/control/diary/useCases/diarySaveHandler';
 import { ICurrentDiaryAccessor } from '@features/diary/control/diary/controlDiaryInterface';
 import { MockDiary } from '@features/diary/__tests__/__mocks__/mockDiary';
@@ -8,7 +8,7 @@ describe('DiarySaveHandler', () => {
   let diarySaveHandler: DiarySaveHandler;
   let mockDiaryAccessor: jest.Mocked<ICurrentDiaryAccessor>;
   let mockDiarySave: jest.Mocked<IDiarySave>;
-  let mockDiary = new MockDiary();
+  const mockDiary = new MockDiary();
   beforeEach(() => {
     mockDiaryAccessor = {
       getCurrentDiary: jest.fn(),

@@ -31,7 +31,9 @@ describe('CurrentDiaryManager', () => {
     it('should read from storage if reading currentDiaryKey previously failed', () => {
       storage.getItem.mockReturnValueOnce(null).mockReturnValue(diaryKey);
       const manager = new CurrentDiaryManager(storage);
+      expect(manager.getCurrentDiaryKey()).toBe('');
       expect(manager.getCurrentDiaryKey()).toBe(diaryKey);
+      expect(storage.getItem).toHaveBeenCalledTimes(2);
       expect(storage.getItem).toHaveBeenCalledWith(
         STORAGE_CONSTANTS.CURRENT_DIARY_KEY
       );

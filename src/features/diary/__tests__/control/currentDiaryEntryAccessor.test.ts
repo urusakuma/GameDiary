@@ -1,55 +1,54 @@
-import type { ICurrentDiaryAccessor } from '@features/diary/control/diary/controlDiaryInterface';
+import { ICurrentDiaryAccessor } from '@features/diary/control/diary/controlDiaryInterface';
 import CurrentDiaryEntryAccessor from '@features/diary/control/diaryEntry/accessors/currentDiaryEntryAccessor';
-import {
-  IDiary,
-  IDiaryEntry,
-} from '@features/diary/model/diaryModelInterfaces';
+import { IDiary } from '@features/diary/model/diaryModelInterfaces';
+import DiaryEntry from '@features/diary/model/diaryEntry';
 
 describe('CurrentDiaryEntryAccessor', () => {
-  let mockDiaryAccessor: jest.Mocked<ICurrentDiaryAccessor>;
-  let currentEntryAccessor: CurrentDiaryEntryAccessor;
-  let mockEntries: jest.Mocked<IDiaryEntry>[];
+  let diaryAccessor: jest.Mocked<ICurrentDiaryAccessor>;
+  let accessor: CurrentDiaryEntryAccessor;
   let diary: jest.Mocked<IDiary>;
+  let entries: DiaryEntry[];
+
   beforeEach(() => {
-    mockDiaryAccessor = {
-      getCurrentDiary: jest.fn(),
-    } as unknown as jest.Mocked<ICurrentDiaryAccessor>;
-    mockEntries = new Array(3).fill('').map((_, i) => {
-      return {
-        day: Number(i) + 1,
-      } as unknown as jest.Mocked<IDiaryEntry>;
-    });
+    entries = [1, 2, 3].map(
+      (day) => new DiaryEntry(day, '', '', undefined, undefined)
+    );
     diary = {
-      getEntry: jest
-        .fn()
-        .mockReturnValueOnce(mockEntries[2])
-        .mockReturnValueOnce(mockEntries[1])
-        .mockReturnValueOnce(mockEntries[0]),
+      getEntry: jest.fn((day: number) => entries[day - 1]),
       getLastDay: jest.fn().mockReturnValue(3),
     } as unknown as jest.Mocked<IDiary>;
-    mockDiaryAccessor.getCurrentDiary.mockReturnValue(diary);
-    currentEntryAccessor = new CurrentDiaryEntryAccessor(mockDiaryAccessor);
+    diaryAccessor = {
+      getCurrentDiary: jest.fn().mockReturnValue(diary),
+      setCurrentDiary: jest.fn(),
+    };
+    accessor = new CurrentDiaryEntryAccessor(diaryAccessor);
   });
 
-  it('', () => {
-    new CurrentDiaryEntryAccessor(mockDiaryAccessor);
-    expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalled();
-    expect(diary.getLastDay).toHaveBeenCalled();
-    expect(diary.getEntry).toHaveBeenCalled();
+  it('defers diary access until an entry is requested', () => {
+    expect(diaryAccessor.getCurrentDiary).not.toHaveBeenCalled();
+    expect(diary.getEntry).not.toHaveBeenCalled();
   });
-  it('', () => {
-    const entry = currentEntryAccessor.getCurrentDiaryEntry();
-    expect(entry.day).toBe(3);
-    const entry1 = currentEntryAccessor.getCurrentDiaryEntry();
-    expect(entry1.day).toBe(3);
-    expect(mockDiaryAccessor.getCurrentDiary.call.length).toBe(1);
-  });
-  it('', () => {
-    currentEntryAccessor.setCurrentDiaryEntry(2);
-    const entry = currentEntryAccessor.getCurrentDiaryEntry();
-    expect(entry.day).toBe(2);
 
-    expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalledWith();
+  it('loads the last entry once and reuses it', () => {
+    expect(accessor.getCurrentDiaryEntry()).toBe(entries[2]);
+    expect(accessor.getCurrentDiaryEntry()).toBe(entries[2]);
+    expect(diaryAccessor.getCurrentDiary).toHaveBeenCalledTimes(1);
+    expect(diary.getLastDay).toHaveBeenCalledTimes(1);
+    expect(diary.getEntry).toHaveBeenCalledTimes(1);
+    expect(diary.getEntry).toHaveBeenCalledWith(3);
+  });
+
+  it('uses the explicitly selected entry before the first read', () => {
+    accessor.setCurrentDiaryEntry(2);
+    expect(accessor.getCurrentDiaryEntry()).toBe(entries[1]);
     expect(diary.getEntry).toHaveBeenCalledWith(2);
+    expect(diary.getLastDay).not.toHaveBeenCalled();
+  });
+
+  it('replaces a cached entry when another entry is selected', () => {
+    accessor.getCurrentDiaryEntry();
+    accessor.setCurrentDiaryEntry(1);
+    expect(accessor.getCurrentDiaryEntry()).toBe(entries[0]);
+    expect(diary.getEntry).toHaveBeenLastCalledWith(1);
   });
 });

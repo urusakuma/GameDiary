@@ -29,11 +29,29 @@ export class MockDiary implements IDiary {
   }
 
   getEntry(day: number): IDiaryEntry {
-    throw new Error('getEntry Method not implemented.');
+    throw new Error(`getEntry(${day}) Method not implemented.`);
+  }
+
+  collectEntryDays(): MapIterator<number> {
+    return this.diaryEntries.keys();
+  }
+
+  getNextEntry(day: number): IDiaryEntry | undefined {
+    throw new Error(`getNextEntry(${day}) Method not implemented.`);
+  }
+
+  getPreviousEntry(day: number): IDiaryEntry {
+    throw new Error(`getPreviousEntry(${day}) Method not implemented.`);
+  }
+
+  pruneTrailingUneditedEntries(day: number): void {
+    throw new Error(
+      `pruneTrailingUneditedEntries(${day}) Method not implemented.`
+    );
   }
 
   deleteEntry(day: number): boolean {
-    throw new Error('deleteEntry Method not implemented.');
+    throw new Error(`deleteEntry(${day}) Method not implemented.`);
   }
 
   toJSON(): object {

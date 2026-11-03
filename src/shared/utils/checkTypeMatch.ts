@@ -1,4 +1,4 @@
-export type CheckedType =
+type CheckedType =
   | 'object'
   | 'string'
   | 'number'
@@ -29,11 +29,11 @@ export function hasField<K extends string, T extends CheckedType>(
 } {
   return (
     field in obj && // obj has field
-    isTypeMatch((obj as any)[field], type) // obj.field is type of "type"
+    isTypeMatch((obj as Record<string, unknown>)[field], type)
   );
 }
 /**
- * 指定した変数の型が指定した型か確認する。
+ * 指定した変数の型が指定した型か確認する。nullはobject型として認めない。
  * @param val 調査対象の変数
  * @param type 変数が満たすべき型
  * @returns 変数の型が指定したとおりならtrue、その他の場合はfalse
@@ -42,15 +42,18 @@ export function isTypeMatch<T extends CheckedType>(
   val: unknown,
   type: T
 ): val is TypeMap[T] {
-  return (
-    (typeof val === type && val !== null) || // val is type of "type"
-    (type === 'Array' && val instanceof Array) || // val is Array
-    (type === 'record' &&
+  if (type === 'record') {
+    // プレーンオブジェクトでありnullではない。
+    return (
       typeof val === 'object' &&
       val !== null &&
-      !Array.isArray(val) &&
-      Object.getPrototypeOf(val) === Object.prototype)
-  );
+      Object.getPrototypeOf(val) === Object.prototype
+    );
+  } else if (type === 'Array') {
+    return Array.isArray(val);
+  }
+  // val is type of "type"
+  return typeof val === type && val !== null;
 }
 
 /**
@@ -63,7 +66,7 @@ export function isArrayType<T extends CheckedType>(
   arr: Array<unknown>,
   type: T
 ): arr is Array<TypeMap[T]> {
-  return arr.every((element) => typeof element === type);
+  return arr.every((element) => isTypeMatch(element, type));
 }
 
 /**
@@ -76,5 +79,5 @@ export function isRecordType<T extends CheckedType>(
   obj: Record<string, unknown>,
   type: T
 ): obj is Record<string, TypeMap[T]> {
-  return Object.values(obj).every((element) => typeof element === type);
+  return Object.values(obj).every((element) => isTypeMatch(element, type));
 }

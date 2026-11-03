@@ -1,53 +1,68 @@
-import 'reflect-metadata';
 import CreateDiary from '@features/diary/control/diary/useCases/createDiary';
-import type { ICurrentDiaryAccessor } from '@features/diary/control/diary/controlDiaryInterface';
-import type { IDiaryService } from '@features/diary/services/repository/diaryRepositoryInterfaces';
-import { MockDiary } from '@features/diary/__tests__/__mocks__/mockDiary';
+import {
+  ICurrentDiaryAccessor,
+  IDiaryNameService,
+} from '@features/diary/control/diary/controlDiaryInterface';
+import { IDiaryService } from '@features/diary/services/repository/diaryRepositoryInterfaces';
 import { IDiaryFactory } from '@features/diary/model/diaryModelInterfaces';
+import DiaryEntry from '@features/diary/model/diaryEntry';
+import { MockDiary } from '../__mocks__/mockDiary';
 
 describe('CreateDiary', () => {
-  let mockDiaryAccessor: jest.Mocked<ICurrentDiaryAccessor>;
-  let mockDiaryFactory: jest.Mocked<IDiaryFactory>;
-  let mockDiaryService: jest.Mocked<IDiaryService>;
+  let accessor: jest.Mocked<ICurrentDiaryAccessor>;
+  let factory: jest.Mocked<IDiaryFactory>;
+  let service: jest.Mocked<IDiaryService>;
+  let names: jest.Mocked<IDiaryNameService>;
   let createDiary: CreateDiary;
+  let newDiary: MockDiary;
+  let firstEntry: DiaryEntry;
+  const oldDiary = new MockDiary();
 
   beforeEach(() => {
-    mockDiaryAccessor = {
-      getCurrentDiary: jest.fn(),
+    accessor = {
+      getCurrentDiary: jest.fn().mockReturnValue(oldDiary),
       setCurrentDiary: jest.fn(),
     };
-
-    mockDiaryFactory = {
-      createNewDiary: jest.fn(),
-    } as unknown as jest.Mocked<IDiaryFactory>;
-
-    mockDiaryService = {
+    factory = { createNewDiary: jest.fn(), createUseExistingData: jest.fn() };
+    service = {
       addDiary: jest.fn(),
       getDiary: jest.fn(),
       deleteDiary: jest.fn(),
     };
-
-    createDiary = new CreateDiary(
-      mockDiaryAccessor,
-      mockDiaryFactory,
-      mockDiaryService
-    );
+    names = {
+      updateDiaryName: jest.fn(),
+    } as unknown as jest.Mocked<IDiaryNameService>;
+    firstEntry = new DiaryEntry(1, '', '', undefined, undefined);
+    newDiary = new MockDiary('new-diary-key');
+    jest.spyOn(newDiary, 'getEntry').mockReturnValue(firstEntry);
+    factory.createNewDiary.mockReturnValue(newDiary);
+    createDiary = new CreateDiary(accessor, factory, service, names);
   });
 
-  it('should create a new diary and update the current diary', () => {
-    const oldDiary = new MockDiary();
-    const newDiary = new MockDiary('new-diary-key');
-
-    mockDiaryAccessor.getCurrentDiary.mockReturnValue(oldDiary);
-    mockDiaryFactory.createNewDiary.mockReturnValue(newDiary);
-
-    createDiary.create();
-
-    expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalled();
-    expect(mockDiaryFactory.createNewDiary).toHaveBeenCalledWith(oldDiary);
-    expect(mockDiaryService.addDiary).toHaveBeenCalledWith(newDiary);
-    expect(mockDiaryAccessor.setCurrentDiary).toHaveBeenCalledWith(
-      'new-diary-key'
-    );
-  });
+  it.each([true, false])(
+    'creates and finalizes a diary (use existing settings: %s)',
+    (useExisting) => {
+      const result = useExisting
+        ? createDiary.create('指定した名前')
+        : createDiary.createDefaultDiary();
+      if (useExisting) {
+        expect(factory.createNewDiary).toHaveBeenCalledWith(
+          oldDiary,
+          '指定した名前'
+        );
+        expect(accessor.getCurrentDiary).toHaveBeenCalledTimes(1);
+      } else {
+        expect(factory.createNewDiary).toHaveBeenCalledWith();
+        expect(accessor.getCurrentDiary).not.toHaveBeenCalled();
+      }
+      expect(service.addDiary).toHaveBeenCalledWith(newDiary);
+      expect(firstEntry.getTitle()).toBe(
+        newDiary.getSettings().getModifierDay(1)
+      );
+      const name = newDiary.getSettings().getDiaryName();
+      expect(names.updateDiaryName).toHaveBeenCalledWith('new-diary-key', name);
+      expect(accessor.setCurrentDiary).toHaveBeenCalledWith('new-diary-key');
+      expect(result).toEqual({ key: 'new-diary-key', name });
+    }
+  );
 });

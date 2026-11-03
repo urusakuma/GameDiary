@@ -12,6 +12,10 @@ export class MockDiaryKeyMapper implements IDiaryNameManager {
     return Array.from(this.diaryNames.entries());
   }
 
+  getDiaryName(key: string): string {
+    return this.diaryNames.get(key) ?? '';
+  }
+
   updateDiaryName(key: string, name: string): boolean {
     if (this.diaryNames.has(key)) {
       this.diaryNames.set(key, name);

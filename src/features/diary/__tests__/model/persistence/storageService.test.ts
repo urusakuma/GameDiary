@@ -1,4 +1,4 @@
-import { StorageService } from '@features/diary/services/persistence/storageService';
+import StorageService from '@features/diary/services/persistence/storageService';
 
 describe('storageService', () => {
   let storageService: StorageService;
@@ -63,7 +63,7 @@ describe('storageService', () => {
       expect(storage.removeItem).toHaveBeenCalledWith('key');
     });
     it('should not propagate an exception even if storage throws an error', () => {
-      storage.getItem.mockImplementation(() => {
+      storage.removeItem.mockImplementation(() => {
         throw new DOMException('QuotaExceededError');
       });
       storageService = new StorageService(storage);

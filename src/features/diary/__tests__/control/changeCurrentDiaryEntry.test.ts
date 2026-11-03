@@ -1,126 +1,74 @@
-import 'reflect-metadata';
 import ChangeCurrentDiaryEntry from '@features/diary/control/diaryEntry/useCases/changeCurrentDiaryEntry';
 import { ICurrentDiaryAccessor } from '@features/diary/control/diary/controlDiaryInterface';
 import { ICurrentDiaryEntryAccessor } from '@features/diary/control/diaryEntry/controlDiaryEntryInterface';
-import {
-  IDiary,
-  IDiaryEntry,
-  IDiarySettings,
-} from '@features/diary/model/diaryModelInterfaces';
+import { IDiary } from '@features/diary/model/diaryModelInterfaces';
+import DiaryEntry from '@features/diary/model/diaryEntry';
 
 describe('ChangeCurrentDiaryEntry', () => {
-  let changeCurrentDiaryEntry: ChangeCurrentDiaryEntry;
-  let mockDiaryAccessor: jest.Mocked<ICurrentDiaryAccessor>;
-  let mockDiaryEntryAccessor: jest.Mocked<ICurrentDiaryEntryAccessor>;
+  let change: ChangeCurrentDiaryEntry;
+  let diary: jest.Mocked<IDiary>;
+  let entryAccessor: jest.Mocked<ICurrentDiaryEntryAccessor>;
 
   beforeEach(() => {
-    mockDiaryAccessor = {
-      getCurrentDiary: jest.fn(),
-    } as unknown as jest.Mocked<ICurrentDiaryAccessor>;
-
-    mockDiaryEntryAccessor = {
+    diary = {
+      getNextEntry: jest.fn(),
+      getPreviousEntry: jest.fn(),
+      createNewEntry: jest.fn(),
+      pruneTrailingUneditedEntries: jest.fn(),
+    } as unknown as jest.Mocked<IDiary>;
+    const diaryAccessor: ICurrentDiaryAccessor = {
+      getCurrentDiary: jest.fn().mockReturnValue(diary),
+      setCurrentDiary: jest.fn(),
+    };
+    entryAccessor = {
       setCurrentDiaryEntry: jest.fn(),
-      getCurrentDiaryEntry: jest.fn(),
-    } as unknown as jest.Mocked<ICurrentDiaryEntryAccessor>;
-
-    changeCurrentDiaryEntry = new ChangeCurrentDiaryEntry(
-      mockDiaryAccessor,
-      mockDiaryEntryAccessor
-    );
+      getCurrentDiaryEntry: jest
+        .fn()
+        .mockReturnValue(new DiaryEntry(4, '', '', 1, undefined)),
+    };
+    change = new ChangeCurrentDiaryEntry(diaryAccessor, entryAccessor);
   });
 
-  it('should move to diary entry of given date', () => {
-    const date = 1;
-    changeCurrentDiaryEntry.moveByDate(date);
-    expect(mockDiaryEntryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(
-      date
-    );
+  it('moves to a date and delegates trailing-entry cleanup to the diary', () => {
+    change.moveByDate(1);
+    expect(entryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(1);
+    expect(diary.pruneTrailingUneditedEntries).toHaveBeenCalledWith(1);
   });
 
-  it('should move to next entry if it exists and not create a new one', () => {
-    const currentEntry = { next: 2 } as unknown as jest.Mocked<IDiaryEntry>;
-    mockDiaryEntryAccessor.getCurrentDiaryEntry.mockReturnValue(currentEntry);
-    const diary = {
-      createNewEntry: jest.fn().mockReturnValue(2),
-    } as unknown as jest.Mocked<IDiary>;
-    mockDiaryAccessor.getCurrentDiary.mockReturnValue(diary);
-    changeCurrentDiaryEntry.moveToNext();
-
-    expect(mockDiaryEntryAccessor.getCurrentDiaryEntry).toHaveBeenCalled();
-    expect(mockDiaryEntryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(
-      currentEntry.next
-    );
-    expect(mockDiaryAccessor.getCurrentDiary).not.toHaveBeenCalled();
+  it('moves to an existing next entry without creating one', () => {
+    diary.getNextEntry.mockReturnValue(new DiaryEntry(7, '', '', 4, undefined));
+    change.moveToNext();
+    expect(diary.getNextEntry).toHaveBeenCalledWith(4);
+    expect(entryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(7);
+    expect(diary.createNewEntry).not.toHaveBeenCalled();
   });
 
-  it('should create and move to new entry if next entry does not exist', () => {
-    const currentEntry = {
-      next: undefined,
-    } as unknown as jest.Mocked<IDiaryEntry>;
-    const newEntry = 3;
-    mockDiaryEntryAccessor.getCurrentDiaryEntry.mockReturnValue(currentEntry);
-    mockDiaryAccessor.getCurrentDiary.mockReturnValue({
-      createNewEntry: jest.fn().mockReturnValue(newEntry),
-    } as unknown as jest.Mocked<IDiary>);
-
-    changeCurrentDiaryEntry.moveToNext();
-
-    expect(mockDiaryAccessor.getCurrentDiary).toHaveBeenCalled();
-    expect(mockDiaryEntryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(
-      newEntry
-    );
+  it('creates an entry when the diary has no next entry', () => {
+    diary.getNextEntry.mockReturnValue(undefined);
+    diary.createNewEntry.mockReturnValue(7);
+    change.moveToNext();
+    expect(diary.getNextEntry).toHaveBeenCalledWith(4);
+    expect(diary.createNewEntry).toHaveBeenCalledTimes(1);
+    expect(entryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(7);
   });
 
-  it('should move to previous entry if it exists and check if current is edited', () => {
-    const currentEntry = {
-      previous: 1,
-      isEdited: jest.fn().mockReturnValue(true),
-    } as unknown as jest.Mocked<IDiaryEntry>;
-    const diary = {
-      getSettings: jest.fn().mockReturnValue({} as unknown as IDiarySettings),
-    } as unknown as jest.Mocked<IDiary>;
-    mockDiaryEntryAccessor.getCurrentDiaryEntry.mockReturnValue(currentEntry);
-    mockDiaryAccessor.getCurrentDiary.mockReturnValue(diary);
-
-    changeCurrentDiaryEntry.moveToPrevious();
-
-    expect(mockDiaryEntryAccessor.getCurrentDiaryEntry).toHaveBeenCalled();
-    expect(mockDiaryEntryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(
-      currentEntry.previous
+  it('moves to the previous entry selected by the diary and prunes trailing entries', () => {
+    diary.getPreviousEntry.mockReturnValue(
+      new DiaryEntry(1, '', '', undefined, 4)
     );
-    expect(currentEntry.isEdited).toHaveBeenCalled();
+    change.moveToPrevious();
+    expect(diary.getPreviousEntry).toHaveBeenCalledWith(4);
+    expect(entryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(1);
+    expect(diary.pruneTrailingUneditedEntries).toHaveBeenCalledWith(1);
   });
 
-  it('should move to previous entry and delete current if not edited', () => {
-    const currentEntry = {
-      previous: 1,
-      isEdited: jest.fn().mockReturnValue(false),
-    } as unknown as jest.Mocked<IDiaryEntry>;
-    const diary = {
-      getSettings: jest.fn().mockReturnValue({} as unknown as IDiarySettings),
-      deleteEntry: jest.fn(),
-    } as unknown as jest.Mocked<IDiary>;
-    mockDiaryEntryAccessor.getCurrentDiaryEntry.mockReturnValue(currentEntry);
-    mockDiaryAccessor.getCurrentDiary.mockReturnValue(diary);
-
-    changeCurrentDiaryEntry.moveToPrevious();
-
-    expect(mockDiaryEntryAccessor.getCurrentDiaryEntry).toHaveBeenCalled();
-    expect(mockDiaryEntryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(
-      currentEntry.previous
-    );
-    expect(currentEntry.isEdited).toHaveBeenCalled();
-    expect(diary.deleteEntry).toHaveBeenCalled();
-  });
-
-  it('should do nothing if there is no previous entry', () => {
-    const currentEntry = {
-      previous: undefined,
-    } as unknown as jest.Mocked<IDiaryEntry>;
-    mockDiaryEntryAccessor.getCurrentDiaryEntry.mockReturnValue(currentEntry);
-
-    changeCurrentDiaryEntry.moveToPrevious();
-
-    expect(mockDiaryEntryAccessor.setCurrentDiaryEntry).not.toHaveBeenCalled();
+  it('stays on the first entry when the diary returns it as the previous entry', () => {
+    const first = new DiaryEntry(1, '', '', undefined, undefined);
+    entryAccessor.getCurrentDiaryEntry.mockReturnValue(first);
+    diary.getPreviousEntry.mockReturnValue(first);
+    change.moveToPrevious();
+    expect(diary.getPreviousEntry).toHaveBeenCalledWith(1);
+    expect(entryAccessor.setCurrentDiaryEntry).toHaveBeenCalledWith(1);
+    expect(diary.pruneTrailingUneditedEntries).toHaveBeenCalledWith(1);
   });
 });

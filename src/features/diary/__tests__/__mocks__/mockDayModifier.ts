@@ -2,8 +2,8 @@ import DiarySettingsConstant from '@features/diary/model/constants';
 import { IDayModifier } from '@features/diary/model/diaryModelInterfaces';
 export class MockDayModifier implements IDayModifier {
   unit = Array<string>(4);
-  cycleLength = DiarySettingsConstant.DEFAULT_CYCLE_LENGTH;
-  modifier = DiarySettingsConstant.DEFAULT_DAY_MODIFIER;
+  cycleLength: number = DiarySettingsConstant.DEFAULT_CYCLE_LENGTH;
+  modifier: string = DiarySettingsConstant.DEFAULT_DAY_MODIFIER;
   setModifier(val: string): void {
     this.modifier = val;
   }

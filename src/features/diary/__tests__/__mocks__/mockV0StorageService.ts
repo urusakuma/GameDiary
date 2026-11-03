@@ -1,4 +1,4 @@
-import DiarySettingsConstant from '@features/diary/model/constants';
+import STORAGE_CONSTANTS from '@features/diary/services/constants';
 import { MockStorageService } from './mockStorageService';
 import { injectable, singleton } from 'tsyringe';
 @singleton()
@@ -13,10 +13,10 @@ export class MockV0StorageService extends MockStorageService {
       itemList.push(new Item(itemKey, itemName));
     }
     this.setItem(
-      DiarySettingsConstant.GAME_DATA_NAME_LIST,
+      STORAGE_CONSTANTS.GAME_DATA_NAME_LIST,
       JSON.stringify(itemList)
     );
-    this.setItem(DiarySettingsConstant.CURRENT_GAME_DATA_NAME, 'testKey0');
+    this.setItem(STORAGE_CONSTANTS.CURRENT_GAME_DATA_NAME, 'testKey0');
   }
 }
 
